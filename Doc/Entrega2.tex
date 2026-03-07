@@ -1,0 +1,220 @@
+% ----- Configuración del documento -----
+\documentclass[12pt,a4paper]{article}
+
+% ----- Paquetes necesarios -----
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % Para insertar imágenes
+\usepackage{geometry} % Para ajustar márgenes
+\usepackage{hyperref} % Para insertar hiperenlaces
+\usepackage{xcolor} % Para dar color a la fuente
+\usepackage{amsmath} % Operaciones matemáticas
+\usepackage{amssymb} % Para símbolos como checkmarks (\checkmark) y cruces (\times)
+\usepackage{float} % Para 
+\usepackage{parskip} % Para espaciados entre parrafos
+
+% ----- Definiciones propias -----
+\definecolor{codegreen}{RGB}{0,150,0} % Color verde consola
+\definecolor{MoradoIntenso}{RGB}{200, 0, 204} % Morado intenso (R:152, G:0, B:204)
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=cyan,      
+    urlcolor=MoradoIntenso,
+} % Para que se vean azul las referencias a imágenes, en morado los links.
+
+% ----- Declaración de márgenes -----
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=2.5cm,
+    right=2.5cm
+}
+
+% ----- Espaciados entre párrafos y sangría ----- 
+\setlength{\parskip}{11pt}   % Espaciado (10 pt)
+\setlength{\parindent}{14pt}  % Sangría (15 pt)
+
+% ----- Información documento -----
+\title{\textbf{Subsonic Festival - Práctica 2}}
+\author{Roberto García García\\
+        Javier Cumbres Tena\\
+        Ismael Ramos Márquez\\
+        Mario Sequedo Rodríguez\\
+        Alonso Grillo Frade
+        }
+\date{Curso 2025-26}
+\raggedbottom
+
+
+
+%##############################################################################
+%############################## INICIO DOCUMENTO ##############################
+%##############################################################################
+
+\begin{document}
+
+\maketitle
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{assets/subsonicfestival.png}
+\end{figure}
+\newpage
+
+% --- ÍNDICE ---
+\renewcommand{\contentsname}{Índice}
+\tableofcontents
+\newpage
+
+
+
+%#############################################################################
+%############################## 1. INTRODUCCIÓN ##############################
+%#############################################################################
+\section{Introducción}
+
+El presente documento recoge la fase de prototipado y diseño para el desarrollo de \textbf{Subsonic Festival}, una plataforma web \textit{full-stack} orientada a la gestión integral de festivales de música. Esta aplicación nace con el objetivo de centralizar y facilitar tareas críticas de la organización de eventos, tales como la promoción de artistas, la venta de entradas, la comercialización de \textit{merchandising} y la gestión del alquiler de espacios para proveedores de servicios.
+
+El propósito principal de esta segunda entrega (Práctica 02) es diseñar las vistas para las funcionalidades descritas en la primera entrega, sin la necesidad de desarrollar las funcionalidades al uso. 
+
+Para cumplir con estos objetivos, el contenido de este documento se organiza de la siguiente manera:
+
+\begin{itemize}
+    \item \textbf{En la Sección 2 (Esbozo de las vistas):} Se plantean los esbozos de las vistas, desarrollando los elementos que la componen y las ligaduras entre ellos. En cada vista, se presentará la funcionalidad que soporte, como se podrá acceder a ella, a que vista se navega desde ella y como.
+    \item \textbf{En la Sección 3 (Árbol de navegación):} Se presenta un diagrama de estados que muestra el flujo lógico y global de navegación de la aplicación. En dicho esquema, se presentan diferentes eventos, como actuar ante ellos, además de como se tratarán los datos al realizar la navegación entre los eventos.
+    \item \textbf{En la Sección 4 (Anexos):} Se adjuntan las actas de las reuniones de coordinación, evidenciando el seguimiento del proyecto.
+\end{itemize}
+
+\newpage
+
+
+
+%#############################################################################
+%############################## 2. ESBOZO VISTAS #############################
+%#############################################################################
+\section{Esbozo de las vistas}
+Terminar los prototipos el viernes en clase y adjuntar las imágenes aquí e ir explicando algo sobre los bocetos.
+Lo haremos en dos subsecciones, la primera con las imágenes de las vistas (de a 2 si queda bien), la segunda un pequeño párrafo explicativo de cada vista, referenciando a la imñagen de dicha vista.
+
+
+
+%#############################################################################
+%############################ 3. ÁRBOL NAVEGACIÓN ############################
+%#############################################################################
+\section{Árbol de navegación}
+
+\begin{figure}[H]
+    \centering
+    \label{fig1:arbol_nav}
+    \includegraphics[width=0.8\textwidth]{assets/arbol_navegacion.jpeg}
+    \caption{Diagrama de estados del flujo de navegación}
+\end{figure}
+
+En el \hyperref[fig1:arbol_nav]{árbol de navegación}, se muestra un diagrama de estados que representa el flujo lógico de navegación de la aplicación. A continuación, se detallan los distintos ejes de interacción.
+
+El primero de los estados al que accedemos una vez cargado el sitio web es la página principal (\textbf{MAIN}), ya que se puede navegar por esta aún sin haber iniciado previamente sesión. 
+\newpage
+
+\subsection{Acceso y Autenticación de Usuario}
+
+En caso de requerir una acción autenticada (necesaria para el uso del carrito de compras o gestión de entradas), el flujo se divide principalmente en dos ramas:
+\begin{itemize}
+    \item \textbf{Inicio de Sesión:} Si el usuario tiene una cuenta creada, bastará con introducir sus credenciales en el estado \textit{Iniciar sesión}. Tras la validación, será redirigido nuevamente al estado \textbf{MAIN}.
+    \item \textbf{Registro de Cuenta:} En caso de no poseer cuenta, se transita al estado \textit{Añadir cuenta / Crear contraseña}. Una vez completados los campos y guardado el nuevo usuario, el sistema redirige al estado \textbf{MAIN} con la sesión ya activa.
+\end{itemize}
+
+% ---------- Descubrimiento y adquisición de eventos ----------
+\subsection{Flujo de Descubrimiento y Adquisición de Eventos}
+El usuario puede localizar los distintos eventos a través de dos vías:
+
+\begin{itemize}
+    \item \textbf{Exploración Pasiva:} Mediante el estado \textit{Recomendado}, que muestra contenido sugerido o recomendado (según valoraciones, fecha de proximidad, relevancia, etc).
+    \item \textbf{Exploración Activa:} A través del estado \textit{Búsqueda}, donde se aplican filtros específicos que ayuden a cercar la búsqueda de eventos específicos.
+\end{itemize}
+Ambas vías convergen en el estado \textit{Detalles Evento}. Desde este punto, la transición \texttt{SELECT COMPRAR} redirige al usuario al módulo \textit{Métodos de Compra}, formalizando la transacción financiera.
+
+% ---------- Flujo para cliente/usuario ----------
+\subsection{Gestión de Perfil e Historial de Usuario}
+Este eje está condicionado a la existencia de una sesión activa (\textit{Si está registrado}). El estado \textit{Perfil} actúa como nodo de control para:
+\begin{itemize}
+    \item \textbf{Configuración:} Acceso al estado \textit{Modificar Perfil} mediante la transición \texttt{SELECT AJUSTES}.
+    \item \textbf{Consulta de Activos:} Transición al estado \textit{Historial}, donde el usuario puede visualizar sus entradas.
+    \item \textbf{Gestión de Reembolsos:} Si una entrada cumple la condición \textit{Si entrada no consumida}, se habilita la transición \texttt{SELECT REEMBOLSAR}, que activa el estado de ejecución \textit{Action}.
+\end{itemize}
+
+% ---------- Flujo para proveedores ----------
+\subsection{Búsqueda y Reserva de Espacios}
+Para usuarios con rol de proveedor o aquellos interesados en logística, la aplicación ofrece un flujo dedicado a la infraestructura:
+\begin{itemize}
+    \item La transición \texttt{SELECT ESPACIOS DISPONIBLES} conduce al estado \textit{Búsqueda de Espacios}.
+    \item Tras seleccionar un activo, se accede a \textit{Detalles del Espacio}, culminando el flujo en el estado \textit{Reservar Espacio}.
+\end{itemize}
+Cabe destacar que si el sistema identifica al usuario con el rol \textit{Proveedor}, la navegación prioriza la redirección directa al estado \textit{Perfil} para la gestión de sus servicios.
+
+
+
+%#############################################################################
+%################################# 4. ANEXOS #################################
+%#############################################################################
+\section{Anexos}
+
+\subsection{Herramientas utilizadas}
+\begin{itemize}
+    \item \textbf{MODELIO OPEN SOURCE: }Para el diseño del diagrama de estados propuesto para representar el flujo lógico de navegación de la \hyperref[fig1:arbol_nav]{Figura 1}, se ha optado por el uso de la herramienta \href{https://www.modelio.org/index.htm}{Modelio}, una herramienta de modelado de código abierto.
+    \item \textbf{JUSTINMIND: }Para el diseño de las vistas que conforman la web, se ha optado por usar la herramienta \href{https://www.justinmind.com/es}{JustinMind}, una herramienta gratuita de diseño y prototipado para aplicaciones web y móviles.
+\end{itemize}
+
+\subsection{Actas de reunión del grupo}
+
+\subsubsection{Acta 1}
+\begin{itemize}
+    \item \textbf{Fecha y hora: } 28/02/2026, 16:30 - 18:30
+    \item \textbf{Asistentes: } Roberto García, Mario Sequedo, Ismael Ramos, Alonso Grillo.
+    \item \textbf{Contenido tratado: } 
+    \begin{itemize}
+        \item Revisión del enunciado general y práctica 2.
+        \item Identificación de objetivos para práctica 2.
+    \end{itemize}
+    \item \textbf{Decisiones tomadas: }
+    \begin{itemize}
+        \item Asignación de tareas entre los miembros del grupo.
+        \item Decisiciones sobre implementación FrontEnd.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Acta 2}
+\begin{itemize}
+    \item \textbf{Fecha y hora: } 04/03/2026, 15:30 - 17:30
+    \item \textbf{Asistentes: } Todos los integrantes.
+    \item \textbf{Contenido tratado: }
+    \begin{itemize}
+        \item Esbozos faltantes de las vistas.
+        \item Desarrollo del orden de navegación lógica.
+        \item Mecanismos de desarrollo FrontEnd.
+    \end{itemize}
+    \item \textbf{Decisiones tomadas: }
+    \begin{itemize}
+        \item Detalles de implementación FrontEnd.
+        \item Flujo final árbol de navegación.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Acta 3}
+\begin{itemize}
+    \item \textbf{Fecha y hora: } 06/03/2026, 8:30 - 10:30
+    \item \textbf{Asistentes: } Por determinar
+    \item \textbf{Contenido tratado: }
+    \begin{itemize}
+        \item Esbozo vistas.
+        \item Documentación práctica 2.
+    \end{itemize}
+    \item \textbf{Decisiones tomadas: }
+    \begin{itemize}
+        \item Reparto diseño vistas.
+    \end{itemize}
+\end{itemize}
+
+\end{document}
+%#############################################################################
+%############################# FIN DEL DOCUMENTO #############################
+%#############################################################################
