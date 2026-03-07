@@ -1,0 +1,4 @@
+# requirements.txt
+fastapi
+uvicorn[standard]   # servidor ASGI con extras recomendados
+firebase-admin

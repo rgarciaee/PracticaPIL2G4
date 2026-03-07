@@ -2,7 +2,6 @@
 \documentclass[12pt,a4paper]{article}
 
 % ----- Paquetes necesarios -----
-\usepackage[spanish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx} % Para insertar imágenes
 \usepackage{geometry} % Para ajustar márgenes
@@ -57,7 +56,7 @@
 \maketitle
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{assets/subsonicfestival.png}
+    \includegraphics[width=0.5\textwidth]{../assets/subsonicfestival.png}
 \end{figure}
 \newpage
 
@@ -106,7 +105,7 @@ Lo haremos en dos subsecciones, la primera con las imágenes de las vistas (de a
 \begin{figure}[H]
     \centering
     \label{fig1:arbol_nav}
-    \includegraphics[width=0.8\textwidth]{assets/arbol_navegacion.jpeg}
+    \includegraphics[width=0.8\textwidth]{../assets/arbol_navegacion.jpeg}
     \caption{Diagrama de estados del flujo de navegación}
 \end{figure}
 
@@ -149,12 +148,71 @@ Para usuarios con rol de proveedor o aquellos interesados en logística, la apli
     \item La transición \texttt{SELECT ESPACIOS DISPONIBLES} conduce al estado \textit{Búsqueda de Espacios}.
     \item Tras seleccionar un activo, se accede a \textit{Detalles del Espacio}, culminando el flujo en el estado \textit{Reservar Espacio}.
 \end{itemize}
-Cabe destacar que si el sistema identifica al usuario con el rol \textit{Proveedor}, la navegación prioriza la redirección directa al estado \textit{Perfil} para la gestión de sus servicios.
+%#############################################################################
+%################################# 4. Arquitectura Aplicacion ################
+%#############################################################################
+\section{Arquitectura de Aplicación}
 
+En esta sección se presentará la arquitectura de la aplicación, detallando los componentes principales, sus responsabilidades y las interacciones entre ellos. Se describirá la estructura general del proyecto, incluyendo la organización de los archivos, las tecnologías utilizadas y cómo se integran. 
+
+La arquitectura se ha basado en el patrón de diseño MVC + DAO + FACTORY, con el objetivo de mantener una separación clara entre la lógica de negocio, la presentación y el acceso a datos, facilitando así el mantenimiento y escalabilidad de la aplicación.
+
+\subsection{Patrones de Diseño Utilizados}
+
+\subsubsection{Modelo-Vista-Controlador (MVC)}
+El patrón MVC divide la aplicación en tres capas principales:
+\begin{itemize}
+    \item \textbf{Modelo (Model):}  Representa las operaciones relacionadas con los datos y el modelo que maneja las entidades (como usuarios, eventos, entradas y espacios).
+    \item \textbf{Vista (View):} Se encarga de capturar y presentar los datos del usuario. Es la interfaz gráfica que el usuario interactúa.
+    \item \textbf{Controlador (Controller):} Intermediario entre el modelo y la vista. Maneja las solicitudes del usuario, procesa la entrada, interactúa con el modelo para obtener o modificar datos, y selecciona la vista apropiada para responder. Los controladores coordinan el flujo de la aplicación.
+\end{itemize}
+Este patrón facilita la separación de responsabilidades, permitiendo que cambios en la interfaz no afecten la lógica de negocio, y viceversa.
+
+\subsubsection{Objeto de Acceso a Datos (DAO)}
+El patrón DAO abstrae el acceso a la base de datos, proporcionando una interfaz uniforme para operaciones CRUD (Crear, Leer, Actualizar, Eliminar). Los DAOs encapsulan las consultas SQL y la lógica de persistencia, aislando el resto de la aplicación de los detalles específicos de la base de datos.
+\begin{itemize}
+    \item Beneficios: Facilita cambios en el sistema de almacenamiento (por ejemplo, de MySQL a PostgreSQL) sin modificar la lógica de negocio.
+    \item En la aplicación: Cada entidad principal (usuario, evento, etc.) tendría su propio DAO, que implementaría métodos como \texttt{insert()}, \texttt{findById()}, \texttt{update()} y \texttt{delete()}.
+\end{itemize}
+
+\subsubsection{Fábrica (Factory)}
+El patrón Factory se utiliza para crear objetos sin especificar la clase exacta que se va a instanciar. Proporciona una interfaz para crear familias de objetos relacionados, delegando la creación a subclases o métodos especializados.
+\begin{itemize}
+    \item Aplicación: En el contexto de DAO, una fábrica podría crear instancias de DAOs específicos según la configuración (por ejemplo, DAO para base de datos relacional vs. NoSQL).
+    \item Ventajas: Reduce el acoplamiento, facilita la extensibilidad y permite la configuración dinámica de componentes.
+\end{itemize}
+
+\subsection{Estructura General del Proyecto}
+La organización de archivos sigue una estructura modular que refleja los patrones MVC y DAO:
+\begin{itemize}
+    \item \textbf{Carpeta \texttt{model/}:} Contiene las clases del modelo que representan las entidades del negocio (por ejemplo, \texttt{Usuario}, \texttt{Evento}, \texttt{Entrada}). Incluye también los DAOs correspondientes para cada entidad.
+    \item \textbf{Carpeta \texttt{view/}:} Alberga las plantillas y archivos estáticos para la presentación (HTML, CSS, JavaScript, imágenes).
+    \item \textbf{Carpeta \texttt{conector/}:} Gestiona la conexión a la base de datos y posibles utilidades relacionadas con la persistencia.
+    \item \textbf{Archivo \texttt{controller.py}:} Implementa los controladores que manejan las rutas y la lógica de control de la aplicación.
+\end{itemize}
+
+\subsection{Tecnologías Utilizadas}
+La aplicación se desarrolla utilizando tecnologías web estándar para asegurar compatibilidad y escalabilidad:
+\begin{itemize}
+    \item \textbf{Backend:} Lenguaje de programación Python, con un framework web como Flask o Django para manejar las solicitudes HTTP y la integración con MVC.
+    \item \textbf{Base de Datos:} Un sistema de gestión de bases de datos relacional como SQLite (para desarrollo) o PostgreSQL (para producción), accedido a través de una biblioteca ORM como SQLAlchemy.
+    \item \textbf{Frontend:} HTML5, CSS3 y JavaScript para las vistas, posiblemente con una biblioteca como Bootstrap para estilos responsivos.
+    \item \textbf{Integración:} Los patrones DAO y Factory se implementan utilizando conceptos de programación orientada a objetos en Python, como clases abstractas e interfaces.
+\end{itemize}
+
+\subsection{Interacciones entre Componentes}
+\begin{itemize}
+    \item El controlador recibe una solicitud HTTP y valida la entrada.
+    \item Interactúa con el modelo a través de DAOs (creados por fábricas si es necesario) para realizar operaciones de negocio.
+    \item El modelo procesa la lógica y devuelve datos al controlador.
+    \item El controlador selecciona la vista apropiada y le pasa los datos necesarios.
+    \item La vista renderiza la respuesta final para el usuario.
+\end{itemize}
+Esta arquitectura genérica permite que la aplicación sea mantenible (cambios localizados), escalable (componentes independientes) y extensible (fácil adición de nuevas funcionalidades).
 
 
 %#############################################################################
-%################################# 4. ANEXOS #################################
+%################################# 5. ANEXOS #################################
 %#############################################################################
 \section{Anexos}
 
