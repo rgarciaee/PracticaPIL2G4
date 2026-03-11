@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+<title>Perfil - Subsonic Festival</title>
+
+<link rel="stylesheet" href="../css/home.css">
+<link rel="stylesheet" href="../css/perfil.css">
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<div class="logo">Subsonic Festival</div>
+
+<div class="topbar-actions">
+
+<button class="icon-btn">🛒</button>
+
+<div class="profile">
+<img id="profile-image" src="">
+</div>
+
+</div>
+
+</header>
+
+<main class="profile-container">
+
+<!-- menú lateral -->
+
+<aside class="profile-menu">
+
+<h3>Mi cuenta</h3>
+
+<ul>
+<li class="active">Datos personales</li>
+<li class="menu-disabled">Historial de compras</li>
+</ul>
+
+</aside>
+
+
+<!-- contenido perfil -->
+
+<section class="profile-content">
+
+<h1>Perfil de usuario</h1>
+
+<form id="profile-form">
+
+<div class="form-group">
+<label>DNI</label>
+<input type="text" id="user-dni" disabled>
+</div>
+
+<div class="form-group">
+<label>Nombre y apellidos</label>
+<input type="text" id="user-name">
+</div>
+
+<div class="form-group">
+<label>Fecha de nacimiento</label>
+<input type="date" id="user-birth">
+</div>
+
+<div class="form-group">
+<label>Número de tarjeta</label>
+<input type="text" id="user-card">
+</div>
+
+<div class="form-group">
+<label>Dirección</label>
+<input type="text" id="user-address">
+</div>
+
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="user-email">
+</div>
+
+<button type="submit" class="save-btn">Guardar cambios</button>
+
+</form>
+
+</section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
+<script src="../javascript/perfil.js"></script>
+
+</body>
+</html>

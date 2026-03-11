@@ -11,13 +11,14 @@
 \usepackage{amssymb} % Para símbolos como checkmarks (\checkmark) y cruces (\times)
 \usepackage{float} % Para 
 \usepackage{parskip} % Para espaciados entre parrafos
+\usepackage{subcaption} % Para el entorno subfigure
 
 % ----- Definiciones propias -----
 \definecolor{codegreen}{RGB}{0,150,0} % Color verde consola
 \definecolor{MoradoIntenso}{RGB}{200, 0, 204} % Morado intenso (R:152, G:0, B:204)
 \hypersetup{
     colorlinks=true,
-    linkcolor=blue,
+    linkcolor=codegreen,
     filecolor=cyan,      
     urlcolor=MoradoIntenso,
 } % Para que se vean azul las referencias a imágenes, en morado los links.
@@ -56,7 +57,7 @@
 \maketitle
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{../assets/subsonicfestival.png}
+    \includegraphics[width=0.5\textwidth]{assets/subsonicfestival.png}
 \end{figure}
 \newpage
 
@@ -84,16 +85,100 @@ Para cumplir con estos objetivos, el contenido de este documento se organiza de 
     \item \textbf{En la Sección 4 (Anexos):} Se adjuntan las actas de las reuniones de coordinación, evidenciando el seguimiento del proyecto.
 \end{itemize}
 
-\newpage
-
 
 
 %#############################################################################
 %############################## 2. ESBOZO VISTAS #############################
 %#############################################################################
 \section{Esbozo de las vistas}
-Terminar los prototipos el viernes en clase y adjuntar las imágenes aquí e ir explicando algo sobre los bocetos.
-Lo haremos en dos subsecciones, la primera con las imágenes de las vistas (de a 2 si queda bien), la segunda un pequeño párrafo explicativo de cada vista, referenciando a la imñagen de dicha vista.
+\subsection{Vistas}
+
+\begin{figure}[H]
+    \centering
+    % Primera fila
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \label{fig:vista1}
+        \includegraphics[width=\textwidth]{assets/Login.png}
+        \caption*{Inicio Sesión}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \label{fig:vista2}
+        \includegraphics[width=\textwidth]{assets/Register.png}
+        \caption*{Registro}
+    \end{subfigure}
+
+    \vspace{0.5cm} % Espacio vertical entre filas
+
+    % Segunda fila
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+         \label{fig:vista3}
+        \includegraphics[width=\textwidth]{assets/Home.png}
+        \caption*{Home}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \label{fig:vista4}
+        \includegraphics[width=\textwidth]{assets/Home.png}
+        \caption*{Carrito}
+    \end{subfigure}
+
+    \vspace{0.5cm}
+
+    % Tercera fila
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \label{fig:vista5}
+        \includegraphics[width=\textwidth]{assets/Home.png}
+        \caption*{Perfil}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \label{fig:vista6}
+        \includegraphics[width=\textwidth]{assets/Home.png}
+        \caption*{Historial de entradas}
+    \end{subfigure}
+
+    \vspace{0.5cm} % Espacio vertical entre filas
+
+    % Cuarta fila
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+         \label{fig:vista7}
+        \includegraphics[width=\textwidth]{assets/Home.png}
+        \caption*{Detalles del evento}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \label{fig:vista8}
+        \includegraphics[width=\textwidth]{assets/Home.png}
+        \caption*{Vista proveedor}
+    \end{subfigure}
+    \caption{Galería de vistas del sistema}
+    \label{fig:vistas_sistema}
+\end{figure}
+\newpage
+
+% ---------- Breve explicación de cada una de las vistas (referenciadas) ----------
+\subsection{Explicación vistas}
+\begin{itemize}
+    \item \textbf{\textit{\hyperref[fig:vista1]{Vista 1. Inicio Sesión}}}: La página contará con una interfaz compartida para autenticación y registro. En esta pantalla se mostrarán dos secciones: en la parte derecha se situará el formulario de inicio de sesión, donde el usuario podrá introducir sus credenciales para acceder a la plataforma. Desde esta misma interfaz existirá un botón o enlace que permitirá cambiar a la vista de registro, manteniendo el mismo diseño de pantalla. 
+    \item \textbf{\textit{\hyperref[fig:vista2]{Vista 2. Registro}}}: La vista de registro utilizará la misma estructura visual que la pantalla de inicio de sesión, pero en este caso el formulario mostrado será el de creación de una nueva cuenta, situado en la parte izquierda de la interfaz. El usuario podrá introducir los datos necesarios para registrarse y también tendrá disponible un botón para volver a la vista de inicio de sesión sin cambiar de página.
+    \item \textbf{\textit{\hyperref[fig:vista3]{Vista 3. Home}}}: Será la página inicial de la web. En ella se mostrará un apartado con noticias recientes o destacadas, junto con una sección situada a la derecha de la interfaz donde se visualizarán los próximos eventos, permitiendo a los usuarios consultar de forma rápida la información más relevante y las actividades que se celebrarán próximamente.
+    \item \textbf{\textit{\hyperref[fig:vista4]{Vista 4. Carrito}}}: En la vista del carrito se mostrarán todos los eventos añadidos por el usuario, incluyendo el nombre del evento, el precio pagado por cada entrada y una breve descripción del evento.
+    
+    Además, al pulsar el icono del carrito situado en la parte superior derecha, se desplegará una vista en miniatura del carrito, donde se mostrará el precio total acumulado y se ofrecerá la opción de realizar el pago directamente. 
+    \item \textbf{\textit{\hyperref[fig:vista5]{Vista 5. Perfil}}}: Permite visualizar y modificar la información personal del usuario, así como gestionar su método de pago. Además, en la parte derecha de la interfaz se mostrará una sección con los próximos eventos, de forma similar a la presentada en la página principal.
+    \item \textbf{\textit{\hyperref[fig:vista6]{Vista 6. Historial de entradas}}}: Vista que muestra el historial completo de las entradas adquiridas por el usuario, incluyendo el evento al que pertenecen, la cantidad de entradas compradas y el precio correspondiente.
+    \item \textbf{\textit{\hyperref[fig:vista7]{Vista 7. Detalles del evento}}}: Vista detallada de un evento en la que se muestra el nombre del evento, las fechas en las que se celebra, los artistas participantes, las entradas disponibles, el horario por día y los puestos que asistirán al evento.
+    \item \textbf{\textit{\hyperref[fig:vista8]{Vista 8. Vista del proveedor de servicios}}}: Vista destinada a los proveedores de servicios, que les permite consultar y adquirir espacios dentro de los distintos festivales para instalar el puesto que deseen.
+\end{itemize}
 
 
 
@@ -105,15 +190,17 @@ Lo haremos en dos subsecciones, la primera con las imágenes de las vistas (de a
 \begin{figure}[H]
     \centering
     \label{fig1:arbol_nav}
-    \includegraphics[width=0.8\textwidth]{../assets/arbol_navegacion.jpeg}
+    \includegraphics[width=0.8\textwidth]{assets/arbol_navegacion.jpeg}
     \caption{Diagrama de estados del flujo de navegación}
 \end{figure}
+\bigskip \bigskip \bigskip 
 
 En el \hyperref[fig1:arbol_nav]{árbol de navegación}, se muestra un diagrama de estados que representa el flujo lógico de navegación de la aplicación. A continuación, se detallan los distintos ejes de interacción.
 
 El primero de los estados al que accedemos una vez cargado el sitio web es la página principal (\textbf{MAIN}), ya que se puede navegar por esta aún sin haber iniciado previamente sesión. 
 \newpage
 
+% ---------- Acceso y autenticación de usuario ----------
 \subsection{Acceso y Autenticación de Usuario}
 
 En caso de requerir una acción autenticada (necesaria para el uso del carrito de compras o gestión de entradas), el flujo se divide principalmente en dos ramas:
@@ -143,72 +230,12 @@ Este eje está condicionado a la existencia de una sesión activa (\textit{Si es
 
 % ---------- Flujo para proveedores ----------
 \subsection{Búsqueda y Reserva de Espacios}
-Para usuarios con rol de proveedor o aquellos interesados en logística, la aplicación ofrece un flujo dedicado a la infraestructura:
+Para usuarios con rol de proveedor, se ofrece un flujo dedicado a la infraestructura:
 \begin{itemize}
     \item La transición \texttt{SELECT ESPACIOS DISPONIBLES} conduce al estado \textit{Búsqueda de Espacios}.
     \item Tras seleccionar un activo, se accede a \textit{Detalles del Espacio}, culminando el flujo en el estado \textit{Reservar Espacio}.
 \end{itemize}
-%#############################################################################
-%################################# 4. Arquitectura Aplicacion ################
-%#############################################################################
-\section{Arquitectura de Aplicación}
 
-En esta sección se presentará la arquitectura de la aplicación, detallando los componentes principales, sus responsabilidades y las interacciones entre ellos. Se describirá la estructura general del proyecto, incluyendo la organización de los archivos, las tecnologías utilizadas y cómo se integran. 
-
-La arquitectura se ha basado en el patrón de diseño MVC + DAO + FACTORY, con el objetivo de mantener una separación clara entre la lógica de negocio, la presentación y el acceso a datos, facilitando así el mantenimiento y escalabilidad de la aplicación.
-
-\subsection{Patrones de Diseño Utilizados}
-
-\subsubsection{Modelo-Vista-Controlador (MVC)}
-El patrón MVC divide la aplicación en tres capas principales:
-\begin{itemize}
-    \item \textbf{Modelo (Model):}  Representa las operaciones relacionadas con los datos y el modelo que maneja las entidades (como usuarios, eventos, entradas y espacios).
-    \item \textbf{Vista (View):} Se encarga de capturar y presentar los datos del usuario. Es la interfaz gráfica que el usuario interactúa.
-    \item \textbf{Controlador (Controller):} Intermediario entre el modelo y la vista. Maneja las solicitudes del usuario, procesa la entrada, interactúa con el modelo para obtener o modificar datos, y selecciona la vista apropiada para responder. Los controladores coordinan el flujo de la aplicación.
-\end{itemize}
-Este patrón facilita la separación de responsabilidades, permitiendo que cambios en la interfaz no afecten la lógica de negocio, y viceversa.
-
-\subsubsection{Objeto de Acceso a Datos (DAO)}
-El patrón DAO abstrae el acceso a la base de datos, proporcionando una interfaz uniforme para operaciones CRUD (Crear, Leer, Actualizar, Eliminar). Los DAOs encapsulan las consultas SQL y la lógica de persistencia, aislando el resto de la aplicación de los detalles específicos de la base de datos.
-\begin{itemize}
-    \item Beneficios: Facilita cambios en el sistema de almacenamiento (por ejemplo, de MySQL a PostgreSQL) sin modificar la lógica de negocio.
-    \item En la aplicación: Cada entidad principal (usuario, evento, etc.) tendría su propio DAO, que implementaría métodos como \texttt{insert()}, \texttt{findById()}, \texttt{update()} y \texttt{delete()}.
-\end{itemize}
-
-\subsubsection{Fábrica (Factory)}
-El patrón Factory se utiliza para crear objetos sin especificar la clase exacta que se va a instanciar. Proporciona una interfaz para crear familias de objetos relacionados, delegando la creación a subclases o métodos especializados.
-\begin{itemize}
-    \item Aplicación: En el contexto de DAO, una fábrica podría crear instancias de DAOs específicos según la configuración (por ejemplo, DAO para base de datos relacional vs. NoSQL).
-    \item Ventajas: Reduce el acoplamiento, facilita la extensibilidad y permite la configuración dinámica de componentes.
-\end{itemize}
-
-\subsection{Estructura General del Proyecto}
-La organización de archivos sigue una estructura modular que refleja los patrones MVC y DAO:
-\begin{itemize}
-    \item \textbf{Carpeta \texttt{model/}:} Contiene las clases del modelo que representan las entidades del negocio (por ejemplo, \texttt{Usuario}, \texttt{Evento}, \texttt{Entrada}). Incluye también los DAOs correspondientes para cada entidad.
-    \item \textbf{Carpeta \texttt{view/}:} Alberga las plantillas y archivos estáticos para la presentación (HTML, CSS, JavaScript, imágenes).
-    \item \textbf{Carpeta \texttt{conector/}:} Gestiona la conexión a la base de datos y posibles utilidades relacionadas con la persistencia.
-    \item \textbf{Archivo \texttt{controller.py}:} Implementa los controladores que manejan las rutas y la lógica de control de la aplicación.
-\end{itemize}
-
-\subsection{Tecnologías Utilizadas}
-La aplicación se desarrolla utilizando tecnologías web estándar para asegurar compatibilidad y escalabilidad:
-\begin{itemize}
-    \item \textbf{Backend:} Lenguaje de programación Python, con un framework web como Flask o Django para manejar las solicitudes HTTP y la integración con MVC.
-    \item \textbf{Base de Datos:} Un sistema de gestión de bases de datos relacional como SQLite (para desarrollo) o PostgreSQL (para producción), accedido a través de una biblioteca ORM como SQLAlchemy.
-    \item \textbf{Frontend:} HTML5, CSS3 y JavaScript para las vistas, posiblemente con una biblioteca como Bootstrap para estilos responsivos.
-    \item \textbf{Integración:} Los patrones DAO y Factory se implementan utilizando conceptos de programación orientada a objetos en Python, como clases abstractas e interfaces.
-\end{itemize}
-
-\subsection{Interacciones entre Componentes}
-\begin{itemize}
-    \item El controlador recibe una solicitud HTTP y valida la entrada.
-    \item Interactúa con el modelo a través de DAOs (creados por fábricas si es necesario) para realizar operaciones de negocio.
-    \item El modelo procesa la lógica y devuelve datos al controlador.
-    \item El controlador selecciona la vista apropiada y le pasa los datos necesarios.
-    \item La vista renderiza la respuesta final para el usuario.
-\end{itemize}
-Esta arquitectura genérica permite que la aplicación sea mantenible (cambios localizados), escalable (componentes independientes) y extensible (fácil adición de nuevas funcionalidades).
 
 
 %#############################################################################
@@ -230,13 +257,13 @@ Esta arquitectura genérica permite que la aplicación sea mantenible (cambios l
     \item \textbf{Asistentes: } Roberto García, Mario Sequedo, Ismael Ramos, Alonso Grillo.
     \item \textbf{Contenido tratado: } 
     \begin{itemize}
-        \item Revisión del enunciado general y práctica 2.
-        \item Identificación de objetivos para práctica 2.
+        \item [\tiny$\blacksquare$] Revisión del enunciado general y práctica 2.
+        \item [\tiny$\blacksquare$] Identificación de objetivos para práctica 2.
     \end{itemize}
     \item \textbf{Decisiones tomadas: }
     \begin{itemize}
-        \item Asignación de tareas entre los miembros del grupo.
-        \item Decisiciones sobre implementación FrontEnd.
+        \item [\tiny$\blacksquare$] Asignación de tareas entre los miembros del grupo.
+        \item [\tiny$\blacksquare$] Decisiciones sobre implementación FrontEnd.
     \end{itemize}
 \end{itemize}
 
@@ -246,29 +273,40 @@ Esta arquitectura genérica permite que la aplicación sea mantenible (cambios l
     \item \textbf{Asistentes: } Todos los integrantes.
     \item \textbf{Contenido tratado: }
     \begin{itemize}
-        \item Esbozos faltantes de las vistas.
-        \item Desarrollo del orden de navegación lógica.
-        \item Mecanismos de desarrollo FrontEnd.
+        \item [\tiny$\blacksquare$] Esbozos faltantes de las vistas.
+        \item [\tiny$\blacksquare$] Desarrollo del orden de navegación lógica.
+        \item [\tiny$\blacksquare$] Mecanismos de desarrollo FrontEnd.
     \end{itemize}
     \item \textbf{Decisiones tomadas: }
     \begin{itemize}
-        \item Detalles de implementación FrontEnd.
-        \item Flujo final árbol de navegación.
+        \item [\tiny$\blacksquare$] Detalles de implementación FrontEnd.
+        \item [\tiny$\blacksquare$] Flujo final árbol de navegación.
     \end{itemize}
 \end{itemize}
 
 \subsubsection{Acta 3}
 \begin{itemize}
     \item \textbf{Fecha y hora: } 06/03/2026, 8:30 - 10:30
-    \item \textbf{Asistentes: } Por determinar
+    \item \textbf{Asistentes: } Ismael Ramos, Javier Cumbres, Alonso Grillo.
     \item \textbf{Contenido tratado: }
     \begin{itemize}
-        \item Esbozo vistas.
-        \item Documentación práctica 2.
+        \item [\tiny$\blacksquare$] Esbozo vistas.
+        \item [\tiny$\blacksquare$] Documentación práctica 2.
     \end{itemize}
     \item \textbf{Decisiones tomadas: }
     \begin{itemize}
-        \item Reparto diseño vistas.
+        \item [\tiny$\blacksquare$] Reparto diseño vistas.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Acta 4}
+\begin{itemize}
+    \item \textbf{Fecha y hora: } 09/03/2026, 12:30 - 14:00
+    \item \textbf{Asistentes: } Roberto García, Javier Cumbres, Mario Sequedo.
+    \item \textbf{Contenido tratado: }
+    \begin{itemize}
+        \item [\tiny$\blacksquare$] Paso de vistas a JustinMind
+        \item [\tiny$\blacksquare$] Finalización documentación Práctica 2.
     \end{itemize}
 \end{itemize}
 

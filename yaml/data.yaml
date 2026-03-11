@@ -1,0 +1,137 @@
+web:
+  title: "Subsonic Festival"
+  profile_image: "https://i.pravatar.cc/100?img=12"
+  description: >
+    Plataforma oficial del Subsonic Festival donde los usuarios podrán
+    consultar eventos, comprar entradas, descubrir artistas participantes,
+    acceder a merchandising y explorar servicios disponibles dentro del
+    festival.
+
+events:
+  - nombre: "Subsonic Opening Night"
+    fecha: "15 Abril 2026"
+    descripcion: "Evento inaugural del festival."
+
+  - nombre: "Electro Weekend"
+    fecha: "2 Mayo 2026"
+    descripcion: "Fin de semana dedicado a música electrónica."
+
+  - nombre: "Indie Sessions"
+    fecha: "20 Junio 2026"
+    descripcion: "Conciertos indie al atardecer."
+
+news:
+  - titulo: "Artistas confirmados"
+    contenido: "Se anuncian nuevos artistas internacionales."
+
+  - titulo: "Venta de entradas"
+    contenido: "Las entradas ya están disponibles."
+
+  - titulo: "Espacios para proveedores"
+    contenido: "Se abre el plazo para solicitar puestos."
+
+cart:
+  entradas:
+    - evento: "Subsonic Opening Night"
+      zona: "VIP"
+      fecha: "15 Abril 2026"
+      asiento: "A12"
+      precio: 120
+      cantidad: 1
+
+    - evento: "Electro Weekend"
+      zona: "General"
+      fecha: "2 Mayo 2026"
+      asiento: "B05"
+      precio: 60
+      cantidad: 2
+
+user:
+  id: 1
+  dni: "12345678A"
+  nombre_apellidos: "Carlos Martínez"
+  fecha_nacimiento: "1995-06-12"
+  num_tarjeta: "4532 1234 5678 9012"
+  direccion: "Calle Mayor 12, Madrid"
+  email: "carlos@email.com"
+  rol_asignado: "cliente"
+
+historial:
+  - evento: "Subsonic Opening Night"
+    zona: "VIP"
+    fecha_evento: "15 Abril 2026"
+    localizador_qr: "SUB-938472"
+    fecha_compra: "2026-03-01"
+    estado: "Activa"
+
+  - evento: "Electro Weekend"
+    zona: "General"
+    fecha_evento: "2 Mayo 2026"
+    localizador_qr: "SUB-827362"
+    fecha_compra: "2026-03-02"
+    estado: "Activa"
+
+event_detail:
+  nombre: "Subsonic Opening Night"
+  fecha_inicio: "15 Abril 2026"
+  fecha_fin: "17 Abril 2026"
+
+  artistas:
+    - nombre: "Neon Pulse"
+      genero: "Electrónica"
+
+    - nombre: "The Sonic Waves"
+      genero: "Indie Rock"
+
+    - nombre: "DJ Quantum"
+      genero: "Techno"
+
+  entradas:
+    - tipo: "General"
+      zona: "Pista"
+      precio: 60
+
+    - tipo: "VIP"
+      zona: "Zona VIP"
+      precio: 120
+
+  horario:
+    - dia: "15 Abril"
+      slots:
+        - hora: "18:00"
+          artista: "Neon Pulse"
+        - hora: "20:00"
+          artista: "DJ Quantum"
+
+    - dia: "16 Abril"
+      slots:
+        - hora: "19:00"
+          artista: "The Sonic Waves"
+
+  puestos:
+    - nombre: "Burger Stage"
+      tipo: "Comida"
+      zona: "Food Court"
+
+    - nombre: "Festival Merch"
+      tipo: "Merchandising"
+      zona: "Zona central"
+
+zonas:
+  - id: 1
+    evento: "Subsonic Opening Night"
+    nombre: "Zona Food Trucks Norte"
+    aforo_maximo: 300
+    precio: 500
+
+  - id: 2
+    evento: "Subsonic Opening Night"
+    nombre: "Zona Merchandising Central"
+    aforo_maximo: 150
+    precio: 350
+
+  - id: 3
+    evento: "Electro Weekend"
+    nombre: "Zona Food Court Sur"
+    aforo_maximo: 250
+    precio: 450
