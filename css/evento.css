@@ -1,0 +1,106 @@
+.event-container {
+  width: 90%;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.event-header {
+  background: #1e293b;
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.event-title h1 {
+  color: #38bdf8;
+  margin-bottom: 10px;
+}
+
+.event-main-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.event-map {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 12px;
+}
+
+.event-map iframe {
+  border-radius: 10px;
+}
+
+.event-info {
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+.event-info h2 {
+  color: #38bdf8;
+  margin-bottom: 15px;
+}
+
+.event-details {
+  margin-top: 10px;
+  list-style: none;
+  padding: 0;
+}
+
+.event-details li {
+  margin-bottom: 6px;
+}
+
+.event-section {
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+.event-section h2 {
+  margin-bottom: 20px;
+  color: #38bdf8;
+}
+
+.artists-grid,
+.tickets-grid,
+.stands-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.artist-card,
+.ticket-card,
+.stand-card {
+  background: #0f172a;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.ticket-card button {
+  margin-top: 10px;
+  padding: 8px;
+  background: #38bdf8;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.schedule-day {
+  margin-bottom: 15px;
+}
+
+.schedule-slot {
+  font-size: 0.9rem;
+  margin-left: 10px;
+}
+
+@media (max-width: 900px) {
+  .event-main-info {
+    grid-template-columns: 1fr;
+  }
+}

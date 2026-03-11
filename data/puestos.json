@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "evento_id": 1,
+    "zona_id": 1,
+    "nombre": "Food Truck Burger",
+    "precio_alquiler": 500,
+    "dimension_m2": 20,
+    "horario": "10:00-03:00",
+    "proveedor": "StreetFood SL"
+  },
+  {
+    "id": 2,
+    "evento_id": 1,
+    "zona_id": 2,
+    "nombre": "Cocktail Bar VIP",
+    "precio_alquiler": 800,
+    "dimension_m2": 15,
+    "horario": "18:00-03:00",
+    "proveedor": "Luxury Drinks"
+  }
+]

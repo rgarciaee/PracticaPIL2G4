@@ -1,0 +1,90 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: #111827;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #38bdf8;
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.icon-btn {
+  background: #1e293b;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.profile img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+.container {
+  width: 90%;
+  margin: 30px auto;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.card {
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 15px;
+}
+
+.hero-left h1 {
+  color: #38bdf8;
+  margin-bottom: 15px;
+}
+
+#events-list,
+#news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.event-item,
+.news-item {
+  background: #0f172a;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.event-date {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-bottom: 5px;
+}

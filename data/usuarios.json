@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "dni": "12345678A",
+    "nombre_apellidos": "Carlos Pérez",
+    "fecha_nacimiento": "1995-03-10",
+    "direccion": "Madrid",
+    "email": "carlos@example.com",
+    "rol": "cliente",
+    "premium": true
+  },
+  {
+    "id": 2,
+    "dni": "87654321B",
+    "nombre_apellidos": "Lucía Fernández",
+    "fecha_nacimiento": "1998-06-22",
+    "direccion": "Sevilla",
+    "email": "lucia@example.com",
+    "rol": "cliente",
+    "premium": false
+  },
+  {
+    "id": 3,
+    "dni": "11223344C",
+    "nombre_apellidos": "Admin Sistema",
+    "fecha_nacimiento": "1990-01-01",
+    "direccion": "Madrid",
+    "email": "admin@subsonic.com",
+    "rol": "admin",
+    "premium": false
+  }
+]
