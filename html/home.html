@@ -1,52 +1,46 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Subsonic Festival</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subsonic Festival</title>
 
-  <link rel="stylesheet" href="../css/home.css">
-</head>
+    <link rel="stylesheet" href="../css/home.css" />
+  </head>
 
-<body>
+  <body>
+    <header class="topbar">
+      <div class="logo">Subsonic Festival</div>
 
-<header class="topbar">
-  <div class="logo">Subsonic Festival</div>
+      <div class="topbar-actions">
+        <button class="icon-btn">🛒</button>
 
-  <div class="topbar-actions">
-    <button class="icon-btn">🛒</button>
+        <div class="profile">
+          <img id="profile-image" src="" alt="perfil" />
+        </div>
+      </div>
+    </header>
 
-    <div class="profile">
-      <img id="profile-image" src="" alt="perfil">
-    </div>
-  </div>
-</header>
+    <main class="container">
+      <section class="hero">
+        <div class="hero-left card">
+          <h1 id="web-title"></h1>
+          <p id="general-description"></p>
+        </div>
 
-<main class="container">
+        <aside class="hero-right card">
+          <h2>Próximos eventos</h2>
+          <div id="events-list"></div>
+        </aside>
+      </section>
 
-  <section class="hero">
+      <section class="news-section card">
+        <h2>Noticias</h2>
+        <div id="news-list"></div>
+      </section>
+    </main>
 
-    <div class="hero-left card">
-      <h1 id="web-title"></h1>
-      <p id="general-description"></p>
-    </div>
-
-    <aside class="hero-right card">
-      <h2>Próximos eventos</h2>
-      <div id="events-list"></div>
-    </aside>
-
-  </section>
-
-  <section class="news-section card">
-    <h2>Noticias</h2>
-    <div id="news-list"></div>
-  </section>
-
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-<script src="../javascript/home.js"></script>
-
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
+    <script src="../javascript/home.js"></script>
+  </body>
 </html>

@@ -1,37 +1,37 @@
-async function loadHistory(){
+async function loadHistory() {
 
     const response = await fetch("../yaml/data.yaml")
     const text = await response.text()
-    
+
     const data = jsyaml.load(text)
-    
+
     renderProfile(data.web)
     renderHistory(data.historial)
-    
-    }
-    
-    function renderProfile(web){
-    
+
+}
+
+function renderProfile(web) {
+
     const img = document.getElementById("profile-image")
-    
-    if(img){
-    img.src = web.profile_image
+
+    if (img) {
+        img.src = web.profile_image
     }
-    
-    }
-    
-    function renderHistory(historial){
-    
+
+}
+
+function renderHistory(historial) {
+
     const container = document.getElementById("history-list")
-    
+
     container.innerHTML = ""
-    
+
     historial.forEach(ticket => {
-    
-    const div = document.createElement("div")
-    div.className = "ticket-card"
-    
-    div.innerHTML = `
+
+        const div = document.createElement("div")
+        div.className = "ticket-card"
+
+        div.innerHTML = `
     <h3>${ticket.evento}</h3>
     
     <div class="ticket-info">
@@ -46,11 +46,11 @@ async function loadHistory(){
     
     </div>
     `
-    
-    container.appendChild(div)
-    
+
+        container.appendChild(div)
+
     })
-    
-    }
-    
-    loadHistory()
+
+}
+
+loadHistory()
