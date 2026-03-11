@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "evento_id": 1,
+    "nombre": "Zona General",
+    "aforo_maximo": 5000,
+    "precio": 60
+  },
+  {
+    "id": 2,
+    "evento_id": 1,
+    "nombre": "Zona VIP",
+    "aforo_maximo": 500,
+    "precio": 150
+  },
+  {
+    "id": 3,
+    "evento_id": 1,
+    "nombre": "Zona Backstage",
+    "aforo_maximo": 100,
+    "precio": 300
+  },
+  {
+    "id": 4,
+    "evento_id": 2,
+    "nombre": "Zona General Winter",
+    "aforo_maximo": 2000,
+    "precio": 50
+  },
+  {
+    "id": 5,
+    "evento_id": 2,
+    "nombre": "Zona VIP Winter",
+    "aforo_maximo": 200,
+    "precio": 120
+  }
+]
