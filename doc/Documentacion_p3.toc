@@ -1,0 +1,27 @@
+\babel@toc {nil}{}\relax 
+\contentsline {section}{\numberline {1}Introducción}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Objetivos de la Arquitectura}{2}{subsection.1.1}%
+\contentsline {section}{\numberline {2}Componentes de Firebase}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Firestore (Base de Datos)}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Hosting}{2}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Authentication}{2}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Arquitectura del Proyecto en Ubuntu}{3}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Estructura de Directorios}{3}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Flujo de Datos en Ubuntu}{4}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Capa Modelo: Conexión con Firebase}{4}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Configuración Inicial de Firebase}{4}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Modelo de Eventos}{4}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Capa Controlador: Lógica de Negocio}{5}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Controlador de Eventos}{5}{subsection.5.1}%
+\contentsline {section}{\numberline {6}Capa Vista: Renderizado en el Navegador}{6}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Renderizador de Eventos}{6}{subsection.6.1}%
+\contentsline {section}{\numberline {7}Autenticación de Usuarios}{7}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Controlador de Autenticación}{7}{subsection.7.1}%
+\contentsline {section}{\numberline {8}Reglas de Seguridad en Firestore}{8}{section.8}%
+\contentsline {subsection}{\numberline {8.1}firestore.rules}{8}{subsection.8.1}%
+\contentsline {section}{\numberline {9}Despliegue Automatizado con GitHub Actions}{8}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Workflow de Despliegue}{8}{subsection.9.1}%
+\contentsline {section}{\numberline {10}Comandos Útiles en Ubuntu}{9}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Desarrollo Local}{9}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Despliegue}{9}{subsection.10.2}%
+\contentsline {section}{\numberline {11}Conclusión}{9}{section.11}%

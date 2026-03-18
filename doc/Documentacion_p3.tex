@@ -1,0 +1,413 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric}
+
+\geometry{margin=2.5cm}
+
+% Configuración de colores
+\definecolor{firebaseYellow}{RGB}{255,202,40}
+\definecolor{firebaseOrange}{RGB}{255,107,0}
+\definecolor{codebg}{RGB}{245,245,245}
+
+% Configuración de código
+\lstset{
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    language=JavaScript
+}
+
+\title{\textbf{Guía de Arquitectura para Aplicación con Firebase}\\
+\large Proyecto: PracticaPIL2G4}
+\author{Diego - Guía Técnica}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introducción}
+
+Esta guía documenta la arquitectura de una aplicación web que utiliza Firebase como backend. El proyecto está desarrollado en Ubuntu y sigue el patrón MVC (Modelo-Vista-Controlador) adaptado para trabajar con servicios en la nube.
+
+\subsection{Objetivos de la Arquitectura}
+\begin{itemize}
+    \item Separación clara de responsabilidades (MVC)
+    \item Integración nativa con servicios Firebase
+    \item Flujo de desarrollo local con despliegue automatizado
+    \item Escalabilidad y mantenibilidad del código
+\end{itemize}
+
+\section{Componentes de Firebase}
+
+\subsection{Firestore (Base de Datos)}
+Firestore es una base de datos NoSQL documental en tiempo real. En nuestra arquitectura:
+\begin{itemize}
+    \item \textbf{Colecciones}: Agrupaciones de documentos (ej: \texttt{eventos}, \texttt{usuarios})
+    \item \textbf{Documentos}: Unidades de datos en formato JSON
+    \item \textbf{Reglas de seguridad}: Definidas en \texttt{firestore.rules}
+    \item \textbf{Índices}: Optimización de consultas en \texttt{firestore.indexes.json}
+\end{itemize}
+
+\subsection{Hosting}
+Servicio que aloja los archivos estáticos de la aplicación:
+\begin{itemize}
+    \item Directorio raíz: \texttt{/public}
+    \item Despliegue automático con \texttt{firebase deploy}
+    \item SSL gratuito y CDN global
+\end{itemize}
+
+\subsection{Authentication}
+Sistema de autenticación de usuarios:
+\begin{itemize}
+    \item Proveedores: Email/contraseña, Google, GitHub, etc.
+    \item Integración con Firestore para perfiles de usuario
+    \item Tokens JWT para sesiones seguras
+\end{itemize}
+
+\section{Arquitectura del Proyecto en Ubuntu}
+
+\subsection{Estructura de Directorios}
+\begin{lstlisting}[frame=none, numbers=none]
+PracticaPIL2G4/
+├── public/                 # Raíz web (Hosting)
+│   ├── index.html          # Página principal
+│   ├── css/                 # Estilos
+│   │   └── style.css
+│   ├── js/                  # JavaScript
+│   │   ├── app.js           # Punto de entrada
+│   │   ├── model/           # Capa Modelo
+│   │   │   ├── Evento.js
+│   │   │   └── Usuario.js
+│   │   ├── view/            # Capa Vista
+│   │   │   ├── renderizador.js
+│   │   │   └── componentes.js
+│   │   └── controller/       # Capa Controlador
+│   │       ├── eventoController.js
+│   │       └── authController.js
+│   └── assets/              # Imágenes, fuentes, etc.
+├── firebase.json            # Configuración Firebase
+├── .firebaserc              # Alias de proyectos
+├── firestore.rules          # Reglas de seguridad
+├── firestore.indexes.json   # Índices de base de datos
+├── .github/                 # GitHub Actions
+│   └── workflows/
+│       ├── firebase-hosting-merge.yml
+│       └── firebase-hosting-pull-request.yml
+├── model/                   # (Histórico - migrar a public/js/model)
+├── view/                    # (Histórico - migrar a public/js/view)
+├── javascript/              # (Histórico - migrar a public/js)
+├── css/                     # (Histórico - migrar a public/css)
+└── html/                    # (Histórico - migrar a public/)
+\end{lstlisting}
+
+\subsection{Flujo de Datos en Ubuntu}
+\begin{tikzpicture}[node distance=2cm, auto, >=Stealth]
+    % Nodos
+    \node[rectangle, draw, fill=blue!20, rounded corners] (user) {Usuario};
+    \node[rectangle, draw, fill=green!20, rounded corners, below=of user] (browser) {Navegador};
+    \node[rectangle, draw, fill=yellow!20, rounded corners, below=of browser] (local) {Servidor Local (firebase serve)};
+    \node[rectangle, draw, fill=orange!20, rounded corners, right=of local, xshift=3cm] (firebase) {Firebase Cloud};
+    \node[rectangle, draw, fill=red!20, rounded corners, below=of firebase] (github) {GitHub};
+    
+    % Flechas
+    \draw[->] (user) -- (browser);
+    \draw[->] (browser) -- (local) node[midway, left] {localhost:5000};
+    \draw[<->] (local) -- (firebase) node[midway, above] {Emuladores};
+    \draw[->] (local) -- (github) node[midway, below] {git push};
+    \draw[->] (github) -- (firebase) node[midway, right] {GitHub Action};
+\end{tikzpicture}
+
+\section{Capa Modelo: Conexión con Firebase}
+
+\subsection{Configuración Inicial de Firebase}
+Archivo: \texttt{public/js/conector/firebaseConfig.js}
+
+\begin{lstlisting}
+// Importar SDKs necesarios
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+
+// Configuración del proyecto (obtenida de Firebase Console)
+const firebaseConfig = {
+    apiKey: "tu-api-key",
+    authDomain: "pi-l2-g4.firebaseapp.com",
+    projectId: "pi-l2-g4",
+    storageBucket: "pi-l2-g4.appspot.com",
+    messagingSenderId: "xxx",
+    appId: "xxx"
+};
+
+// Inicializar Firebase
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+export const auth = getAuth(app);
+\end{lstlisting}
+
+\subsection{Modelo de Eventos}
+Archivo: \texttt{public/js/model/Evento.js}
+
+\begin{lstlisting}
+import { db } from '../conector/firebaseConfig.js';
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
+
+export class Evento {
+    constructor(titulo, fecha, descripcion) {
+        this.titulo = titulo;
+        this.fecha = fecha;
+        this.descripcion = descripcion;
+    }
+    
+    // Guardar en Firestore
+    async guardar() {
+        try {
+            const docRef = await addDoc(collection(db, "eventos"), {
+                titulo: this.titulo,
+                fecha: this.fecha,
+                descripcion: this.descripcion,
+                timestamp: new Date()
+            });
+            return docRef.id;
+        } catch (error) {
+            console.error("Error guardando evento:", error);
+            throw error;
+        }
+    }
+    
+    // Obtener todos los eventos
+    static async obtenerTodos() {
+        const querySnapshot = await getDocs(collection(db, "eventos"));
+        return querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+    }
+}
+\end{lstlisting}
+
+\section{Capa Controlador: Lógica de Negocio}
+
+\subsection{Controlador de Eventos}
+Archivo: \texttt{public/js/controller/eventoController.js}
+
+\begin{lstlisting}
+import { Evento } from '../model/Evento.js';
+import { renderizarEventos } from '../view/renderizador.js';
+
+export class EventoController {
+    constructor() {
+        this.eventos = [];
+    }
+    
+    async cargarEventos() {
+        try {
+            this.eventos = await Evento.obtenerTodos();
+            renderizarEventos(this.eventos);
+        } catch (error) {
+            console.error("Error cargando eventos:", error);
+            this.mostrarError("No se pudieron cargar los eventos");
+        }
+    }
+    
+    async crearEvento(datosEvento) {
+        const evento = new Evento(
+            datosEvento.titulo,
+            datosEvento.fecha,
+            datosEvento.descripcion
+        );
+        
+        try {
+            await evento.guardar();
+            await this.cargarEventos(); // Recargar lista
+        } catch (error) {
+            console.error("Error creando evento:", error);
+        }
+    }
+}
+\end{lstlisting}
+
+\section{Capa Vista: Renderizado en el Navegador}
+
+\subsection{Renderizador de Eventos}
+Archivo: \texttt{public/js/view/renderizador.js}
+
+\begin{lstlisting}
+export function renderizarEventos(eventos) {
+    const contenedor = document.getElementById('lista-eventos');
+    
+    if (!contenedor) return;
+    
+    contenedor.innerHTML = eventos.map(evento => `
+        <div class="evento-card" data-id="${evento.id}">
+            <h3>${evento.titulo}</h3>
+            <p>Fecha: ${new Date(evento.fecha).toLocaleDateString()}</p>
+            <p>${evento.descripcion}</p>
+            <button onclick="eliminarEvento('${evento.id}')">Eliminar</button>
+        </div>
+    `).join('');
+}
+\end{lstlisting}
+
+\section{Autenticación de Usuarios}
+
+\subsection{Controlador de Autenticación}
+Archivo: \texttt{public/js/controller/authController.js}
+
+\begin{lstlisting}
+import { auth } from '../conector/firebaseConfig.js';
+import { 
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged 
+} from "firebase/auth";
+
+export class AuthController {
+    constructor() {
+        this.usuarioActual = null;
+        this.observarEstadoAuth();
+    }
+    
+    async login(email, password) {
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            this.usuarioActual = userCredential.user;
+            return true;
+        } catch (error) {
+            console.error("Error login:", error);
+            return false;
+        }
+    }
+    
+    async registrar(email, password) {
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            return userCredential.user;
+        } catch (error) {
+            console.error("Error registro:", error);
+            throw error;
+        }
+    }
+    
+    observarEstadoAuth() {
+        onAuthStateChanged(auth, (user) => {
+            this.usuarioActual = user;
+            this.actualizarUI(user);
+        });
+    }
+    
+    actualizarUI(user) {
+        const loginSection = document.getElementById('login-section');
+        const appSection = document.getElementById('app-section');
+        
+        if (user) {
+            loginSection.style.display = 'none';
+            appSection.style.display = 'block';
+        } else {
+            loginSection.style.display = 'block';
+            appSection.style.display = 'none';
+        }
+    }
+}
+\end{lstlisting}
+
+\section{Reglas de Seguridad en Firestore}
+
+\subsection{firestore.rules}
+\begin{lstlisting}
+rules_version = '2';
+service cloud.firestore {
+    match /databases/{database}/documents {
+        // Reglas para eventos
+        match /eventos/{eventoId} {
+            allow read: if true;  // Cualquiera puede leer
+            allow write: if request.auth != null;  // Solo usuarios autenticados
+        }
+        
+        // Reglas para usuarios
+        match /usuarios/{userId} {
+            allow read: if true;
+            allow write: if request.auth != null && request.auth.uid == userId;
+        }
+    }
+}
+\end{lstlisting}
+
+\section{Despliegue Automatizado con GitHub Actions}
+
+\subsection{Workflow de Despliegue}
+Archivo: \texttt{.github/workflows/firebase-hosting-merge.yml}
+
+\begin{lstlisting}[language=yaml]
+name: Deploy to Firebase Hosting on merge
+'on':
+  push:
+    branches:
+      - main
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm ci && npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PI_L2_G4 }}'
+          channelId: live
+          projectId: pi-l2-g4
+\end{lstlisting}
+
+\section{Comandos Útiles en Ubuntu}
+
+\subsection{Desarrollo Local}
+\begin{lstlisting}[frame=none, numbers=none]
+# Iniciar emuladores de Firebase
+firebase emulators:start
+
+# Servir solo hosting local
+firebase serve
+
+# Servir en puerto específico
+firebase serve --port 3000
+\end{lstlisting}
+
+\subsection{Despliegue}
+\begin{lstlisting}[frame=none, numbers=none]
+# Desplegar todo (hosting + reglas + índices)
+firebase deploy
+
+# Desplegar solo hosting
+firebase deploy --only hosting
+
+# Desplegar solo reglas de Firestore
+firebase deploy --only firestore:rules
+\end{lstlisting}
+
+\section{Conclusión}
+
+Esta arquitectura proporciona:
+
+\begin{itemize}
+    \item \textbf{Separación clara}: MVC bien definido con Firebase como backend
+    \item \textbf{Flujo de trabajo profesional}: Desarrollo local con emuladores, despliegue automatizado
+    \item \textbf{Seguridad}: Reglas de Firestore y autenticación integrada
+    \item \textbf{Escalabilidad}: Firebase maneja automáticamente la infraestructura
+\end{itemize}
+
+La migración de los archivos estáticos a la carpeta \texttt{public} es el único paso necesario para que esta arquitectura funcione correctamente en producción.
+
+\end{document}
