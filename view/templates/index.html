@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión - Music App{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3>🎵 Music App</h3>
+                    <p class="mb-0">Inicia sesión para continuar</p>
+                </div>
+                <div class="card-body">
+                    <!-- Mensajes de error -->
+                    <div id="error-message" class="alert alert-danger d-none"></div>
+                    
+                    <!-- Tabs para seleccionar método de login -->
+                    <ul class="nav nav-tabs mb-3" id="loginTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="email-tab" data-bs-toggle="tab" data-bs-target="#email" type="button" role="tab">
+                                📧 Email
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="google-tab" data-bs-toggle="tab" data-bs-target="#google" type="button" role="tab">
+                                🚀 Google
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content">
+                        <!-- Login con Email/Password -->
+                        <div class="tab-pane fade show active" id="email" role="tabpanel">
+                            <form id="email-login-form">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Correo electrónico</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Contraseña</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <span id="email-spinner" class="spinner-border spinner-border-sm d-none"></span>
+                                    Iniciar Sesión
+                                </button>
+                            </form>
+                            <hr>
+                            <p class="text-center mb-0">
+                                ¿No tienes cuenta? 
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Regístrate aquí</a>
+                            </p>
+                        </div>
+                        
+                        <!-- Login con Google -->
+                        <div class="tab-pane fade" id="google" role="tabpanel">
+                            <div class="text-center">
+                                <button id="google-login" class="btn btn-danger w-100">
+                                    <i class="fab fa-google"></i> Iniciar con Google
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Registro -->
+<div class="modal fade" id="registerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">📝 Registro de Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="register-form">
+                    <div class="mb-3">
+                        <label for="reg-email" class="form-label">Correo electrónico</label>
+                        <input type="email" class="form-control" id="reg-email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reg-password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="reg-password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reg-name" class="form-label">Nombre completo</label>
+                        <input type="text" class="form-control" id="reg-name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="register-btn" class="btn btn-success">Registrarse</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+<script>
+    // Configuración de Firebase (la que me pasaste antes)
+    const firebaseConfig = {
+        apiKey: "AIzaSyCsuBeIXdbdVzpvwGnQOJK63CkSDF0nci8",
+        authDomain: "pi-l2-g4.firebaseapp.com",
+        projectId: "pi-l2-g4",
+        storageBucket: "pi-l2-g4.firebasestorage.app",
+        messagingSenderId: "607584018244",
+        appId: "1:607584018244:web:5efdca9e5decf0421ec111",
+        measurementId: "G-9L3BMRK6P8"
+    };
+    
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    
+    // Función para mostrar errores
+    function showError(message) {
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.textContent = message;
+        errorDiv.classList.remove('d-none');
+        setTimeout(() => errorDiv.classList.add('d-none'), 5000);
+    }
+    
+    // Login con Email/Password
+    document.getElementById('email-login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const spinner = document.getElementById('email-spinner');
+        
+        spinner.classList.remove('d-none');
+        
+        try {
+            // Autenticar con Firebase
+            const userCredential = await auth.signInWithEmailAndPassword(email, password);
+            const token = await userCredential.user.getIdToken();
+            
+            // Enviar token al backend
+            const response = await fetch("http://localhost:8000/login-credentials", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                window.location.href = "/dashboard";
+            } else {
+                showError(data.error || "Error al iniciar sesión");
+            }
+        } catch (error) {
+            showError(error.message);
+        } finally {
+            spinner.classList.add('d-none');
+        }
+    });
+    
+    // Login con Google
+    document.getElementById("google-login").addEventListener("click", async () => {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        
+        try {
+            const result = await auth.signInWithPopup(provider);
+            const token = await result.user.getIdToken();
+            
+            const response = await fetch("http://localhost:8000/login-google", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                window.location.href = "/dashboard";
+            } else {
+                showError(data.error || "Error al iniciar sesión con Google");
+            }
+        } catch (error) {
+            showError(error.message);
+        }
+    });
+    
+    // Registro de usuario
+    document.getElementById('register-btn').addEventListener('click', async () => {
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+        const name = document.getElementById('reg-name').value;
+        
+        if (!email || !password) {
+            showError("Email y contraseña son obligatorios");
+            return;
+        }
+        
+        try {
+            // Crear usuario en Firebase
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            
+            // Actualizar perfil con nombre
+            if (name) {
+                await userCredential.user.updateProfile({ displayName: name });
+            }
+            
+            // Obtener token
+            const token = await userCredential.user.getIdToken();
+            
+            // Enviar al backend (puedes crear un endpoint /register si lo necesitas)
+            const response = await fetch("http://localhost:8000/login-credentials", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                window.location.href = "/dashboard";
+            }
+        } catch (error) {
+            showError(error.message);
+        }
+    });
+</script>
+{% endblock %}

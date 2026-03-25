@@ -1,0 +1,50 @@
+# =========================
+# PYTHON
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+
+# =========================
+# CREDENCIALES / SECRETOS
+# =========================
+# Firebase / Google Cloud
+*.json
+*firebase-adminsdk*.json
+credentials.json
+
+# Variables de entorno
+.env
+
+# =========================
+# ARCHIVOS DEL SISTEMA
+# =========================
+# Windows
+Thumbs.db
+desktop.ini
+
+# Mac
+.DS_Store
+
+# =========================
+# EDITORES / IDEs
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# LOGS Y TEMPORALES
+# =========================
+*.log
+*.tmp
+
+# =========================
+# OTROS
+# =========================
+*.zip
