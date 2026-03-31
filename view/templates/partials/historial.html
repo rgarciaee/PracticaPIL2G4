@@ -1,0 +1,39 @@
+<div id="historial-content">
+  <section class="history-header">
+      <h1>Historial de compras</h1>
+      <p>Todas tus entradas adquiridas en un solo lugar</p>
+  </section>
+
+  <!-- Filtros -->
+  <section class="history-filters">
+      <div class="filter-group">
+          <input type="text" id="filter-event" placeholder="Buscar por evento..." class="filter-input">
+      </div>
+      <div class="filter-group">
+          <select id="filter-status" class="filter-select">
+              <option value="all">Todos los estados</option>
+              <option value="Activa">Activas</option>
+              <option value="Usada">Usadas</option>
+              <option value="Cancelada">Canceladas</option>
+          </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Desde</label>
+        <input type="date" id="filter-date-from">
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Hasta</label>
+        <input type="date" id="filter-date-to">
+      </div>
+      <button id="clear-filters" class="btn btn-outline btn-sm">Limpiar filtros</button>
+  </section>
+
+  <!-- Lista de tickets -->
+  <div id="history-list" class="history-grid"></div>
+
+  <!-- Mensaje si no hay tickets -->
+  <div id="no-tickets-message" class="history-empty is-hidden">
+      <i class="fas fa-ticket-alt"></i>
+      <p>No se encontraron entradas con los filtros seleccionados.</p>
+  </div>
+</div>

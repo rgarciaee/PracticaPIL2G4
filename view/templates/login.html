@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subsonic Festival - Iniciar Sesión</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Estilos del login -->
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+<body>
+    <div class="auth-wrapper" id="authWrapper">
+        <!-- Formulario de Registro -->
+        <div class="auth-form-box register-form-box">
+            <form id="register-form" onsubmit="return false;">
+                <h1>Crear una cuenta</h1>
+                <div class="social-links">
+                    <a href="#" id="google-register" aria-label="Google"><i class="fab fa-google"></i></a>
+                </div>
+                <span>o usa tu correo electrónico para registrarte</span>
+                <input type="text" id="reg-name" placeholder="Nombre Completo" required>
+                <input type="email" id="reg-email" placeholder="Dirección de correo electrónico" required>
+                <input type="password" id="reg-password" placeholder="Contraseña" required>
+                <input type="password" id="reg-confirm-password" placeholder="Confirmar contraseña" required>
+                <button type="submit" id="register-submit">Registrarse</button>
+                <div class="mobile-switch">
+                    <p>¿Ya tienes cuenta?</p>
+                    <button id="mobileLoginBtn" type="button">Iniciar Sesión</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Formulario de Login -->
+        <div class="auth-form-box login-form-box">
+            <form id="login-form" onsubmit="return false;">
+                <h1>Iniciar Sesión</h1>
+                <div class="social-links">
+                    <a href="#" id="google-login" aria-label="Google"><i class="fab fa-google"></i></a>
+                </div>
+                <span>o usa tu cuenta</span>
+                <input type="email" id="login-email" placeholder="Correo electrónico" required>
+                <input type="password" id="login-password" placeholder="Contraseña" required>
+                <a href="#" id="forgot-password">¿Olvidaste tu contraseña?</a>
+                <button type="submit" id="login-submit">Iniciar Sesión</button>
+                <div class="mobile-switch">
+                    <p>¿No tienes cuenta?</p>
+                    <button id="mobileRegisterBtn" type="button">Registrarse</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Panel deslizante -->
+        <div class="slide-panel-wrapper">
+            <div class="slide-panel">
+                <div class="panel-content panel-content-left">
+                    <h1>¡Bienvenido de nuevo!</h1>
+                    <p>Inicia sesión para continuar tu experiencia Subsonic.</p>
+                    <button class="transparent-btn" id="loginBtn">Iniciar Sesión</button>
+                </div>
+                <div class="panel-content panel-content-right">
+                    <h1>¡Hola, fan de la música!</h1>
+                    <p>Regístrate y vive la mejor experiencia del festival.</p>
+                    <button class="transparent-btn" id="registerBtn">Registrarse</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs - VERSIÓN COMPATIBLE (no modular) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <!-- Login JS -->
+    <script src="/static/javascript/login.js"></script>
+</body>
+</html>
