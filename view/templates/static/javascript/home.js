@@ -76,7 +76,9 @@ function renderEventsGrid(events) {
     // Navegar
     document.querySelectorAll('.event-info-btn').forEach(btn => {
         btn.onclick = () => {
-            window.router?.navigate(`evento?id=${btn.dataset.id}`);
+            const eventId = btn.dataset.id;
+            console.log('Navegando a evento:', eventId);
+            window.router?.navigate(`evento?id=${eventId}`);
         };
     });
 

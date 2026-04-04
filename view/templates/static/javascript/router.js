@@ -28,11 +28,25 @@ class Router {
 
     getRouteFromHash() {
         const hash = window.location.hash.slice(1);
-        return decodeURIComponent(hash) || null;
+        // Decodificar solo una vez
+        try {
+            return decodeURIComponent(hash);
+        } catch (e) {
+            return hash;
+        }
     }
 
     parseRoute(route) {
-        const [basePage, queryString = ''] = route.split('?');
+        // Separar correctamente la página de los parámetros
+        const questionMarkIndex = route.indexOf('?');
+        let basePage = route;
+        let queryString = '';
+        
+        if (questionMarkIndex !== -1) {
+            basePage = route.substring(0, questionMarkIndex);
+            queryString = route.substring(questionMarkIndex + 1);
+        }
+        
         return {
             route,
             basePage: basePage || 'home',
@@ -45,7 +59,8 @@ class Router {
         if (this.currentPage === page) return;
 
         if (addToHistory) {
-            window.history.pushState({ page }, '', `#${encodeURIComponent(page)}`);
+            // No codificar la página completa, usar directamente
+            window.history.pushState({ page }, '', `#${page}`);
         }
 
         this.loadPage(page);
@@ -64,6 +79,10 @@ class Router {
     async loadPage(route) {
         const content = document.getElementById('page-content');
         const { basePage, queryParams } = this.parseRoute(route);
+        
+        console.log('loadPage - route:', route);
+        console.log('basePage:', basePage);
+        console.log('queryParams:', Object.fromEntries(queryParams.entries()));
 
         this.showLoader();
 

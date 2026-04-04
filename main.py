@@ -71,10 +71,6 @@ main_app.include_router(app)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(
-        main_app,
-        host="localhost",
-        port=8000,
-        reload=True,
-        log_level="info"
-    )
+    # CAMBIO IMPORTANTE: Usar la aplicación como string y quitar reload
+    # o usar reload pero con la app como string
+    uvicorn.run("main:main_app", host="localhost", port=8000, reload=True, log_level="info")
