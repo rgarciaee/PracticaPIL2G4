@@ -78,7 +78,7 @@ async function renderCartItems() {
     subtotalEl.textContent = subtotal.toFixed(2) + ' €';
     totalEl.textContent = total.toFixed(2) + ' €';
 
-    // Event listeners
+    // Event listeners para cantidad y eliminar
     document.querySelectorAll('.qty-minus').forEach(btn => {
         btn.onclick = async (e) => {
             e.stopPropagation();
@@ -120,34 +120,54 @@ function setupCartButtons() {
     const checkoutBtn = document.getElementById('checkout-btn');
     const continueBtn = document.getElementById('continue-shopping');
 
+    console.log('Configurando botones:', { checkoutBtn: !!checkoutBtn, continueBtn: !!continueBtn });
+
     if (checkoutBtn) {
         checkoutBtn.onclick = async () => {
+            console.log('Botón checkout clickeado');
+            
             if (!window.app?.cart || window.app.cart.length === 0) {
                 window.app?.showToast('El carrito está vacío', 'warning');
                 return;
             }
 
-            const subtotal = (window.app.cart || []).reduce((sum, item) => sum + ((item.precio || 0) * (item.cantidad || 1)), 0);
+            const subtotal = (window.app.cart || []).reduce(
+                (sum, item) => sum + ((item.precio || 0) * (item.cantidad || 1)), 0
+            );
             const total = subtotal + 2.50;
 
-            window.app.showModal('Confirmar compra',
-                `<p>Total a pagar: <strong>${total.toFixed(2)} €</strong></p>
-                 <p>¿Deseas proceder con el pago?</p>`,
+            // 👇 AQUÍ VA EL MODAL
+            const itemsList = window.app.cart.map(item => 
+                `<li>${escapeHtml(item.nombre)} x ${item.cantidad} = ${((item.precio || 0) * (item.cantidad || 1)).toFixed(2)} €</li>`
+            ).join('');
+
+            window.app.showModal(
+                'Confirmar compra',
+                `
+                <div class="checkout-summary">
+                    <h4>Resumen de tu compra:</h4>
+                    <ul style="max-height: 200px; overflow-y: auto;">${itemsList}</ul>
+                    <p><strong>Subtotal:</strong> ${subtotal.toFixed(2)} €</p>
+                    <p><strong>Gastos de gestión:</strong> 2.50 €</p>
+                    <p><strong>Total:</strong> ${total.toFixed(2)} €</p>
+                    <hr>
+                    <p>¿Deseas proceder con el pago?</p>
+                </div>
+                `,
                 async () => {
-                    window.app.showToast('Procesando pago...', 'info');
-                    
+                    console.log('Confirmación de compra aceptada');
+
                     const result = await window.app.processCheckout(window.app.cart, total);
-                    
-                    if (result.success) {
-                        window.app.showToast('¡Compra realizada con éxito!', 'success');
-                        if (typeof window.app.clearCartAPI === 'function') {
-                            await window.app.clearCartAPI();
-                        }
+
+                    console.log('Resultado checkout:', result);
+
+                    if (result && result.success) {
+                        await window.app.clearCartAPI();
                         await renderCartItems();
-                        
-                        setTimeout(() => {
-                            if (window.router) window.router.navigate('historial');
-                        }, 1500);
+
+                        if (window.router) {
+                            window.router.navigate('historial');
+                        }
                     } else {
                         window.app.showToast('Error en la compra', 'error');
                     }

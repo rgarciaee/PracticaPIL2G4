@@ -18,11 +18,11 @@ class TicketDTO():
         self.usuario_id = None
         self.zona_id = None
         self.localizador_qr = None
-        self.fecha_compra = None
-        self.estado = None  # Activa, Usada, Cancelada
-        self.evento_nombre = None  # Para mostrar en frontend
-        self.zona_nombre = None    # Para mostrar en frontend
-        self.precio = None         # Precio en el momento de compra
+        self.fecha_compra = None  # Puede ser string o datetime
+        self.estado = None
+        self.evento_nombre = None
+        self.zona_nombre = None
+        self.precio = None
 
     def is_Empty(self):
         return (self.id is None and self.usuario_id is None and 
@@ -58,12 +58,17 @@ class TicketDTO():
     def set_precio(self, precio): self.precio = precio
 
     def ticketdto_to_dict(self):
+        # Si fecha_compra es datetime, convertirlo a string
+        fecha = self.fecha_compra
+        if hasattr(fecha, 'isoformat'):
+            fecha = fecha.isoformat()
+        
         return {
             "id": self.id,
             "usuario_id": self.usuario_id,
             "zona_id": self.zona_id,
             "localizador_qr": self.localizador_qr,
-            "fecha_compra": self.fecha_compra.isoformat() if self.fecha_compra else None,
+            "fecha_compra": fecha,
             "estado": self.estado,
             "evento_nombre": self.evento_nombre,
             "zona_nombre": self.zona_nombre,

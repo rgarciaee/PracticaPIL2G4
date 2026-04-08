@@ -18,7 +18,11 @@ class FirebaseTicketDAO(InterfaceTicketDAO):
                 ticket_dto.set_usuario_id(ticket_data.get("usuario_id", ""))
                 ticket_dto.set_zona_id(ticket_data.get("zona_id", ""))
                 ticket_dto.set_localizador_qr(ticket_data.get("localizador_qr", ""))
-                ticket_dto.set_fecha_compra(ticket_data.get("fecha_compra", datetime.now().isoformat()))
+                
+                # CORRECCIÓN: fecha_compra ya es string, no llamar a isoformat()
+                fecha_compra = ticket_data.get("fecha_compra", "")
+                ticket_dto.set_fecha_compra(fecha_compra)
+                
                 ticket_dto.set_estado(ticket_data.get("estado", "Activa"))
                 ticket_dto.set_evento_nombre(ticket_data.get("evento_nombre", ""))
                 ticket_dto.set_zona_nombre(ticket_data.get("zona_nombre", ""))
@@ -33,8 +37,10 @@ class FirebaseTicketDAO(InterfaceTicketDAO):
             doc_ref = self.collection.document()
             ticket_data["id"] = doc_ref.id
             doc_ref.set(ticket_data)
+            print(f"Ticket guardado con ID: {doc_ref.id}")
             return {"id": doc_ref.id, "success": True}
         except Exception as e:
+            print(f"Error en add_ticket: {e}")
             return {"success": False, "error": str(e)}
 
     def update_ticket_status(self, ticket_id, status):
@@ -54,7 +60,11 @@ class FirebaseTicketDAO(InterfaceTicketDAO):
                 ticket_dto.set_usuario_id(ticket_data.get("usuario_id", ""))
                 ticket_dto.set_zona_id(ticket_data.get("zona_id", ""))
                 ticket_dto.set_localizador_qr(ticket_data.get("localizador_qr", ""))
-                ticket_dto.set_fecha_compra(ticket_data.get("fecha_compra", datetime.now().isoformat()))
+                
+                # CORRECCIÓN: fecha_compra ya es string
+                fecha_compra = ticket_data.get("fecha_compra", "")
+                ticket_dto.set_fecha_compra(fecha_compra)
+                
                 ticket_dto.set_estado(ticket_data.get("estado", "Activa"))
                 ticket_dto.set_evento_nombre(ticket_data.get("evento_nombre", ""))
                 ticket_dto.set_zona_nombre(ticket_data.get("zona_nombre", ""))

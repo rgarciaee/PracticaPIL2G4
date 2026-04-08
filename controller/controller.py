@@ -234,9 +234,8 @@ async def update_profile(request: Request, profile_data: dict):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-
 # ============================================================
-# CHECKOUT (ARREGLADO)
+# CHECKOUT
 # ============================================================
 
 @app.post("/api/checkout")
@@ -249,19 +248,20 @@ async def checkout(request: Request, purchase_data: dict):
     items = purchase_data.get("items", [])
     total = purchase_data.get("total", 0)
 
+    print(f"=== CHECKOUT ===")
+    print(f"Usuario: {session_id}")
+    print(f"Items recibidos: {items}")
+    print(f"Total: {total}")
+
     try:
-        # Añadir QR a cada item
-        for item in items:
-            item["localizador_qr"] = str(uuid.uuid4())
-            item["fecha_compra"] = datetime.now().strftime("%Y-%m-%d")
-
+        # NO modificar los items aquí, pasar directamente al modelo
         result = mymodelcomponent.process_purchase(session_id, items, total)
-
+        print(f"Resultado checkout: {result}")
         return result
 
     except Exception as e:
+        print(f"Error en checkout: {e}")
         return {"success": False, "error": str(e)}
-
 
 # ============================================================
 # HISTORIAL

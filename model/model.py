@@ -113,30 +113,41 @@ class Model():
     # ============================================================
 
     def process_purchase(self, user_id, items, total):
+        print(f"=== PROCESANDO COMPRA para usuario: {user_id} ===")
+        print(f"Items: {items}")
+        print(f"Total: {total}")
+        
         try:
             purchased_tickets = []
 
             for item in items:
-                qr_code = self._generate_qr_code()
+                cantidad = item.get("cantidad", 1)
 
-                ticket_data = {
-                    "usuario_id": user_id,
-                    "evento_id": item.get("evento_id"),
-                    "evento_nombre": item.get("evento_nombre"),
-                    "zona_id": item.get("zona_id"),
-                    "zona_nombre": item.get("zona_nombre"),
-                    "precio": item.get("precio"),
-                    "localizador_qr": qr_code,
-                    "fecha_compra": datetime.now().strftime("%Y-%m-%d"),
-                    "estado": "Activa"
-                }
+                for _ in range(cantidad):
+                    qr_code = self._generate_qr_code()
 
-                result = self.ticketDAO.add_ticket(ticket_data)
+                    ticket_data = {
+                        "usuario_id": user_id,
+                        "evento_id": item.get("evento_id"),
+                        "evento_nombre": item.get("evento_nombre"),
+                        "zona_id": item.get("zona_id"),
+                        "zona_nombre": item.get("zona_nombre"),
+                        "precio": item.get("precio"),
+                        "localizador_qr": qr_code,
+                        "fecha_compra": datetime.now().strftime("%Y-%m-%d"),
+                        "estado": "Activa"
+                    }
 
-                purchased_tickets.append({
-                    "ticket_id": result.get("id"),
-                    "qr": qr_code
-                })
+                    print(f"Guardando ticket individual: {ticket_data}")
+
+                    result = self.ticketDAO.add_ticket(ticket_data)
+
+                    purchased_tickets.append({
+                        "ticket_id": result.get("id"),
+                        "qr": qr_code,
+                        "evento_nombre": item.get("evento_nombre"),
+                        "zona_nombre": item.get("zona_nombre")
+                    })
 
             return {
                 "success": True,
@@ -145,7 +156,9 @@ class Model():
             }
 
         except Exception as e:
-            print("Error process_purchase:", e)
+            print(f"Error process_purchase: {e}")
+            import traceback
+            traceback.print_exc()
             return {"success": False, "error": str(e)}
 
     def get_user_history(self, user_id):

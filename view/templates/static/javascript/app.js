@@ -261,28 +261,27 @@ class SubsonicApp {
   }
 
   // ============================================================
-  // MÉTODOS PARA PROCESAR COMPRAS
+  // MÉTODOS PARA PROCESAR COMPRAS (CORREGIDO)
   // ============================================================
 
   async processCheckout(items, total) {
-    const tickets = items.map((item) => ({
-      evento: item.evento_nombre || item.nombre.split(" - ")[0],
-      zona: item.tipo || "General",
-      fecha_evento: new Date().toLocaleDateString("es-ES"),
-      localizador_qr: this.generateQRCode(),
-      fecha_compra: new Date().toISOString().split("T")[0],
-      estado: "Activa",
-      precio: item.precio,
-      cantidad: item.cantidad,
-    }));
-
-    const existingHistory = JSON.parse(
-      localStorage.getItem("subsonic_history") || "[]",
-    );
-    const newHistory = [...tickets, ...existingHistory];
-    localStorage.setItem("subsonic_history", JSON.stringify(newHistory));
-
-    return { success: true, tickets: tickets };
+    console.log("processCheckout llamado", items, total);
+    
+    try {
+        const response = await fetch("/api/checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ items, total }),
+            credentials: "include"
+        });
+        
+        const result = await response.json();
+        console.log("Respuesta checkout:", result);
+        return result;
+    } catch (error) {
+        console.error("Error en processCheckout:", error);
+        return { success: false, error: error.message };
+    }
   }
 
   generateQRCode() {
@@ -611,8 +610,8 @@ class SubsonicApp {
       const cancelBtn = modalContainer.querySelector(".modal-cancel");
 
       if (confirmBtn) {
-        confirmBtn.addEventListener("click", () => {
-          onConfirm();
+        confirmBtn.addEventListener("click", async () => {
+          await onConfirm();
           this.closeModal();
         });
       }
