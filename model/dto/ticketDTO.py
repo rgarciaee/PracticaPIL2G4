@@ -18,7 +18,8 @@ class TicketDTO():
         self.usuario_id = None
         self.zona_id = None
         self.localizador_qr = None
-        self.fecha_compra = None  # Puede ser string o datetime
+        self.fecha_compra = None
+        self.fecha_evento = None
         self.estado = None
         self.evento_nombre = None
         self.zona_nombre = None
@@ -45,6 +46,9 @@ class TicketDTO():
     def get_fecha_compra(self): return self.fecha_compra
     def set_fecha_compra(self, fecha_compra): self.fecha_compra = fecha_compra
 
+    def get_fecha_evento(self): return self.fecha_evento
+    def set_fecha_evento(self, fecha_evento): self.fecha_evento = fecha_evento
+    
     def get_estado(self): return self.estado
     def set_estado(self, estado): self.estado = estado
 
@@ -63,12 +67,17 @@ class TicketDTO():
         if hasattr(fecha, 'isoformat'):
             fecha = fecha.isoformat()
         
+        fecha_evento = self.fecha_evento
+        if hasattr(fecha_evento, 'isoformat'):
+            fecha_evento = fecha_evento.isoformat()
+        
         return {
             "id": self.id,
             "usuario_id": self.usuario_id,
             "zona_id": self.zona_id,
             "localizador_qr": self.localizador_qr,
             "fecha_compra": fecha,
+            "fecha_evento": fecha_evento,
             "estado": self.estado,
             "evento_nombre": self.evento_nombre,
             "zona_nombre": self.zona_nombre,

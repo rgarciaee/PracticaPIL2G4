@@ -16,11 +16,14 @@ class FirebaseUserExtDAO():
                 user_dto.set_id(doc.id)
                 user_dto.set_dni(user_data.get("dni", ""))
                 user_dto.set_nombre_apellidos(user_data.get("nombre_apellidos", ""))
-                user_dto.set_fecha_nacimiento(user_data.get("fecha_nacimiento"))
+                fecha_nacimiento = user_data.get("fecha_nacimiento", "")
+                user_dto.set_fecha_nacimiento(fecha_nacimiento)
                 user_dto.set_num_tarjeta(user_data.get("num_tarjeta", ""))
                 user_dto.set_direccion(user_data.get("direccion", ""))
                 user_dto.set_email(user_data.get("email", ""))
                 user_dto.set_rol_asignado(user_data.get("rol_asignado", "cliente"))
+                user_dto.set_telefono(user_data.get("telefono", ""))
+                user_dto.set_avatar_url(user_data.get("avatar_url", ""))
                 return user_dto.userextdto_to_dict()
             return None
         except Exception as e:

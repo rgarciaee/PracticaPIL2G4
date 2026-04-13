@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 class UserExtDTO():
     def __init__(self):
@@ -10,6 +11,9 @@ class UserExtDTO():
         self.direccion = None
         self.email = None
         self.rol_asignado = None
+        self.telefono = None
+        self.avatar_url = None
+        
 
     def is_Empty(self):
         return (self.id is None and self.dni is None and 
@@ -42,14 +46,29 @@ class UserExtDTO():
     def get_rol_asignado(self): return self.rol_asignado
     def set_rol_asignado(self, rol_asignado): self.rol_asignado = rol_asignado
 
+    def get_telefono(self): return self.telefono
+    def set_telefono(self, telefono): self.telefono = telefono
+
+    def get_avatar_url(self): return self.avatar_url
+    def set_avatar_url(self, avatar_url): self.avatar_url = avatar_url
+
     def userextdto_to_dict(self):
+        # Manejar fecha_nacimiento correctamente
+        fecha = self.fecha_nacimiento
+        if isinstance(fecha, datetime):
+            fecha = fecha.isoformat()
+        elif hasattr(fecha, 'isoformat'):
+            fecha = fecha.isoformat()
+        
         return {
             "id": self.id,
             "dni": self.dni,
             "nombre_apellidos": self.nombre_apellidos,
-            "fecha_nacimiento": self.fecha_nacimiento.isoformat() if self.fecha_nacimiento else None,
+            "fecha_nacimiento": fecha,
             "num_tarjeta": self.num_tarjeta,
             "direccion": self.direccion,
             "email": self.email,
-            "rol_asignado": self.rol_asignado
+            "rol_asignado": self.rol_asignado,
+            "telefono": self.telefono,
+            "avatar_url": self.avatar_url
         }

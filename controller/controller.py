@@ -25,7 +25,7 @@ mymodelcomponent = Model()
 # CREACIÓN DE USUARIO (ARREGLADO)
 # ============================================================
 
-def create_user_in_firestore(user_id, email, role="user"):
+def create_user_in_firestore(user_id, email, role="user", avatar_url=""):
     try:
         db = mymodelcomponent.factory.connector.get_db()
 
@@ -52,6 +52,7 @@ def create_user_in_firestore(user_id, email, role="user"):
                 "email": email,
                 "telefono": "",
                 "rol_asignado": role,
+                "avatar_url": avatar_url,  # NUEVO CAMPO
                 "preferencias": {
                     "notificaciones_email": True,
                     "notificaciones_sms": False,
@@ -65,7 +66,6 @@ def create_user_in_firestore(user_id, email, role="user"):
     except Exception as e:
         print("Error creando usuario:", e)
         return False
-
 
 # ============================================================
 # RUTAS BASE
@@ -126,25 +126,32 @@ async def login(data: dict, response: Response, provider: str):
     token = data.get("token")
 
     try:
-        # Lo necesito porque me da error con el reloj del pc
         decoded_token = auth.verify_id_token(token, clock_skew_seconds=10)
 
         user_id = decoded_token.get("uid")
         email = decoded_token.get("email")
         exp = decoded_token.get("exp")
+        
+        # Obtener avatar_url si es login con Google
+        avatar_url = ""
+        if provider == "google":
+            # El avatar de Google viene en el token
+            avatar_url = decoded_token.get("picture", "")
+            print(f"Avatar de Google obtenido: {avatar_url}")
 
         if not user_id:
             return {"success": False, "error": "Token inválido"}
 
-        # Crear usuario si no existe
-        create_user_in_firestore(user_id, email)
+        # Crear usuario si no existe (con avatar si es Google)
+        create_user_in_firestore(user_id, email, "user", avatar_url)
 
         # Crear sesión
         sessions[user_id] = {
             "id_user": user_id,
             "email_user": email,
             "role": "user",
-            "exp": exp
+            "exp": exp,
+            "avatar_url": avatar_url  # Guardar avatar en sesión
         }
 
         response.set_cookie(
@@ -153,7 +160,7 @@ async def login(data: dict, response: Response, provider: str):
             httponly=True
         )
 
-        return {"success": True}
+        return {"success": True, "avatar_url": avatar_url}  # Devolver avatar al frontend
 
     except Exception as e:
         print("Error login:", e)
@@ -216,6 +223,9 @@ async def get_profile(request: Request):
 
     try:
         profile = mymodelcomponent.get_user_profile(session_id)
+        # Asegurar que avatar_url existe
+        if profile and "avatar_url" not in profile:
+            profile["avatar_url"] = ""
         return {"success": True, "data": profile}
     except Exception as e:
         return {"success": False, "error": str(e)}
@@ -230,6 +240,11 @@ async def update_profile(request: Request, profile_data: dict):
 
     try:
         result = mymodelcomponent.update_user_profile(session_id, profile_data)
+        
+        # Si se actualizó el avatar, actualizar también en la sesión
+        if result.get("success") and "avatar_url" in profile_data:
+            sessions[session_id]["avatar_url"] = profile_data["avatar_url"]
+        
         return result
     except Exception as e:
         return {"success": False, "error": str(e)}

@@ -173,6 +173,7 @@
   cursor: pointer;
   background: var(--bg-tertiary);
   transition: background var(--transition-fast);
+  user-select: none;
 }
 
 .password-header:hover {
@@ -186,6 +187,7 @@
 
 .password-content {
   padding: 1.5rem;
+  display: block;
 }
 
 .password-content .form-group {

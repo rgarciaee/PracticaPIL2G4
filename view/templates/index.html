@@ -75,7 +75,7 @@
             <div class="profile-preview">
               <img
                 id="nav-profile-image"
-                src="https://i.pravatar.cc/100?img=12"
+                src="https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg"
                 alt="Perfil"
                 class="profile-avatar"
               />
@@ -143,6 +143,29 @@
 
     <div id="toast-container" class="toast-container"></div>
     <div id="modal-container" class="modal-container is-hidden"></div>
+
+    <!-- Firebase SDKs (necesarios para cambio de contraseña y gestión de usuario) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <script>
+      // Configuración de Firebase (misma que en login.js)
+      const firebaseConfig = {
+        apiKey: "AIzaSyChVLwUVRUi1uU_trNd_QbfM8zme9kE_bk",
+        authDomain: "pi-l2-g4-2.firebaseapp.com",
+        databaseURL: "https://pi-l2-g4-2-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "pi-l2-g4-2",
+        storageBucket: "pi-l2-g4-2.firebasestorage.app",
+        messagingSenderId: "556420796675",
+        appId: "1:556420796675:web:a31cd4dbfed4a790709936"
+      };
+      
+      // Inicializar Firebase solo si no está ya inicializado
+      if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+        console.log('Firebase inicializado en index.html');
+      }
+    </script>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>

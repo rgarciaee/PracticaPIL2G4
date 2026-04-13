@@ -1,3 +1,5 @@
+const DEFAULT_AVATAR = 'https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg';
+
 class SubsonicApp {
   constructor() {
     console.log("Constructor de SubsonicApp llamado");
@@ -266,21 +268,21 @@ class SubsonicApp {
 
   async processCheckout(items, total) {
     console.log("processCheckout llamado", items, total);
-    
+
     try {
-        const response = await fetch("/api/checkout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ items, total }),
-            credentials: "include"
-        });
-        
-        const result = await response.json();
-        console.log("Respuesta checkout:", result);
-        return result;
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items, total }),
+        credentials: "include"
+      });
+
+      const result = await response.json();
+      console.log("Respuesta checkout:", result);
+      return result;
     } catch (error) {
-        console.error("Error en processCheckout:", error);
-        return { success: false, error: error.message };
+      console.error("Error en processCheckout:", error);
+      return { success: false, error: error.message };
     }
   }
 
@@ -585,16 +587,15 @@ class SubsonicApp {
                 <div class="modal-body">
                     ${content}
                 </div>
-                ${
-                  onConfirm
-                    ? `
+                ${onConfirm
+        ? `
                 <div class="modal-footer">
                     <button class="btn btn-secondary modal-cancel">Cancelar</button>
                     <button class="btn btn-primary modal-confirm">Confirmar</button>
                 </div>
                 `
-                    : ""
-                }
+        : ""
+      }
             </div>
         `;
 
@@ -631,33 +632,59 @@ class SubsonicApp {
     }
   }
 
-  checkAuth() {
-    const storedUser = localStorage.getItem("subsonic_user");
+  async checkAuth() {
+    const storedUser = localStorage.getItem('subsonic_user');
     if (storedUser) {
       this.currentUser = JSON.parse(storedUser);
       this.updateUserUI();
     } else {
       this.currentUser = {
         id: 1,
-        nombre_apellidos: "Usuario Demo",
-        email: "demo@subsonic.com",
-        avatar: "https://i.pravatar.cc/100?img=12",
+        nombre_apellidos: 'Usuario Demo',
+        email: 'demo@subsonic.com',
+        avatar: ''  // Vacío, se usará la imagen por defecto
       };
     }
+
+    // Intentar cargar avatar actualizado desde el backend
+    try {
+      const response = await fetch('/api/profile', {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success && result.data) {
+          // Guardar la URL del avatar (puede estar vacía)
+          this.currentUser.avatar = result.data.avatar_url || '';
+          this.currentUser.nombre_apellidos = result.data.nombre_apellidos || this.currentUser.nombre_apellidos;
+          this.currentUser.email = result.data.email || this.currentUser.email;
+          this.updateUserUI();
+          localStorage.setItem('subsonic_user', JSON.stringify(this.currentUser));
+        }
+      }
+    } catch (error) {
+      console.error('Error cargando perfil:', error);
+    }
+
     this.updateUserUI();
   }
 
   updateUserUI() {
     if (this.currentUser) {
-      const nameElement = document.getElementById("dropdown-user-name");
-      const emailElement = document.getElementById("dropdown-user-email");
-      const avatarElement = document.getElementById("nav-profile-image");
+      const nameElement = document.getElementById('dropdown-user-name');
+      const emailElement = document.getElementById('dropdown-user-email');
+      const avatarElement = document.getElementById('nav-profile-image');
 
-      if (nameElement)
-        nameElement.textContent = this.currentUser.nombre_apellidos;
+      if (nameElement) nameElement.textContent = this.currentUser.nombre_apellidos;
       if (emailElement) emailElement.textContent = this.currentUser.email;
-      if (avatarElement && this.currentUser.avatar)
-        avatarElement.src = this.currentUser.avatar;
+      if (avatarElement) {
+        if (this.currentUser.avatar && this.currentUser.avatar !== '') {
+          avatarElement.src = this.currentUser.avatar;
+        } else {
+          // Imagen por defecto fija
+          avatarElement.src = DEFAULT_AVATAR;
+        }
+      }
     }
   }
 

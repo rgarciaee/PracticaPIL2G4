@@ -107,6 +107,7 @@ function renderEventsGrid(events) {
                 zona_nombre: zona.nombre,
                 evento_id: event.id,
                 evento_nombre: event.nombre,
+                fecha_evento: event.fecha_ini,
                 imagen: event.imagen
             };
             

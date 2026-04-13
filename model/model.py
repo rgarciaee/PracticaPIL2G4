@@ -122,6 +122,19 @@ class Model():
 
             for item in items:
                 cantidad = item.get("cantidad", 1)
+                
+                # Obtener la fecha del evento desde el item (o desde la base de datos)
+                fecha_evento = item.get("fecha_evento", "")
+                
+                # Si no viene en el item, obtenerla del evento
+                if not fecha_evento and item.get("evento_id"):
+                    try:
+                        evento = self.get_event_by_id(item.get("evento_id"))
+                        if evento:
+                            evento_data = json.loads(evento)
+                            fecha_evento = evento_data.get("fecha_ini", "")
+                    except:
+                        pass
 
                 for _ in range(cantidad):
                     qr_code = self._generate_qr_code()
@@ -135,6 +148,7 @@ class Model():
                         "precio": item.get("precio"),
                         "localizador_qr": qr_code,
                         "fecha_compra": datetime.now().strftime("%Y-%m-%d"),
+                        "fecha_evento": fecha_evento,  # NUEVO CAMPO
                         "estado": "Activa"
                     }
 
@@ -146,7 +160,8 @@ class Model():
                         "ticket_id": result.get("id"),
                         "qr": qr_code,
                         "evento_nombre": item.get("evento_nombre"),
-                        "zona_nombre": item.get("zona_nombre")
+                        "zona_nombre": item.get("zona_nombre"),
+                        "fecha_evento": fecha_evento
                     })
 
             return {
@@ -189,8 +204,12 @@ class Model():
             profile = self.userExtDAO.get_user_extended(user_id)
 
             if isinstance(profile, str):
-                return json.loads(profile)
-
+                profile = json.loads(profile)
+            
+            # Asegurar que avatar_url existe
+            if profile and "avatar_url" not in profile:
+                profile["avatar_url"] = ""
+            
             return profile
 
         except Exception as e:
@@ -234,7 +253,7 @@ class Model():
             return {"success": False, "error": str(e)}
 
     # ============================================================
-    # SEED (OPCIONAL)
+    # SEED (YAML)
     # ============================================================
 
     def seed_sample_data(self):

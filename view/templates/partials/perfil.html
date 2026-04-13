@@ -1,113 +1,155 @@
 <div id="perfil-content">
   <section class="profile-header">
-      <h1>Mi Perfil</h1>
-      <p>Gestiona tu información personal y preferencias</p>
+    <h1>Mi Perfil</h1>
+    <p>Gestiona tu información personal y preferencias</p>
   </section>
 
   <div class="profile-layout">
-      <!-- Columna izquierda: Avatar y acciones -->
-      <aside class="profile-avatar-section">
-          <div class="avatar-container">
-              <img id="profile-avatar" src="https://i.pravatar.cc/150?img=12" alt="Avatar">
-              <button id="change-avatar-btn" class="btn-icon">
-                  <i class="fas fa-camera"></i>
-              </button>
-              <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
-          </div>
-          <div class="profile-role">
-              <span id="user-role" class="badge badge-primary">Cliente</span>
-          </div>
-          <button id="logout-profile-btn" class="btn btn-outline btn-sm">
-              <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-          </button>
-      </aside>
-
-      <!-- Columna derecha: Formulario -->
-      <div class="profile-form-section">
-          <form id="profile-form">
-              <div class="form-row">
-                  <div class="form-group">
-                      <label><i class="fas fa-id-card"></i> DNI / NIE</label>
-                      <input type="text" id="user-dni" disabled>
-                  </div>
-                  <div class="form-group">
-                      <label><i class="fas fa-user"></i> Nombre y apellidos</label>
-                      <input type="text" id="user-name" required>
-                  </div>
-              </div>
-
-              <div class="form-row">
-                  <div class="form-group">
-                      <label><i class="fas fa-calendar-alt"></i> Fecha de nacimiento</label>
-                      <input type="date" id="user-birth">
-                  </div>
-                  <div class="form-group">
-                      <label><i class="fas fa-envelope"></i> Correo electrónico</label>
-                      <input type="email" id="user-email" required>
-                  </div>
-              </div>
-
-              <div class="form-row">
-                  <div class="form-group">
-                      <label><i class="fas fa-phone-alt"></i> Teléfono</label>
-                      <input type="tel" id="user-phone" placeholder="+34 123 456 789">
-                  </div>
-                  <div class="form-group">
-                      <label><i class="fas fa-map-marker-alt"></i> Dirección</label>
-                      <input type="text" id="user-address">
-                  </div>
-              </div>
-
-              <div class="form-row">
-                  <div class="form-group">
-                      <label><i class="fas fa-credit-card"></i> Número de tarjeta</label>
-                      <input type="text" id="user-card" placeholder="**** **** **** 1234">
-                  </div>
-                  <div class="form-group">
-                      <label><i class="fas fa-globe"></i> Idioma preferido</label>
-                      <select id="user-language">
-                          <option value="es">Español</option>
-                          <option value="en">English</option>
-                      </select>
-                  </div>
-              </div>
-
-              <div class="form-group full-width">
-                  <label><i class="fas fa-bell"></i> Preferencias de notificaciones</label>
-                  <div class="checkbox-group">
-                      <label><input type="checkbox" id="notify-email"> Por correo electrónico</label>
-                      <label><input type="checkbox" id="notify-sms"> Por SMS</label>
-                  </div>
-              </div>
-
-              <div class="form-actions">
-                  <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                  <button type="button" id="cancel-profile" class="btn btn-outline">Cancelar</button>
-              </div>
-          </form>
+    <!-- Columna izquierda: Avatar y acciones -->
+    <aside class="profile-avatar-section">
+      <div class="avatar-container">
+        <img
+          id="profile-avatar"
+          src="https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg"
+          alt="Avatar"
+        />
+        <button id="change-avatar-btn" class="btn-icon">
+          <i class="fas fa-camera"></i>
+        </button>
+        <input
+          type="file"
+          id="avatar-upload"
+          accept="image/*"
+          style="display: none"
+        />
       </div>
+      <div class="profile-role">
+        <span id="user-role" class="badge badge-primary">Cliente</span>
+      </div>
+      <button id="logout-profile-btn" class="btn btn-outline btn-sm">
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+      </button>
+    </aside>
+
+    <!-- Columna derecha: Formulario -->
+    <div class="profile-form-section">
+      <form id="profile-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-id-card"></i> DNI / NIE</label>
+            <input type="text" id="user-dni" disabled />
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-user"></i> Nombre y apellidos</label>
+            <input type="text" id="user-name" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label
+              ><i class="fas fa-calendar-alt"></i> Fecha de nacimiento</label
+            >
+            <input type="date" id="user-birth" />
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-envelope"></i> Correo electrónico</label>
+            <input type="email" id="user-email" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-phone-alt"></i> Teléfono</label>
+            <input type="tel" id="user-phone" placeholder="+34 123 456 789" />
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-map-marker-alt"></i> Dirección</label>
+            <input type="text" id="user-address" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-credit-card"></i> Número de tarjeta</label>
+            <input
+              type="text"
+              id="user-card"
+              placeholder="**** **** **** 1234"
+            />
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-globe"></i> Idioma preferido</label>
+            <select id="user-language">
+              <option value="es">Español</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- CAMPO URL DEL AVATAR -->
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label><i class="fas fa-image"></i> URL del avatar</label>
+            <input
+              type="text"
+              id="user-avatar-url"
+              class="form-control"
+              placeholder="https://ejemplo.com/mi-avatar.jpg"
+            />
+            <small
+              class="form-text text-muted"
+              style="font-size: 0.75rem; color: var(--text-muted)"
+              >Introduce una URL de imagen para tu avatar (jpg, png, gif)</small
+            >
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label
+            ><i class="fas fa-bell"></i> Preferencias de notificaciones</label
+          >
+          <div class="checkbox-group">
+            <label
+              ><input type="checkbox" id="notify-email" /> Por correo
+              electrónico</label
+            >
+            <label><input type="checkbox" id="notify-sms" /> Por SMS</label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+          <button type="button" id="cancel-profile" class="btn btn-outline">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- Sección adicional: Cambiar contraseña (colapsable opcional) -->
   <section class="password-section">
-      <div class="password-header" id="password-header">
-          <h3><i class="fas fa-lock"></i> Cambiar contraseña</h3>
-          <i class="fas fa-chevron-down"></i>
+    <div class="password-header" id="password-header">
+      <h3><i class="fas fa-lock"></i> Cambiar contraseña</h3>
+      <i class="fas fa-chevron-down"></i>
+    </div>
+    <div class="password-content is-hidden" id="password-content">
+      <div class="form-group">
+        <label>Contraseña actual</label>
+        <input type="password" id="current-password" />
       </div>
-      <div class="password-content is-hidden" id="password-content">
-          <div class="form-group">
-              <label>Contraseña actual</label>
-              <input type="password" id="current-password">
-          </div>
-          <div class="form-group">
-              <label>Nueva contraseña</label>
-              <input type="password" id="new-password">
-          </div>
-          <div class="form-group">
-              <label>Confirmar nueva contraseña</label>
-              <input type="password" id="confirm-password">
-          </div>
-          <button id="change-password-btn" class="btn btn-secondary">Actualizar contraseña</button>
+      <div class="form-group">
+        <label>Nueva contraseña</label>
+        <input type="password" id="new-password" />
       </div>
+      <div class="form-group">
+        <label>Confirmar nueva contraseña</label>
+        <input type="password" id="confirm-password" />
+      </div>
+      <button id="change-password-btn" class="btn btn-secondary">
+        Actualizar contraseña
+      </button>
+    </div>
   </section>
 </div>
