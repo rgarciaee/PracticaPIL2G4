@@ -54,11 +54,7 @@
   line-height: 1.6;
 }
 
-.event-hero-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
+
 
 .event-section {
   margin-bottom: 4rem;
@@ -280,10 +276,6 @@
   }
   .event-hero {
       padding: 2rem 1rem;
-  }
-  .event-hero-actions {
-      flex-direction: column;
-      align-items: center;
   }
   .slot-time {
       min-width: 80px;

@@ -15,10 +15,11 @@ class SubsonicApp {
     await this.loadData();
     this.setupTheme();
     this.setupPreloader();
-    this.checkAuth();
+    await this.checkAuth();
     await this.loadCart();
     this.updateCartBadge();
     this.initSearch();
+    this.updateAuthUI();
   }
 
   // ============================================================
@@ -178,20 +179,25 @@ class SubsonicApp {
   }
 
   async addToCart(item) {
+    // Verificar autenticación antes de añadir al carrito
+    const isAuthenticated = await this.checkAuthStatus();
+    if (!isAuthenticated) {
+      this.showModal(
+        'Iniciar sesión requerido',
+        '<p>Para comprar entradas necesitas iniciar sesión o registrarte.</p><p>¿Quieres ir a la página de inicio de sesión?</p>',
+        () => {
+          window.location.href = '/login';
+        }
+      );
+      return;  // Salir sin añadir nada
+    }
+    
+    // Solo llegar aquí si está autenticado
     const success = await this.addToCartAPI(item);
     if (!success) {
-      const existing = this.cart.find((i) => i.id === item.id);
-      if (existing) {
-        existing.cantidad += item.cantidad || 1;
-      } else {
-        this.cart.push({ ...item, cantidad: item.cantidad || 1 });
-      }
-      this.updateCartBadge();
-      this.saveCartToLocal();
-      this.showToast(
-        `${item.nombre} añadido al carrito (guardado local)`,
-        "success",
-      );
+      // Solo mostrar error, no guardar en local
+      console.error('Error al añadir al carrito en el servidor');
+      this.showToast('Error al añadir al carrito. Inténtalo de nuevo.', 'error');
     }
   }
 
@@ -263,7 +269,7 @@ class SubsonicApp {
   }
 
   // ============================================================
-  // MÉTODOS PARA PROCESAR COMPRAS (CORREGIDO)
+  // MÉTODOS PARA PROCESAR COMPRAS
   // ============================================================
 
   async processCheckout(items, total) {
@@ -339,6 +345,20 @@ class SubsonicApp {
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => this.logout());
+    }
+
+    // Botones de autenticación
+    const loginNavBtn = document.getElementById("login-nav-btn");
+    const registerNavBtn = document.getElementById("register-nav-btn");
+    if (loginNavBtn) {
+      loginNavBtn.addEventListener("click", () => {
+        window.location.href = "/login";
+      });
+    }
+    if (registerNavBtn) {
+      registerNavBtn.addEventListener("click", () => {
+        window.location.href = "/login";
+      });
     }
 
     const modalContainer = document.getElementById("modal-container");
@@ -636,17 +656,16 @@ class SubsonicApp {
     const storedUser = localStorage.getItem('subsonic_user');
     if (storedUser) {
       this.currentUser = JSON.parse(storedUser);
-      this.updateUserUI();
     } else {
       this.currentUser = {
-        id: 1,
-        nombre_apellidos: 'Usuario Demo',
-        email: 'demo@subsonic.com',
-        avatar: ''  // Vacío, se usará la imagen por defecto
+        id: null,
+        nombre_apellidos: '',
+        email: '',
+        avatar: ''
       };
     }
 
-    // Intentar cargar avatar actualizado desde el backend
+    // Intentar cargar perfil desde el backend
     try {
       const response = await fetch('/api/profile', {
         credentials: 'include'
@@ -654,36 +673,54 @@ class SubsonicApp {
       if (response.ok) {
         const result = await response.json();
         if (result.success && result.data) {
-          // Guardar la URL del avatar (puede estar vacía)
-          this.currentUser.avatar = result.data.avatar_url || '';
-          this.currentUser.nombre_apellidos = result.data.nombre_apellidos || this.currentUser.nombre_apellidos;
-          this.currentUser.email = result.data.email || this.currentUser.email;
-          this.updateUserUI();
+          this.currentUser = {
+            id: result.data.user_id || result.data.id,
+            nombre_apellidos: result.data.nombre_apellidos || '',
+            email: result.data.email || '',
+            avatar: result.data.avatar_url || ''
+          };
           localStorage.setItem('subsonic_user', JSON.stringify(this.currentUser));
         }
+      } else {
+        // No autenticado
+        this.currentUser = {
+          id: null,
+          nombre_apellidos: '',
+          email: '',
+          avatar: ''
+        };
+        localStorage.removeItem('subsonic_user');
       }
     } catch (error) {
       console.error('Error cargando perfil:', error);
+      this.currentUser = {
+        id: null,
+        nombre_apellidos: '',
+        email: '',
+        avatar: ''
+      };
     }
 
     this.updateUserUI();
+    this.updateAuthUI();
   }
 
   updateUserUI() {
-    if (this.currentUser) {
-      const nameElement = document.getElementById('dropdown-user-name');
-      const emailElement = document.getElementById('dropdown-user-email');
-      const avatarElement = document.getElementById('nav-profile-image');
+    const nameElement = document.getElementById('dropdown-user-name');
+    const emailElement = document.getElementById('dropdown-user-email');
+    const avatarElement = document.getElementById('nav-profile-image');
 
-      if (nameElement) nameElement.textContent = this.currentUser.nombre_apellidos;
-      if (emailElement) emailElement.textContent = this.currentUser.email;
-      if (avatarElement) {
-        if (this.currentUser.avatar && this.currentUser.avatar !== '') {
-          avatarElement.src = this.currentUser.avatar;
-        } else {
-          // Imagen por defecto fija
-          avatarElement.src = DEFAULT_AVATAR;
-        }
+    if (nameElement) {
+      nameElement.textContent = this.currentUser?.nombre_apellidos || 'Usuario';
+    }
+    if (emailElement) {
+      emailElement.textContent = this.currentUser?.email || 'Invitado';
+    }
+    if (avatarElement) {
+      if (this.currentUser?.avatar && this.currentUser.avatar !== '') {
+        avatarElement.src = this.currentUser.avatar;
+      } else {
+        avatarElement.src = DEFAULT_AVATAR;
       }
     }
   }
@@ -724,6 +761,32 @@ class SubsonicApp {
 
   getUser() {
     return this.currentUser;
+  }
+
+  async checkAuthStatus() {
+    try {
+      const response = await fetch('/api/profile', {
+        credentials: 'include'
+      });
+      return response.ok;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  updateAuthUI() {
+    const authButtons = document.getElementById('auth-buttons');
+    const userMenu = document.getElementById('user-menu');
+
+    const isAuthenticated = this.currentUser && this.currentUser.id;
+
+    if (isAuthenticated) {
+      if (authButtons) authButtons.style.display = 'none';
+      if (userMenu) userMenu.style.display = 'block';
+    } else {
+      if (authButtons) authButtons.style.display = 'flex';
+      if (userMenu) userMenu.style.display = 'none';
+    }
   }
 }
 

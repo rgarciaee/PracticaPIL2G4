@@ -14,12 +14,29 @@ window.initCarrito = async function () {
         return;
     }
     
-    // Verificar que el método existe
-    if (typeof window.app.loadCartFromAPI !== 'function') {
-        console.error('loadCartFromAPI no es una función', window.app);
+    // Verificar autenticación - USAR window.app.checkAuthStatus
+    const isAuthenticated = await window.app.checkAuthStatus();
+    if (!isAuthenticated) {
+        document.getElementById('page-content').innerHTML = `
+            <div class="auth-required-page">
+                <div class="card text-center">
+                    <i class="fas fa-lock" style="font-size: 4rem; color: var(--primary-color);"></i>
+                    <h2>Acceso restringido</h2>
+                    <p>Para ver tu carrito necesitas iniciar sesión.</p>
+                    <div class="auth-buttons-page">
+                        <button onclick="window.location.href='/login'" class="btn btn-primary">
+                            Iniciar sesión
+                        </button>
+                        <button onclick="window.location.href='/login'" class="btn btn-outline">
+                            Registrarse
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
         return;
     }
-
+    
     await renderCartItems();
     setupCartButtons();
 };

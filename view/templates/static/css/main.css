@@ -799,3 +799,129 @@ body {
         min-width: 250px;
     }
 }
+
+/* ===== BOTONES DE AUTENTICACIÓN EN HEADER ===== */
+.auth-buttons {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.auth-buttons .btn-sm {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.auth-buttons .btn-outline {
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.auth-buttons .btn-outline:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.auth-buttons .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    color: white;
+}
+
+.auth-buttons .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* ===== PÁGINA DE ACCESO RESTRINGIDO ===== */
+.auth-required-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: var(--spacing-xl);
+}
+
+.auth-required-page .card {
+    max-width: 450px;
+    width: 100%;
+    padding: 2.5rem;
+    text-align: center;
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--border-color);
+}
+
+.auth-required-page .card i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.auth-required-page .card h2 {
+    margin-bottom: 1rem;
+    font-size: 1.75rem;
+    color: var(--text-primary);
+}
+
+.auth-required-page .card p {
+    margin-bottom: 1.5rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.auth-buttons-page {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.auth-buttons-page .btn {
+    padding: 10px 24px;
+    font-size: 0.9rem;
+}
+
+/* ===== RESPONSIVE PARA BOTONES DE AUTENTICACIÓN ===== */
+@media (max-width: 768px) {
+    .auth-buttons {
+        gap: 0.5rem;
+    }
+    
+    .auth-buttons .btn-sm {
+        padding: 6px 10px;
+    }
+    
+    .auth-buttons .btn-sm span {
+        display: none;
+    }
+    
+    .auth-buttons .btn-sm i {
+        margin: 0;
+        font-size: 1rem;
+    }
+    
+    .auth-required-page .card {
+        padding: 1.5rem;
+    }
+    
+    .auth-required-page .card h2 {
+        font-size: 1.4rem;
+    }
+    
+    .auth-buttons-page {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .auth-buttons-page .btn {
+        width: 100%;
+    }
+}

@@ -12,15 +12,14 @@ window.initHome = async function () {
 
         if (result.success && Array.isArray(result.data)) {
             const events = result.data;
-
-            console.log('Eventos cargados:', events);
-
             renderEventsGrid(events);
             renderFeaturedEvents(events);
-            updateStats(events);
         } else {
             console.error('Error cargando eventos:', result);
         }
+
+        // Llamada a la nueva función de estadísticas globales
+        await loadGlobalStats();
 
         // Noticias
         try {
@@ -85,8 +84,21 @@ function renderEventsGrid(events) {
     // Comprar
     document.querySelectorAll('.buy-ticket-btn').forEach(btn => {
         btn.onclick = async () => {
-            const id = btn.dataset.id;
+            // Verificar si el usuario está autenticado
+            const isAuthenticated = await window.app.checkAuthStatus();
             
+            if (!isAuthenticated) {
+                window.app?.showModal(
+                    'Iniciar sesión requerido',
+                    '<p>Para comprar entradas necesitas iniciar sesión o registrarte.</p><p>¿Quieres ir a la página de inicio de sesión?</p>',
+                    () => {
+                        window.location.href = '/login';
+                    }
+                );
+                return;
+            }
+            
+            const id = btn.dataset.id;
             const res = await fetch(`/api/events/${id}`);
             const result = await res.json();
             
@@ -155,46 +167,34 @@ function renderNews(news) {
     `).join('');
 }
 
-function updateStats(events) {
-    const eventsEl = document.getElementById('stat-events');
-    const artistsEl = document.getElementById('stat-artists');
-    const attendeesEl = document.getElementById('stat-attendees');
+// NUEVA FUNCIÓN: Obtiene las estadísticas globales del servidor
+async function loadGlobalStats() {
+    try {
+        const res = await fetch('/api/stats');
+        const result = await res.json();
+        
+        if (result.success && result.data) {
+            // Mantenemos un pequeño retraso de seguridad para que el HTML esté listo
+            setTimeout(() => {
+                const eventsEl = document.getElementById('stat-events');
+                const artistsEl = document.getElementById('stat-artists');
+                const attendeesEl = document.getElementById('stat-attendees');
 
-    if (!eventsEl || !artistsEl || !attendeesEl) return;
-
-    const totalEventos = events.length;
-
-    const artistasSet = new Set();
-    let totalAsistentes = 0;
-
-    events.forEach(event => {
-
-        // 👇 SOLO contar si existen
-        if (Array.isArray(event.artistas)) {
-            event.artistas.forEach(a => {
-                artistasSet.add(a.id || a.nombre);
-            });
+                if (eventsEl) eventsEl.textContent = result.data.totalEventos;
+                if (artistsEl) artistsEl.textContent = result.data.totalArtistas;
+                if (attendeesEl) attendeesEl.textContent = formatNumber(result.data.totalAsistentes);
+            }, 150);
         }
-
-        if (Array.isArray(event.zonas)) {
-            totalAsistentes += event.zonas.reduce((acc, z) => {
-                return acc + (Number(z.aforo_maximo) || 0);
-            }, 0);
-        }
-    });
-
-    // 👇 FALLBACK INTELIGENTE (clave)
-    eventsEl.textContent = totalEventos || 0;
-
-    artistsEl.textContent =
-        artistasSet.size > 0 ? artistasSet.size : '20+';
-
-    attendeesEl.textContent =
-        totalAsistentes > 0 ? formatNumber(totalAsistentes) : '10k+';
+    } catch (e) {
+        console.error("Error cargando estadísticas globales:", e);
+    }
 }
 
 function formatNumber(num) {
-    return num >= 1000 ? Math.round(num / 1000) + 'k+' : num;
+    if (num >= 1000) {
+        return Math.round(num / 1000) + 'k+';
+    }
+    return num;
 }
 
 function formatDate(date) {

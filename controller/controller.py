@@ -22,7 +22,7 @@ mymodelcomponent = Model()
 
 
 # ============================================================
-# CREACIÓN DE USUARIO (ARREGLADO)
+# CREACIÓN DE USUARIO
 # ============================================================
 
 def create_user_in_firestore(user_id, email, role="user", avatar_url=""):
@@ -52,7 +52,7 @@ def create_user_in_firestore(user_id, email, role="user", avatar_url=""):
                 "email": email,
                 "telefono": "",
                 "rol_asignado": role,
-                "avatar_url": avatar_url,  # NUEVO CAMPO
+                "avatar_url": avatar_url,
                 "preferencias": {
                     "notificaciones_email": True,
                     "notificaciones_sms": False,
@@ -67,35 +67,25 @@ def create_user_in_firestore(user_id, email, role="user", avatar_url=""):
         print("Error creando usuario:", e)
         return False
 
+
 # ============================================================
-# RUTAS BASE
+# RUTAS BASE (PÚBLICAS)
 # ============================================================
 
 @app.get("/")
 async def root():
-    return RedirectResponse(url="/login")
-
-
-@app.get("/login")
-async def login_page(request: Request):
-    return myviewcomponent.get_login_view(request)
-
+    """Redirigir a la aplicación pública"""
+    return RedirectResponse(url="/app")
 
 @app.get("/app")
 async def main_app_page(request: Request):
-    session_id = request.cookies.get("session_id")
-
-    if not session_id or session_id not in sessions:
-        return RedirectResponse(url="/login")
-
-    user_session = sessions.get(session_id)
-    current_time = int(datetime.now(timezone.utc).timestamp())
-
-    if int(user_session.get("exp", 0)) < current_time:
-        return RedirectResponse(url="/login")
-
+    """Aplicación principal (pública - sin autenticación requerida)"""
     return myviewcomponent.get_app_view(request)
 
+@app.get("/login")
+async def login_page(request: Request):
+    """Página de login/registro"""
+    return myviewcomponent.get_login_view(request)
 
 # ============================================================
 # STATIC Y PARTIALS
@@ -132,26 +122,22 @@ async def login(data: dict, response: Response, provider: str):
         email = decoded_token.get("email")
         exp = decoded_token.get("exp")
         
-        # Obtener avatar_url si es login con Google
         avatar_url = ""
         if provider == "google":
-            # El avatar de Google viene en el token
             avatar_url = decoded_token.get("picture", "")
             print(f"Avatar de Google obtenido: {avatar_url}")
 
         if not user_id:
             return {"success": False, "error": "Token inválido"}
 
-        # Crear usuario si no existe (con avatar si es Google)
         create_user_in_firestore(user_id, email, "user", avatar_url)
 
-        # Crear sesión
         sessions[user_id] = {
             "id_user": user_id,
             "email_user": email,
             "role": "user",
             "exp": exp,
-            "avatar_url": avatar_url  # Guardar avatar en sesión
+            "avatar_url": avatar_url
         }
 
         response.set_cookie(
@@ -160,7 +146,7 @@ async def login(data: dict, response: Response, provider: str):
             httponly=True
         )
 
-        return {"success": True, "avatar_url": avatar_url}  # Devolver avatar al frontend
+        return {"success": True, "avatar_url": avatar_url}
 
     except Exception as e:
         print("Error login:", e)
@@ -189,11 +175,12 @@ async def logout(request: Request, response: Response):
 
 
 # ============================================================
-# API EVENTOS
+# API EVENTOS (PÚBLICOS - SIN AUTENTICACIÓN)
 # ============================================================
 
 @app.get("/api/events")
 async def get_events():
+    """Público - Cualquiera puede ver los eventos"""
     try:
         events = json.loads(mymodelcomponent.get_all_events())
         return {"success": True, "data": events}
@@ -203,6 +190,7 @@ async def get_events():
 
 @app.get("/api/events/{event_id}")
 async def get_event(event_id: str):
+    """Público - Cualquiera puede ver los detalles de un evento"""
     try:
         event = json.loads(mymodelcomponent.get_event_by_id(event_id))
         return {"success": True, "data": event}
@@ -211,7 +199,47 @@ async def get_event(event_id: str):
 
 
 # ============================================================
-# PERFIL
+# ESTADÍSTICAS GLOBALES (PÚBLICO)
+# ============================================================
+
+@app.get("/api/stats")
+async def get_stats():
+    """Público - Calcula y devuelve las estadísticas totales del festival"""
+    try:
+        # Obtenemos todos los eventos de la base de datos
+        events = json.loads(mymodelcomponent.get_all_events())
+        
+        total_eventos = len(events)
+        total_artistas = 0
+        total_asistentes = 0
+        
+        # Calculamos los totales recorriendo todos los eventos
+        for event in events:
+            # Sumar artistas si existen
+            if "artistas" in event and isinstance(event["artistas"], list):
+                total_artistas += len(event["artistas"])
+                
+            # Sumar aforo de todas las zonas si existen
+            if "zonas" in event and isinstance(event["zonas"], list):
+                for zona in event["zonas"]:
+                    # Usamos .get() con un valor por defecto 0 por si alguna zona no tiene aforo definido
+                    total_asistentes += int(zona.get("aforo_maximo", 0))
+                    
+        return {
+            "success": True, 
+            "data": {
+                "totalEventos": total_eventos,
+                "totalArtistas": total_artistas,
+                "totalAsistentes": total_asistentes
+            }
+        }
+        
+    except Exception as e:
+        print("Error calculando estadísticas:", e)
+        return {"success": False, "error": str(e)}
+
+# ============================================================
+# PERFIL (REQUIERE AUTENTICACIÓN)
 # ============================================================
 
 @app.get("/api/profile")
@@ -223,7 +251,6 @@ async def get_profile(request: Request):
 
     try:
         profile = mymodelcomponent.get_user_profile(session_id)
-        # Asegurar que avatar_url existe
         if profile and "avatar_url" not in profile:
             profile["avatar_url"] = ""
         return {"success": True, "data": profile}
@@ -241,7 +268,6 @@ async def update_profile(request: Request, profile_data: dict):
     try:
         result = mymodelcomponent.update_user_profile(session_id, profile_data)
         
-        # Si se actualizó el avatar, actualizar también en la sesión
         if result.get("success") and "avatar_url" in profile_data:
             sessions[session_id]["avatar_url"] = profile_data["avatar_url"]
         
@@ -249,8 +275,9 @@ async def update_profile(request: Request, profile_data: dict):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
+
 # ============================================================
-# CHECKOUT
+# CHECKOUT (REQUIERE AUTENTICACIÓN)
 # ============================================================
 
 @app.post("/api/checkout")
@@ -269,7 +296,6 @@ async def checkout(request: Request, purchase_data: dict):
     print(f"Total: {total}")
 
     try:
-        # NO modificar los items aquí, pasar directamente al modelo
         result = mymodelcomponent.process_purchase(session_id, items, total)
         print(f"Resultado checkout: {result}")
         return result
@@ -278,8 +304,9 @@ async def checkout(request: Request, purchase_data: dict):
         print(f"Error en checkout: {e}")
         return {"success": False, "error": str(e)}
 
+
 # ============================================================
-# HISTORIAL
+# HISTORIAL (REQUIERE AUTENTICACIÓN)
 # ============================================================
 
 @app.get("/api/history")
@@ -297,11 +324,12 @@ async def get_history(request: Request):
 
 
 # ============================================================
-# ZONAS
+# ZONAS (PÚBLICAS - CUALQUIERA PUEDE VER LAS ZONAS)
 # ============================================================
 
 @app.get("/api/zones")
 async def get_zones():
+    """Público - Cualquiera puede ver las zonas disponibles"""
     try:
         zones = json.loads(mymodelcomponent.get_all_zones())
         return {"success": True, "data": zones}
@@ -311,6 +339,7 @@ async def get_zones():
 
 @app.post("/api/zones/request")
 async def request_zone(request: Request, zone_data: dict):
+    """Solicitar alquiler de zona (requiere autenticación)"""
     session_id = request.cookies.get("session_id")
 
     if not session_id or session_id not in sessions:
@@ -326,8 +355,9 @@ async def request_zone(request: Request, zone_data: dict):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
+
 # ============================================================
-# ENDPOINTS PARA CARRITO
+# ENDPOINTS PARA CARRITO (REQUIEREN AUTENTICACIÓN)
 # ============================================================
 
 @app.get("/api/cart")

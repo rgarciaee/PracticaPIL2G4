@@ -72,7 +72,19 @@
             <button id="search-toggle" class="icon-btn">
               <i class="fas fa-search"></i>
             </button>
-            <div class="profile-preview">
+
+            <!-- Botones de autenticación (visibles solo para usuarios no autenticados) -->
+            <div id="auth-buttons" class="auth-buttons">
+              <button id="login-nav-btn" class="btn btn-outline btn-sm">
+                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+              </button>
+              <button id="register-nav-btn" class="btn btn-primary btn-sm">
+                <i class="fas fa-user-plus"></i> Registrarse
+              </button>
+            </div>
+
+            <!-- Menú de usuario (visible solo para usuarios autenticados) -->
+            <div id="user-menu" class="profile-preview" style="display: none">
               <img
                 id="nav-profile-image"
                 src="https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg"
@@ -97,6 +109,7 @@
                 >
               </div>
             </div>
+
             <button id="mobile-menu-toggle" class="mobile-menu-btn icon-btn">
               <i class="fas fa-bars"></i>
             </button>
@@ -135,9 +148,21 @@
             <li><a href="#" data-page="proveedor">Proveedores</a></li>
           </ul>
         </div>
+        <div class="footer-section">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Términos y condiciones</a></li>
+            <li><a href="#">Política de privacidad</a></li>
+          </ul>
+        </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 Subsonic Festival</p>
+        <p>&copy; 2026 Subsonic Festival. Todos los derechos reservados.</p>
+        <div class="footer-payments">
+          <i class="fab fa-cc-visa"></i>
+          <i class="fab fa-cc-mastercard"></i>
+          <i class="fab fa-cc-paypal"></i>
+        </div>
       </div>
     </footer>
 
@@ -153,17 +178,18 @@
       const firebaseConfig = {
         apiKey: "AIzaSyChVLwUVRUi1uU_trNd_QbfM8zme9kE_bk",
         authDomain: "pi-l2-g4-2.firebaseapp.com",
-        databaseURL: "https://pi-l2-g4-2-default-rtdb.europe-west1.firebasedatabase.app",
+        databaseURL:
+          "https://pi-l2-g4-2-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "pi-l2-g4-2",
         storageBucket: "pi-l2-g4-2.firebasestorage.app",
         messagingSenderId: "556420796675",
-        appId: "1:556420796675:web:a31cd4dbfed4a790709936"
+        appId: "1:556420796675:web:a31cd4dbfed4a790709936",
       };
-      
+
       // Inicializar Firebase solo si no está ya inicializado
-      if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+      if (typeof firebase !== "undefined" && !firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
-        console.log('Firebase inicializado en index.html');
+        console.log("Firebase inicializado en index.html");
       }
     </script>
 

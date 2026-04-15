@@ -76,14 +76,27 @@ window.initEvento = async function () {
                 `).join('');
                 
                 document.querySelectorAll('.buy-ticket-btn').forEach(btn => {
-                    btn.onclick = async (e) => {
-                        e.preventDefault();
-                        const zoneName = btn.dataset.zoneName;
-                        const price = parseFloat(btn.dataset.price);
-                        const zoneId = btn.dataset.zoneId;
+                    btn.onclick = async () => {
+                        // Verificar si el usuario está autenticado
+                        const isAuthenticated = await window.app.checkAuthStatus();
+                        
+                        if (!isAuthenticated) {
+                            window.app?.showModal(
+                                'Iniciar sesión requerido',
+                                '<p>Para comprar entradas necesitas iniciar sesión o registrarte.</p><p>¿Quieres ir a la página de inicio de sesión?</p>',
+                                () => {
+                                    window.location.href = '/login';
+                                }
+                            );
+                            return;
+                        }
+                        
+                        const zoneName = btn.getAttribute('data-zone-name');
+                        const price = parseFloat(btn.getAttribute('data-price'));
+                        const zoneId = btn.getAttribute('data-zone-id');
                         
                         if (window.app && currentEvent) {
-                            await window.app.addToCart({
+                            const cartItem = {
                                 id: `${currentEvent.id}_${zoneId}_${Date.now()}`,
                                 nombre: `${currentEvent.nombre} - ${zoneName}`,
                                 precio: price,
@@ -93,8 +106,11 @@ window.initEvento = async function () {
                                 zona_nombre: zoneName,
                                 evento_id: currentEvent.id,
                                 evento_nombre: currentEvent.nombre,
+                                fecha_evento: currentEvent.fecha_ini,
                                 imagen: currentEvent.imagen
-                            });
+                            };
+                            
+                            await window.app.addToCart(cartItem);
                         }
                     };
                 });

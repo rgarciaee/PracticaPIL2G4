@@ -16,16 +16,6 @@ main_app = FastAPI(
 )
 
 # ============================================================
-# RUTA RAÍZ - REDIRIGIR A LOGIN
-# ============================================================
-
-@main_app.get("/")
-async def root():
-    """Redirigir a la página de login"""
-    return RedirectResponse(url="/login")
-
-
-# ============================================================
 # SERVIR ARCHIVOS ESTÁTICOS
 # ============================================================
 
