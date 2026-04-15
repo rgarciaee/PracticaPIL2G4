@@ -6,6 +6,12 @@ window.initHome = async function () {
     console.log('Inicializando home...');
     console.log("DOM home listo:", document.getElementById('events-grid'));
 
+    loadGlobalStats();
+    loadEvents()
+    loadNews();
+};
+
+async function loadEvents() {
     try {
         const response = await fetch('/api/events');
         const result = await response.json();
@@ -17,24 +23,22 @@ window.initHome = async function () {
         } else {
             console.error('Error cargando eventos:', result);
         }
-
-        // Llamada a la nueva función de estadísticas globales
-        await loadGlobalStats();
-
-        // Noticias
-        try {
-            const yamlResponse = await fetch('/static/yaml/data.yaml');
-            const yamlText = await yamlResponse.text();
-            const yamlData = jsyaml.load(yamlText);
-            renderNews(yamlData.news || []);
-        } catch (e) {
-            console.error('Error cargando noticias:', e);
-        }
-
-    } catch (error) {
-        console.error('Error en initHome:', error);
+    } catch(error) {
+        console.error('Error fatal cargando eventos:', error);
     }
-};
+}
+
+async function loadNews() {
+    try {
+        const yamlResponse = await fetch('/static/yaml/data.yaml');
+        const yamlText = await yamlResponse.text();
+        const yamlData = jsyaml.load(yamlText);
+        renderNews(yamlData.news || []);
+
+    } catch(error) {
+        console.error('Error fatal cargando noticias:', error);
+    }
+}
 
 function renderEventsGrid(events) {
     const grid = document.getElementById('events-grid');
@@ -167,7 +171,6 @@ function renderNews(news) {
     `).join('');
 }
 
-// NUEVA FUNCIÓN: Obtiene las estadísticas globales del servidor
 async function loadGlobalStats() {
     try {
         const res = await fetch('/api/stats');
@@ -175,15 +178,13 @@ async function loadGlobalStats() {
         
         if (result.success && result.data) {
             // Mantenemos un pequeño retraso de seguridad para que el HTML esté listo
-            setTimeout(() => {
-                const eventsEl = document.getElementById('stat-events');
-                const artistsEl = document.getElementById('stat-artists');
-                const attendeesEl = document.getElementById('stat-attendees');
+            const eventsEl = document.getElementById('stat-events');
+            const artistsEl = document.getElementById('stat-artists');
+            const attendeesEl = document.getElementById('stat-attendees');
 
-                if (eventsEl) eventsEl.textContent = result.data.totalEventos;
-                if (artistsEl) artistsEl.textContent = result.data.totalArtistas;
-                if (attendeesEl) attendeesEl.textContent = formatNumber(result.data.totalAsistentes);
-            }, 150);
+            if (eventsEl) eventsEl.textContent = result.data.totalEventos;
+            if (artistsEl) artistsEl.textContent = result.data.totalArtistas;
+            if (attendeesEl) attendeesEl.textContent = formatNumber(result.data.totalAsistentes);
         }
     } catch (e) {
         console.error("Error cargando estadísticas globales:", e);
