@@ -97,6 +97,16 @@
   box-shadow: var(--shadow-xl);
 }
 
+.artist-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+}
+
 .artist-icon {
   font-size: 3rem;
   margin-bottom: 1rem;
@@ -110,8 +120,16 @@
   margin-bottom: 0.5rem;
 }
 
-.artist-card p {
+.artist-genre {
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.artist-description {
   color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
 }
 
 .tickets-grid {

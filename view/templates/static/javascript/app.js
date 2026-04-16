@@ -292,6 +292,18 @@ class SubsonicApp {
     }
   }
 
+  async getProfileCompletionStatus() {
+    try {
+      const response = await fetch('/api/profile/completion', {
+        credentials: 'include'
+      });
+      return await response.json();
+    } catch (error) {
+      console.error('Error comprobando el perfil:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
   generateQRCode() {
     const prefix = "SUB";
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -652,53 +664,95 @@ class SubsonicApp {
     }
   }
 
-  async checkAuth() {
-    const storedUser = localStorage.getItem('subsonic_user');
-    if (storedUser) {
-      this.currentUser = JSON.parse(storedUser);
-    } else {
-      this.currentUser = {
-        id: null,
-        nombre_apellidos: '',
-        email: '',
-        avatar: ''
-      };
+  getEmptyUser() {
+    return {
+      id: null,
+      nombre_apellidos: "",
+      email: "",
+      avatar: "",
+      role: "user",
+    };
+  }
+
+  getStoredUser() {
+    const sessionUser = sessionStorage.getItem("subsonic_user");
+    const localUser = localStorage.getItem("subsonic_user");
+    return sessionUser || localUser;
+  }
+
+  clearStoredUser() {
+    localStorage.removeItem("subsonic_user");
+    localStorage.removeItem("subsonic_auth_persistence");
+    sessionStorage.removeItem("subsonic_user");
+    sessionStorage.removeItem("subsonic_auth_persistence");
+  }
+
+  persistUser(userData) {
+    const useLocalStorage =
+      localStorage.getItem("subsonic_auth_persistence") === "local";
+
+    this.clearStoredUser();
+
+    if (useLocalStorage) {
+      localStorage.setItem("subsonic_user", JSON.stringify(userData));
+      localStorage.setItem("subsonic_auth_persistence", "local");
+      return;
     }
 
-    // Intentar cargar perfil desde el backend
+    sessionStorage.setItem("subsonic_user", JSON.stringify(userData));
+    sessionStorage.setItem("subsonic_auth_persistence", "session");
+  }
+
+  async syncFirebaseLogout() {
+    if (typeof firebase === "undefined" || !firebase.auth) {
+      return;
+    }
+
     try {
-      const response = await fetch('/api/profile', {
-        credentials: 'include'
+      await firebase.auth().signOut();
+    } catch (error) {
+      console.error("Error cerrando sesion en Firebase:", error);
+    }
+  }
+
+  async checkAuth() {
+    const storedUser = this.getStoredUser();
+    if (storedUser) {
+      try {
+        this.currentUser = JSON.parse(storedUser);
+      } catch (error) {
+        this.currentUser = this.getEmptyUser();
+        this.clearStoredUser();
+      }
+    } else {
+      this.currentUser = this.getEmptyUser();
+    }
+
+    try {
+      const response = await fetch("/api/profile", {
+        credentials: "include"
       });
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success && result.data) {
-          this.currentUser = {
-            id: result.data.user_id || result.data.id,
-            nombre_apellidos: result.data.nombre_apellidos || '',
-            email: result.data.email || '',
-            avatar: result.data.avatar_url || ''
-          };
-          localStorage.setItem('subsonic_user', JSON.stringify(this.currentUser));
-        }
-      } else {
-        // No autenticado
+      const result = await response.json();
+
+      if (response.status === 401 || !result.success) {
+        this.currentUser = this.getEmptyUser();
+        this.clearStoredUser();
+        await this.syncFirebaseLogout();
+      } else if (result.data) {
         this.currentUser = {
-          id: null,
-          nombre_apellidos: '',
-          email: '',
-          avatar: ''
+          id: result.data.user_id || result.data.id || null,
+          nombre_apellidos: result.data.nombre_apellidos || "",
+          email: result.data.email || "",
+          avatar: result.data.avatar_url || "",
+          role: result.data.rol_asignado || result.data.role || "user"
         };
-        localStorage.removeItem('subsonic_user');
+        this.persistUser(this.currentUser);
       }
     } catch (error) {
-      console.error('Error cargando perfil:', error);
-      this.currentUser = {
-        id: null,
-        nombre_apellidos: '',
-        email: '',
-        avatar: ''
-      };
+      console.error("Error cargando perfil:", error);
+      if (!this.currentUser?.id) {
+        this.currentUser = this.getEmptyUser();
+      }
     }
 
     this.updateUserUI();
@@ -728,9 +782,10 @@ class SubsonicApp {
   logout() {
     this.showModal("Cerrar sesión", "¿Estás seguro?", async () => {
       await fetch("/logout", { method: "POST", credentials: "include" });
-      localStorage.removeItem("subsonic_user");
+      this.clearStoredUser();
+      await this.syncFirebaseLogout();
       this.cart = [];
-      this.currentUser = null;
+      this.currentUser = this.getEmptyUser();
       window.location.href = "/";
     });
   }
@@ -768,7 +823,19 @@ class SubsonicApp {
       const response = await fetch('/api/profile', {
         credentials: 'include'
       });
-      return response.ok;
+      if (response.status === 401) {
+        this.clearStoredUser();
+        this.currentUser = this.getEmptyUser();
+        this.updateUserUI();
+        this.updateAuthUI();
+        await this.syncFirebaseLogout();
+        return false;
+      }
+      if (!response.ok) {
+        return false;
+      }
+      const result = await response.json();
+      return !!result.success;
     } catch (error) {
       return false;
     }
@@ -777,8 +844,11 @@ class SubsonicApp {
   updateAuthUI() {
     const authButtons = document.getElementById('auth-buttons');
     const userMenu = document.getElementById('user-menu');
+    const adminNavItem = document.getElementById('admin-nav-item');
+    const adminMenuLink = document.getElementById('admin-menu-link');
 
     const isAuthenticated = this.currentUser && this.currentUser.id;
+    const isAdmin = isAuthenticated && String(this.currentUser.role || '').toLowerCase() === 'admin';
 
     if (isAuthenticated) {
       if (authButtons) authButtons.style.display = 'none';
@@ -786,6 +856,14 @@ class SubsonicApp {
     } else {
       if (authButtons) authButtons.style.display = 'flex';
       if (userMenu) userMenu.style.display = 'none';
+    }
+
+    if (adminNavItem) {
+      adminNavItem.style.display = isAdmin ? 'list-item' : 'none';
+    }
+
+    if (adminMenuLink) {
+      adminMenuLink.style.display = isAdmin ? 'flex' : 'none';
     }
   }
 }

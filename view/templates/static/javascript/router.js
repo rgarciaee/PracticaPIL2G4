@@ -136,7 +136,8 @@ class Router {
             carrito: window.initCarrito,
             perfil: window.initPerfil,
             historial: window.initHistorial,
-            proveedor: window.initProveedor
+            proveedor: window.initProveedor,
+            admin: window.initAdmin
         };
 
         const initFn = initMap[page];
@@ -168,7 +169,8 @@ class Router {
             carrito: 'Carrito',
             perfil: 'Mi Perfil',
             historial: 'Historial',
-            proveedor: 'Proveedores'
+            proveedor: 'Proveedores',
+            admin: 'Administracion'
         };
         document.title = `${titles[page] || page} | Subsonic Festival`;
     }

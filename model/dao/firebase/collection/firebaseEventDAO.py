@@ -19,7 +19,8 @@ class FirebaseEventDAO(InterfaceEventDAO):
                 event_dto.set_descripcion(event_data.get("descripcion", ""))
                 event_dto.set_fecha_ini(event_data.get("fecha_inicio", ""))
                 event_dto.set_fecha_fin(event_data.get("fecha_fin", ""))
-                event_dto.set_ubicacion(event_data.get("ubicacion", {}))  # NUEVO CAMPO
+                event_dto.set_ubicacion(event_data.get("ubicacion", {}))
+                event_dto.set_horario(event_data.get("horario", []))
                 events.insertEvent(event_dto.eventdto_to_dict())
         except Exception as e:
             print(f"Error en get_events: {e}")
@@ -37,7 +38,8 @@ class FirebaseEventDAO(InterfaceEventDAO):
                 event_dto.set_descripcion(event_data.get("descripcion", ""))
                 event_dto.set_fecha_ini(event_data.get("fecha_inicio", ""))
                 event_dto.set_fecha_fin(event_data.get("fecha_fin", ""))
-                event_dto.set_ubicacion(event_data.get("ubicacion", {}))  # NUEVO CAMPO
+                event_dto.set_ubicacion(event_data.get("ubicacion", {}))
+                event_dto.set_horario(event_data.get("horario", []))
                 return event_dto.eventdto_to_dict()
             return None
         except Exception as e:

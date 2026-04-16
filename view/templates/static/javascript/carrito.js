@@ -1,20 +1,17 @@
-// carrito.js
 window.initCarrito = async function () {
     console.log('Inicializando carrito...');
 
-    // Esperar a que app exista
     let attempts = 0;
     while (!window.app && attempts < 50) {
         await new Promise(r => setTimeout(r, 100));
         attempts++;
     }
-    
+
     if (!window.app) {
-        console.error('App no disponible después de esperar');
+        console.error('App no disponible despues de esperar');
         return;
     }
-    
-    // Verificar autenticación - USAR window.app.checkAuthStatus
+
     const isAuthenticated = await window.app.checkAuthStatus();
     if (!isAuthenticated) {
         document.getElementById('page-content').innerHTML = `
@@ -22,10 +19,10 @@ window.initCarrito = async function () {
                 <div class="card text-center">
                     <i class="fas fa-lock" style="font-size: 4rem; color: var(--primary-color);"></i>
                     <h2>Acceso restringido</h2>
-                    <p>Para ver tu carrito necesitas iniciar sesión.</p>
+                    <p>Para ver tu carrito necesitas iniciar sesion.</p>
                     <div class="auth-buttons-page">
                         <button onclick="window.location.href='/login'" class="btn btn-primary">
-                            Iniciar sesión
+                            Iniciar sesion
                         </button>
                         <button onclick="window.location.href='/login'" class="btn btn-outline">
                             Registrarse
@@ -36,7 +33,7 @@ window.initCarrito = async function () {
         `;
         return;
     }
-    
+
     await renderCartItems();
     setupCartButtons();
 };
@@ -49,7 +46,6 @@ async function renderCartItems() {
 
     if (!container || !subtotalEl || !totalEl) return;
 
-    // Recargar carrito desde API
     await window.app.loadCartFromAPI();
     const cart = window.app.cart || [];
 
@@ -58,44 +54,43 @@ async function renderCartItems() {
     if (cart.length === 0) {
         container.innerHTML = '';
         if (emptyMsg) emptyMsg.classList.remove('is-hidden');
-        subtotalEl.textContent = '0.00 €';
-        totalEl.textContent = '0.00 €';
+        subtotalEl.textContent = '0.00 EUR';
+        totalEl.textContent = '0.00 EUR';
         return;
     }
 
     if (emptyMsg) emptyMsg.classList.add('is-hidden');
 
-    // Render items
     container.innerHTML = cart.map(item => `
         <div class="cart-item" data-id="${item.id}">
             <div class="cart-item-info">
                 <h4>${escapeHtml(item.nombre)}</h4>
                 <p>${item.tipo || 'General'} | ${item.evento_nombre || 'Subsonic Festival'}</p>
             </div>
-            <div class="cart-item-price">${(item.precio || 0).toFixed(2)} €</div>
+            <div class="cart-item-price">${(item.precio || 0).toFixed(2)} EUR</div>
             <div class="cart-item-quantity">
-                <button class="qty-minus" data-id="${item.id}">-</button>
+                ${item.item_category === 'provider_rental'
+                    ? `<span>Solicitud unica</span>`
+                    : `<button class="qty-minus" data-id="${item.id}">-</button>
                 <span>${item.cantidad || 1}</span>
-                <button class="qty-plus" data-id="${item.id}">+</button>
+                <button class="qty-plus" data-id="${item.id}">+</button>`}
             </div>
-            <div class="cart-item-subtotal">${((item.precio || 0) * (item.cantidad || 1)).toFixed(2)} €</div>
+            <div class="cart-item-subtotal">${((item.precio || 0) * (item.cantidad || 1)).toFixed(2)} EUR</div>
             <div class="cart-item-remove" data-id="${item.id}">
                 <i class="fas fa-trash-alt"></i>
             </div>
         </div>
     `).join('');
 
-    // Calcular total
     let subtotal = 0;
     cart.forEach(item => {
         subtotal += (item.precio || 0) * (item.cantidad || 1);
     });
     const total = subtotal + 2.5;
 
-    subtotalEl.textContent = subtotal.toFixed(2) + ' €';
-    totalEl.textContent = total.toFixed(2) + ' €';
+    subtotalEl.textContent = `${subtotal.toFixed(2)} EUR`;
+    totalEl.textContent = `${total.toFixed(2)} EUR`;
 
-    // Event listeners para cantidad y eliminar
     document.querySelectorAll('.qty-minus').forEach(btn => {
         btn.onclick = async (e) => {
             e.stopPropagation();
@@ -141,10 +136,10 @@ function setupCartButtons() {
 
     if (checkoutBtn) {
         checkoutBtn.onclick = async () => {
-            console.log('Botón checkout clickeado');
-            
+            console.log('Boton checkout clickeado');
+
             if (!window.app?.cart || window.app.cart.length === 0) {
-                window.app?.showToast('El carrito está vacío', 'warning');
+                window.app?.showToast('El carrito esta vacio', 'warning');
                 return;
             }
 
@@ -153,9 +148,19 @@ function setupCartButtons() {
             );
             const total = subtotal + 2.50;
 
-            // 👇 AQUÍ VA EL MODAL
-            const itemsList = window.app.cart.map(item => 
-                `<li>${escapeHtml(item.nombre)} x ${item.cantidad} = ${((item.precio || 0) * (item.cantidad || 1)).toFixed(2)} €</li>`
+            const completionResult = await window.app.getProfileCompletionStatus();
+            if (!completionResult.success) {
+                window.app?.showToast('No se pudo comprobar el perfil', 'error');
+                return;
+            }
+
+            if (!completionResult.data?.complete) {
+                showIncompleteProfileModal(completionResult.data?.missing_fields || []);
+                return;
+            }
+
+            const itemsList = window.app.cart.map(item =>
+                `<li>${escapeHtml(item.nombre)} x ${item.cantidad} = ${((item.precio || 0) * (item.cantidad || 1)).toFixed(2)} EUR</li>`
             ).join('');
 
             window.app.showModal(
@@ -164,15 +169,15 @@ function setupCartButtons() {
                 <div class="checkout-summary">
                     <h4>Resumen de tu compra:</h4>
                     <ul style="max-height: 200px; overflow-y: auto;">${itemsList}</ul>
-                    <p><strong>Subtotal:</strong> ${subtotal.toFixed(2)} €</p>
-                    <p><strong>Gastos de gestión:</strong> 2.50 €</p>
-                    <p><strong>Total:</strong> ${total.toFixed(2)} €</p>
+                    <p><strong>Subtotal:</strong> ${subtotal.toFixed(2)} EUR</p>
+                    <p><strong>Gastos de gestion:</strong> 2.50 EUR</p>
+                    <p><strong>Total:</strong> ${total.toFixed(2)} EUR</p>
                     <hr>
-                    <p>¿Deseas proceder con el pago?</p>
+                    <p>Deseas proceder con el pago?</p>
                 </div>
                 `,
                 async () => {
-                    console.log('Confirmación de compra aceptada');
+                    console.log('Confirmacion de compra aceptada');
 
                     const result = await window.app.processCheckout(window.app.cart, total);
 
@@ -185,8 +190,10 @@ function setupCartButtons() {
                         if (window.router) {
                             window.router.navigate('historial');
                         }
+                    } else if (result && result.code === 'PROFILE_INCOMPLETE') {
+                        showIncompleteProfileModal(result.missing_fields || []);
                     } else {
-                        window.app.showToast('Error en la compra', 'error');
+                        window.app.showToast(result?.error || 'Error en la compra', 'error');
                     }
                 }
             );
@@ -198,6 +205,29 @@ function setupCartButtons() {
             if (window.router) window.router.navigate('home');
         };
     }
+}
+
+function showIncompleteProfileModal(missingFields) {
+    const missingFieldsHtml = missingFields
+        .map(item => `<li>${escapeHtml(item.label || item.field)}</li>`)
+        .join('');
+
+    window.app.showModal(
+        'Completa tu perfil',
+        `
+        <div class="checkout-summary">
+            <p>Para finalizar la compra necesitas completar tu perfil.</p>
+            <p>Campos pendientes:</p>
+            <ul>${missingFieldsHtml}</ul>
+            <p>Te llevamos a la pagina de perfil para completarlo.</p>
+        </div>
+        `,
+        async () => {
+            if (window.router) {
+                window.router.navigate('perfil');
+            }
+        }
+    );
 }
 
 function escapeHtml(text) {

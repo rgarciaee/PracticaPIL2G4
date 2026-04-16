@@ -136,6 +136,7 @@ function setupForm() {
 }
 
 async function saveProfile() {
+    const dni = document.getElementById('user-dni');
     const name = document.getElementById('user-name');
     const email = document.getElementById('user-email');
     const birth = document.getElementById('user-birth');
@@ -147,11 +148,12 @@ async function saveProfile() {
     const notifySms = document.getElementById('notify-sms');
     const language = document.getElementById('user-language');
 
-    if (!name || !email || !birth || !address || !card || !phone || !avatarUrl || !notifyEmail || !notifySms || !language) {
+    if (!dni || !name || !email || !birth || !address || !card || !phone || !avatarUrl || !notifyEmail || !notifySms || !language) {
         return;
     }
 
     const updated = {
+        dni: dni.value,
         nombre_apellidos: name.value,
         email: email.value,
         fecha_nacimiento: birth.value,
@@ -184,6 +186,8 @@ async function saveProfile() {
             window.app?.showToast('Perfil actualizado', 'success');
             
             if (window.app) {
+                window.app.currentUser.nombre_apellidos = name.value;
+                window.app.currentUser.email = email.value;
                 window.app.currentUser.avatar = avatarUrl.value;
                 window.app.updateUserUI();
             }

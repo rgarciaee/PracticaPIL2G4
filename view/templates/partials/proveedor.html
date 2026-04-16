@@ -7,26 +7,34 @@
   <div class="provider-stats">
       <div class="stat-card">
           <i class="fas fa-store"></i>
-          <span class="stat-number" id="total-zones">0</span>
+          <span class="stat-number" id="total-zones">--</span>
           <span class="stat-label">Zonas disponibles</span>
       </div>
       <div class="stat-card">
           <i class="fas fa-chart-line"></i>
-          <span class="stat-number">+2000</span>
+          <span class="stat-number" id="daily-visitors">--</span>
           <span class="stat-label">Visitantes diarios</span>
       </div>
       <div class="stat-card">
           <i class="fas fa-tag"></i>
-          <span class="stat-number">Desde 350€</span>
+          <span class="stat-number" id="zone-min-price">--</span>
           <span class="stat-label">Precio por zona</span>
       </div>
   </div>
 
+  <section class="provider-events-section">
+      <div class="provider-section-head">
+          <h2>Eventos y horarios</h2>
+          <p>Consulta el calendario de cada evento antes de solicitar una zona.</p>
+      </div>
+      <div class="provider-events-grid" id="provider-events-list"></div>
+  </section>
+
   <div class="zones-grid" id="zones-list"></div>
 
   <div class="provider-cta">
-      <h3>¿Tienes dudas?</h3>
-      <p>Contáctanos para más información sobre los espacios disponibles</p>
+      <h3>Tienes dudas?</h3>
+      <p>Contactanos para mas informacion sobre los espacios disponibles</p>
       <button class="btn btn-outline" id="contact-provider">Contactar</button>
   </div>
 </div>

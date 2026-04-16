@@ -181,6 +181,10 @@
 .status-Activa { background: #10b981; color: white; }
 .status-Usada { background: #6b7280; color: white; }
 .status-Cancelada { background: #ef4444; color: white; }
+.status-activa { background: #10b981; color: white; }
+.status-usada { background: #6b7280; color: white; }
+.status-cancelada { background: #ef4444; color: white; }
+.status-solicitud-enviada { background: #f59e0b; color: white; }
 
 .ticket-date {
   font-size: 0.75rem;

@@ -1,6 +1,5 @@
 from ....dao.interfaceTicketDAO import InterfaceTicketDAO
 from ....dto.ticketDTO import TicketDTO, TicketsDTO
-from datetime import datetime
 
 class FirebaseTicketDAO(InterfaceTicketDAO):
 
@@ -16,6 +15,7 @@ class FirebaseTicketDAO(InterfaceTicketDAO):
                 ticket_dto = TicketDTO()
                 ticket_dto.set_id(doc.id)
                 ticket_dto.set_usuario_id(ticket_data.get("usuario_id", ""))
+                ticket_dto.set_evento_id(ticket_data.get("evento_id", ""))
                 ticket_dto.set_zona_id(ticket_data.get("zona_id", ""))
                 ticket_dto.set_localizador_qr(ticket_data.get("localizador_qr", ""))
 
@@ -29,6 +29,7 @@ class FirebaseTicketDAO(InterfaceTicketDAO):
                 ticket_dto.set_evento_nombre(ticket_data.get("evento_nombre", ""))
                 ticket_dto.set_zona_nombre(ticket_data.get("zona_nombre", ""))
                 ticket_dto.set_precio(ticket_data.get("precio", 0))
+                ticket_dto.set_detalle_tipo(ticket_data.get("detalle_tipo", ""))
                 tickets.insertTicket(ticket_dto.ticketdto_to_dict())
         except Exception as e:
             print(f"Error en get_tickets_by_user: {e}")
@@ -60,6 +61,7 @@ class FirebaseTicketDAO(InterfaceTicketDAO):
                 ticket_dto = TicketDTO()
                 ticket_dto.set_id(doc.id)
                 ticket_dto.set_usuario_id(ticket_data.get("usuario_id", ""))
+                ticket_dto.set_evento_id(ticket_data.get("evento_id", ""))
                 ticket_dto.set_zona_id(ticket_data.get("zona_id", ""))
                 ticket_dto.set_localizador_qr(ticket_data.get("localizador_qr", ""))
                 
@@ -71,6 +73,7 @@ class FirebaseTicketDAO(InterfaceTicketDAO):
                 ticket_dto.set_evento_nombre(ticket_data.get("evento_nombre", ""))
                 ticket_dto.set_zona_nombre(ticket_data.get("zona_nombre", ""))
                 ticket_dto.set_precio(ticket_data.get("precio", 0))
+                ticket_dto.set_detalle_tipo(ticket_data.get("detalle_tipo", ""))
                 return ticket_dto.ticketdto_to_dict()
             return None
         except Exception as e:

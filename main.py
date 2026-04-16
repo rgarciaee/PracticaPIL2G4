@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse, JSONResponse
 from fastapi.exceptions import HTTPException
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from controller.controller import app
+from controller.controller import app, sessions
 import os
 
 # Crear la aplicación principal
@@ -29,7 +29,14 @@ if os.path.exists(static_path):
 # ============================================================
 
 @main_app.get("/partials/{page}")
-async def serve_partial(page: str):
+async def serve_partial(request: Request, page: str):
+    if page == "admin":
+        session_id = request.cookies.get("session_id")
+        session = sessions.get(session_id) if session_id else None
+        role = str((session or {}).get("role", "")).strip().lower()
+        if role != "admin":
+            return JSONResponse(status_code=403, content={"error": "Admin only"})
+
     file_path = os.path.join("view/templates/partials", f"{page}.html")
     if os.path.exists(file_path):
         return FileResponse(file_path)
@@ -63,4 +70,4 @@ if __name__ == "__main__":
     import uvicorn
     # CAMBIO IMPORTANTE: Usar la aplicación como string y quitar reload
     # o usar reload pero con la app como string
-    uvicorn.run("main:main_app", host="localhost", port=8000, reload=True, log_level="info")
+    uvicorn.run(main_app, host="localhost", port=8000, reload=False, log_level="info")

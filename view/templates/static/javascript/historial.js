@@ -1,4 +1,3 @@
-// historial.js
 let allTickets = [];
 
 window.initHistorial = async function () {
@@ -22,23 +21,23 @@ async function loadHistoryData() {
             if (result.success && Array.isArray(result.data)) {
                 allTickets = result.data.map(ticket => ({
                     id: ticket.id,
+                    detalle_tipo: ticket.detalle_tipo || 'Entrada',
                     evento: ticket.evento_nombre || 'Evento',
                     zona: ticket.zona_nombre || 'Zona general',
                     fecha_evento: ticket.fecha_evento || '',
                     fecha_compra: ticket.fecha_compra || '',
                     estado: ticket.estado || 'Activa',
-                    qr: ticket.localizador_qr || ''
+                    qr: ticket.localizador_qr || '',
+                    precio: ticket.precio || 0,
                 }));
 
                 console.log('Historial cargado:', allTickets.length);
-                console.log('Estados disponibles:', [...new Set(allTickets.map(t => t.estado))]);
             }
         }
     } catch (error) {
         console.error('Error cargando historial:', error);
     }
-    
-    // Render inicial (todos los tickets)
+
     renderTickets(allTickets);
 }
 
@@ -56,49 +55,58 @@ function renderTickets(ticketsToShow) {
 
     emptyMsg.classList.add('is-hidden');
 
-    // Render tickets
-    container.innerHTML = ticketsToShow.map(ticket => `
+    container.innerHTML = ticketsToShow.map(ticket => {
+        const normalizedStatus = normalizeClassName(ticket.estado);
+        const typeLabel = ticket.detalle_tipo || 'Entrada';
+        const codeLabel = 'Codigo';
+
+        return `
         <div class="ticket-card" data-aos="fade-up">
             <div class="ticket-header">
                 <h3>${escapeHtml(ticket.evento)}</h3>
+                <span class="badge badge-primary">${escapeHtml(typeLabel)}</span>
             </div>
             <div class="ticket-body">
                 <div class="ticket-info">
+                    <div class="ticket-info-item">
+                        <span class="label">Concepto</span>
+                        <span class="value">${escapeHtml(ticket.detalle_tipo || typeLabel)}</span>
+                    </div>
                     <div class="ticket-info-item">
                         <span class="label">Zona</span>
                         <span class="value">${escapeHtml(ticket.zona)}</span>
                     </div>
                     <div class="ticket-info-item">
                         <span class="label">Fecha evento</span>
-                        <span class="value">${escapeHtml(ticket.fecha_evento)}</span>
+                        <span class="value">${escapeHtml(formatEventDate(ticket.fecha_evento))}</span>
                     </div>
                     <div class="ticket-info-item">
-                        <span class="label">Fecha compra</span>
-                        <span class="value">${escapeHtml(ticket.fecha_compra)}</span>
+                        <span class="label">Importe</span>
+                        <span class="value">${Number(ticket.precio || 0).toFixed(2)} EUR</span>
                     </div>
                 </div>
                 <div class="ticket-qr">
                     <span class="ticket-qr-code">${escapeHtml(ticket.qr)}</span>
                     <div class="ticket-qr-actions">
-                        <button class="qr-icon-btn" data-qr="${ticket.qr}" title="Copiar QR">
+                        <button class="qr-icon-btn" data-qr="${ticket.qr}" title="Copiar ${escapeHtml(codeLabel)}">
                             <i class="fas fa-copy"></i>
                         </button>
                     </div>
                 </div>
                 <div class="ticket-footer">
-                    <span class="ticket-status status-${ticket.estado}">${ticket.estado}</span>
-                    <span class="ticket-date">${ticket.fecha_compra}</span>
+                    <span class="ticket-status status-${normalizedStatus}">${escapeHtml(ticket.estado)}</span>
+                    <span class="ticket-date">${escapeHtml(formatShortDate(ticket.fecha_compra))}</span>
                 </div>
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
-    // Event listeners para copiar QR
     document.querySelectorAll('.qr-icon-btn').forEach(btn => {
         btn.onclick = () => {
             const qrText = btn.getAttribute('data-qr');
             navigator.clipboard.writeText(qrText);
-            window.app?.showToast('Código QR copiado', 'success');
+            window.app?.showToast('Codigo copiado', 'success');
         };
     });
 }
@@ -121,21 +129,15 @@ function setupFilters() {
         const fromValue = dateFrom.value;
         const toValue = dateTo.value;
 
-        console.log('Aplicando filtros:', { eventValue, statusValue, fromValue, toValue });
-
-        // Filtrar tickets
         const filtered = allTickets.filter(ticket => {
-            // Filtrar por evento (coincidencia exacta o parcial)
             if (eventValue && !ticket.evento.toLowerCase().includes(eventValue)) {
                 return false;
             }
 
-            // Filtrar por estado (solo si no es 'all')
             if (statusValue !== 'all' && ticket.estado !== statusValue) {
                 return false;
             }
 
-            // Filtrar por fecha desde
             if (fromValue && ticket.fecha_evento) {
                 const ticketDate = new Date(ticket.fecha_evento.split('T')[0]);
                 const fromDate = new Date(fromValue);
@@ -144,7 +146,6 @@ function setupFilters() {
                 }
             }
 
-            // Filtrar por fecha hasta
             if (toValue && ticket.fecha_evento) {
                 const ticketDate = new Date(ticket.fecha_evento.split('T')[0]);
                 const toDate = new Date(toValue);
@@ -157,19 +158,14 @@ function setupFilters() {
             return true;
         });
 
-        console.log('Tickets filtrados:', filtered.length);
-        
-        // Siempre renderizar los tickets filtrados (pueden ser 0)
         renderTickets(filtered);
     };
 
-    // Añadir event listeners
     eventInput.addEventListener('input', applyFilters);
     statusSelect.addEventListener('change', applyFilters);
     dateFrom.addEventListener('change', applyFilters);
     dateTo.addEventListener('change', applyFilters);
 
-    // Botón limpiar filtros
     if (clearBtn) {
         clearBtn.onclick = () => {
             eventInput.value = '';
@@ -180,6 +176,49 @@ function setupFilters() {
             window.app?.showToast('Filtros limpiados', 'info');
         };
     }
+}
+
+function normalizeClassName(text) {
+    return String(text || 'desconocido')
+        .toLowerCase()
+        .replaceAll(' ', '-');
+}
+
+function formatEventDate(value) {
+    if (!value) return '-';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return String(value);
+    return date.toLocaleString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+}
+
+function formatShortDate(value) {
+    if (!value) return '';
+    const text = String(value);
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+        const [year, month, day] = text.split('-');
+        return `${day}-${month}-${year}`;
+    }
+
+    if (text.includes('T')) {
+        return formatShortDate(text.split('T')[0]);
+    }
+
+    const date = new Date(text);
+    if (Number.isNaN(date.getTime())) {
+        return text;
+    }
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
 }
 
 function escapeHtml(text) {

@@ -29,13 +29,14 @@ class EventDTO():
         self.fecha_ini = None
         self.fecha_fin = None
         self.descripcion = None
-        self.ubicacion = None  # NUEVO CAMPO
+        self.ubicacion = None
+        self.horario = None
 
     def is_Empty(self):
         return (self.id is None and self.nombre is None and 
                 self.imagen is None and self.fecha_ini is None and 
                 self.fecha_fin is None and self.descripcion is None and
-                self.ubicacion is None)
+                self.ubicacion is None and self.horario is None)
 
     # Getters y Setters
     def get_id(self): return self.id
@@ -59,6 +60,9 @@ class EventDTO():
     def get_ubicacion(self): return self.ubicacion
     def set_ubicacion(self, ubicacion): self.ubicacion = ubicacion
 
+    def get_horario(self): return self.horario
+    def set_horario(self, horario): self.horario = horario
+
     def eventdto_to_dict(self):
         return {
             "id": self.id,
@@ -67,7 +71,8 @@ class EventDTO():
             "fecha_ini": self.fecha_ini,
             "fecha_fin": self.fecha_fin,
             "descripcion": self.descripcion,
-            "ubicacion": self.ubicacion  # NUEVO CAMPO
+            "ubicacion": self.ubicacion,
+            "horario": self.horario or [],
         }
 
     def dict_to_eventdto(self, data):
@@ -77,5 +82,6 @@ class EventDTO():
         self.fecha_ini = data.get("fecha_ini")
         self.fecha_fin = data.get("fecha_fin")
         self.descripcion = data.get("descripcion")
-        self.ubicacion = data.get("ubicacion")  # NUEVO CAMPO
+        self.ubicacion = data.get("ubicacion")
+        self.horario = data.get("horario", [])
         return self

@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="/static/css/perfil.css" />
     <link rel="stylesheet" href="/static/css/historial.css" />
     <link rel="stylesheet" href="/static/css/proveedor.css" />
+    <link rel="stylesheet" href="/static/css/admin.css" />
 
     <!-- Librerías externas -->
     <link
@@ -63,6 +64,11 @@
                   ><i class="fas fa-store"></i> Proveedores</a
                 >
               </li>
+              <li id="admin-nav-item" style="display: none">
+                <a href="#" data-page="admin" class="nav-link"
+                  ><i class="fas fa-shield-halved"></i> Administracion</a
+                >
+              </li>
             </ul>
           </div>
           <div class="nav-actions">
@@ -102,6 +108,13 @@
                 >
                 <a href="#" data-page="historial"
                   ><i class="fas fa-ticket-alt"></i> Mis Entradas</a
+                >
+                <a
+                  href="#"
+                  data-page="admin"
+                  id="admin-menu-link"
+                  style="display: none"
+                  ><i class="fas fa-shield-halved"></i> Panel Admin</a
                 >
                 <div class="dropdown-divider"></div>
                 <a href="#" id="logout-btn"
@@ -203,6 +216,7 @@
     <script src="/static/javascript/perfil.js"></script>
     <script src="/static/javascript/historial.js"></script>
     <script src="/static/javascript/proveedor.js"></script>
+    <script src="/static/javascript/admin.js"></script>
     <script src="/static/javascript/router.js"></script>
   </body>
 </html>

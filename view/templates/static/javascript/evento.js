@@ -44,15 +44,43 @@ window.initEvento = async function () {
                 document.getElementById('event-location').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${currentEvent.ubicacion.nombre}, ${currentEvent.ubicacion.ciudad}`;
             }
             document.getElementById('event-description').textContent = currentEvent.descripcion || '';
+
+            const scheduleContainer = document.getElementById('schedule-list');
+            if (scheduleContainer) {
+                const schedule = Array.isArray(currentEvent.horario) ? currentEvent.horario : [];
+                if (schedule.length) {
+                    scheduleContainer.innerHTML = schedule.map((day) => `
+                        <div class="schedule-day">
+                            <div class="schedule-day-header">
+                                <h3>${escapeHtml(formatScheduleDay(day.dia))}</h3>
+                            </div>
+                            <div class="schedule-slots">
+                                ${(day.slots || []).map((slot) => `
+                                    <div class="schedule-slot">
+                                        <span class="slot-time">${escapeHtml(slot.hora || '--:--')}</span>
+                                        <span class="slot-artist">${escapeHtml(slot.artista || 'Actividad por confirmar')}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    scheduleContainer.innerHTML = '<div class="schedule-day"><div class="schedule-day-header"><h3>Horario por confirmar</h3></div></div>';
+                }
+            }
             
             // Renderizar artistas
             const artistsContainer = document.getElementById('artists-list');
             if (artistsContainer && currentEvent.artistas) {
                 artistsContainer.innerHTML = currentEvent.artistas.map(a => `
                     <div class="artist-card">
-                        <div class="artist-icon"><i class="fas fa-user-musician"></i></div>
+                        ${a.imagen
+                            ? `<img class="artist-image" src="${escapeAttribute(a.imagen)}" alt="${escapeAttribute(a.nombre || 'Artista')}" loading="lazy">`
+                            : `<div class="artist-icon"><i class="fas fa-user-musician"></i></div>`
+                        }
                         <h3>${escapeHtml(a.nombre)}</h3>
-                        <p>${escapeHtml(a.genero || 'Artista')}</p>
+                        <p class="artist-genre">${escapeHtml(a.genero || 'Artista')}</p>
+                        <p class="artist-description">${escapeHtml(a.descripcion || 'Descripcion no disponible')}</p>
                     </div>
                 `).join('');
             }
@@ -190,9 +218,30 @@ function formatDate(dateString) {
     return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+function formatScheduleDay(dayLabel) {
+    if (!dayLabel) return 'Por confirmar';
+    const date = new Date(dayLabel);
+    if (isNaN(date.getTime())) return dayLabel;
+    return date.toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
+}
+
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+function escapeAttribute(text) {
+    if (!text) return '';
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
 }

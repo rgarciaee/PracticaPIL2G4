@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 
 class TicketsDTO():
     def __init__(self):
@@ -16,6 +15,7 @@ class TicketDTO():
     def __init__(self):
         self.id = None
         self.usuario_id = None
+        self.evento_id = None
         self.zona_id = None
         self.localizador_qr = None
         self.fecha_compra = None
@@ -24,6 +24,7 @@ class TicketDTO():
         self.evento_nombre = None
         self.zona_nombre = None
         self.precio = None
+        self.detalle_tipo = None
 
     def is_Empty(self):
         return (self.id is None and self.usuario_id is None and 
@@ -36,6 +37,9 @@ class TicketDTO():
 
     def get_usuario_id(self): return self.usuario_id
     def set_usuario_id(self, usuario_id): self.usuario_id = usuario_id
+
+    def get_evento_id(self): return self.evento_id
+    def set_evento_id(self, evento_id): self.evento_id = evento_id
 
     def get_zona_id(self): return self.zona_id
     def set_zona_id(self, zona_id): self.zona_id = zona_id
@@ -61,6 +65,9 @@ class TicketDTO():
     def get_precio(self): return self.precio
     def set_precio(self, precio): self.precio = precio
 
+    def get_detalle_tipo(self): return self.detalle_tipo
+    def set_detalle_tipo(self, detalle_tipo): self.detalle_tipo = detalle_tipo
+
     def ticketdto_to_dict(self):
         # Si fecha_compra es datetime, convertirlo a string
         fecha = self.fecha_compra
@@ -74,6 +81,7 @@ class TicketDTO():
         return {
             "id": self.id,
             "usuario_id": self.usuario_id,
+            "evento_id": self.evento_id,
             "zona_id": self.zona_id,
             "localizador_qr": self.localizador_qr,
             "fecha_compra": fecha,
@@ -81,5 +89,6 @@ class TicketDTO():
             "estado": self.estado,
             "evento_nombre": self.evento_nombre,
             "zona_nombre": self.zona_nombre,
-            "precio": self.precio
+            "precio": self.precio,
+            "detalle_tipo": self.detalle_tipo
         }
