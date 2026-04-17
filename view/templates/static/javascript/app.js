@@ -13,12 +13,12 @@ class SubsonicApp {
   async init() {
     this.setupEventListeners();
     await this.loadData();
+    await this.initSearch();
     this.setupTheme();
     this.setupPreloader();
     await this.checkAuth();
     await this.loadCart();
     this.updateCartBadge();
-    this.initSearch();
     this.updateAuthUI();
   }
 
@@ -451,30 +451,49 @@ class SubsonicApp {
     }
   }
 
-  initSearch() {
+  async initSearch() {
     this.searchIndex = [];
-    if (this.data) {
-      if (this.data.events) {
-        this.searchIndex.push(
-          ...this.data.events.map((e) => ({
-            type: "evento",
-            title: e.nombre,
-            description: e.descripcion,
-            data: e,
-          })),
-        );
+
+    let events = [];
+
+    try {
+      const response = await fetch("/api/events");
+      const result = await response.json();
+      if (result.success && Array.isArray(result.data)) {
+        events = result.data;
       }
-      if (this.data.news) {
-        this.searchIndex.push(
-          ...this.data.news.map((n) => ({
-            type: "noticia",
-            title: n.titulo,
-            description: n.contenido,
-            data: n,
-          })),
-        );
-      }
+    } catch (error) {
+      console.error("Error cargando eventos para la busqueda:", error);
     }
+
+    if (!events.length && this.data?.events) {
+      events = this.data.events;
+    }
+
+    this.searchIndex.push(
+      ...events.map((event) => ({
+        type: "evento",
+        title: event.nombre || "Evento",
+        description: event.descripcion || "Evento sin descripcion",
+        eventId: event.id || "",
+      })),
+    );
+
+    events.forEach((event) => {
+      const artists = Array.isArray(event.artistas) ? event.artistas : [];
+      artists.forEach((artist) => {
+        this.searchIndex.push({
+          type: "artista",
+          title: artist.nombre || "Artista",
+          description:
+            artist.descripcion ||
+            artist.genero ||
+            `Actua en ${event.nombre || "este evento"}`,
+          eventId: event.id || artist.evento_id || "",
+          eventName: event.nombre || "",
+        });
+      });
+    });
   }
 
   handleSearch(query) {
@@ -490,7 +509,8 @@ class SubsonicApp {
       .filter(
         (item) =>
           item.title.toLowerCase().includes(query.toLowerCase()) ||
-          item.description.toLowerCase().includes(query.toLowerCase()),
+          item.description.toLowerCase().includes(query.toLowerCase()) ||
+          (item.eventName || "").toLowerCase().includes(query.toLowerCase()),
       )
       .slice(0, 10);
 
@@ -503,7 +523,7 @@ class SubsonicApp {
     resultsContainer.innerHTML = filtered
       .map(
         (item) => `
-            <div class="search-result-item" data-type="${item.type}" data-title="${item.title}">
+            <div class="search-result-item" data-type="${item.type}" data-title="${item.title}" data-event-id="${item.eventId || ""}">
                 <i class="fas ${this.getSearchIcon(item.type)}"></i>
                 <div>
                     <strong>${item.title}</strong>
@@ -518,7 +538,12 @@ class SubsonicApp {
     document.querySelectorAll(".search-result-item").forEach((el) => {
       el.addEventListener("click", () => {
         this.closeSearch();
-        this.showToast(`Buscando: ${el.dataset.title}`, "info");
+        const eventId = el.dataset.eventId;
+        if (!eventId) {
+          return;
+        }
+
+        window.router?.navigate(`evento?id=${encodeURIComponent(eventId)}`);
       });
     });
   }
@@ -526,7 +551,6 @@ class SubsonicApp {
   getSearchIcon(type) {
     const icons = {
       evento: "fa-calendar-alt",
-      noticia: "fa-newspaper",
       artista: "fa-microphone-alt",
     };
     return icons[type] || "fa-search";
@@ -535,7 +559,6 @@ class SubsonicApp {
   getSearchTypeLabel(type) {
     const labels = {
       evento: "Evento",
-      noticia: "Noticia",
       artista: "Artista",
     };
     return labels[type] || "Resultado";
