@@ -1,13 +1,20 @@
 /* Historial Page Styles */
 
-.history-header {
+#historial-content .history-header {
   text-align: center;
-  padding: 2rem 0;
+  padding: 3.4rem 2rem;
   margin-bottom: 2rem;
+  border-radius: calc(var(--radius-xl) + 0.3rem);
+  background:
+    radial-gradient(circle at top left, rgba(244, 114, 182, 0.14), transparent 30%),
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.16), transparent 32%),
+    linear-gradient(135deg, var(--bg-card), color-mix(in srgb, var(--primary-color) 10%, var(--bg-card)));
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
 }
 
-.history-header h1 {
-  font-size: 2.5rem;
+#historial-content .history-header h1 {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
   margin-bottom: 0.5rem;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   -webkit-background-clip: text;
@@ -15,39 +22,40 @@
   color: transparent;
 }
 
-.history-header p {
+#historial-content .history-header p {
   color: var(--text-muted);
 }
 
-/* Filtros */
-.history-filters {
+#historial-content .history-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   background: var(--bg-card);
   padding: 1.5rem;
-  border-radius: var(--radius-lg);
+  border-radius: calc(var(--radius-lg) + 0.15rem);
   margin-bottom: 2rem;
   border: 1px solid var(--border-color);
   align-items: flex-end;
+  box-shadow: var(--shadow-lg);
 }
 
-.filter-group {
+#historial-content .filter-group {
   flex: 1;
   min-width: 150px;
 }
 
-.filter-label {
+#historial-content .filter-label {
   display: block;
   font-size: 0.75rem;
   margin-bottom: 0.25rem;
   color: var(--text-muted);
 }
 
-.filter-input,
-.filter-select {
+#historial-content .filter-input,
+#historial-content .filter-select,
+#historial-content .filter-group input[type="date"] {
   width: 100%;
-  padding: 0.6rem 1rem;
+  padding: 0.7rem 1rem;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -55,76 +63,82 @@
   font-size: 0.9rem;
 }
 
-.filter-input:focus,
-.filter-select:focus {
+#historial-content .filter-input:focus,
+#historial-content .filter-select:focus,
+#historial-content .filter-group input[type="date"]:focus {
   outline: none;
   border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
-#clear-filters {
+#historial-content #clear-filters {
   white-space: nowrap;
 }
 
-/* Grid de tickets */
-.history-grid {
+#historial-content .history-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
 }
 
-.ticket-card {
+#historial-content .ticket-card {
   background: var(--bg-card);
-  border-radius: var(--radius-lg);
+  border-radius: calc(var(--radius-lg) + 0.15rem);
   overflow: hidden;
   border: 1px solid var(--border-color);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  box-shadow: var(--shadow-lg);
 }
 
-.ticket-card:hover {
+#historial-content .ticket-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-xl);
+  border-color: color-mix(in srgb, var(--primary-color) 36%, var(--border-color));
 }
 
-.ticket-header {
+#historial-content .ticket-header {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   padding: 1rem 1.5rem;
   color: white;
 }
 
-.ticket-header h3 {
+#historial-content .ticket-header h3 {
   margin: 0;
   font-size: 1.2rem;
 }
 
-.ticket-body {
+#historial-content .ticket-body {
   padding: 1.5rem;
 }
 
-.ticket-info {
+#historial-content .ticket-info {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
   margin-bottom: 1rem;
 }
 
-.ticket-info-item {
+#historial-content .ticket-info-item {
   display: flex;
   flex-direction: column;
+  padding: 0.8rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
 }
 
-.ticket-info-item .label {
+#historial-content .ticket-info-item .label {
   font-size: 0.7rem;
   text-transform: uppercase;
   color: var(--text-muted);
   letter-spacing: 0.5px;
 }
 
-.ticket-info-item .value {
-  font-weight: 500;
+#historial-content .ticket-info-item .value {
+  font-weight: 600;
   margin-top: 0.2rem;
 }
 
-.ticket-qr {
+#historial-content .ticket-qr {
   background: var(--bg-tertiary);
   padding: 1rem;
   border-radius: var(--radius-md);
@@ -137,18 +151,18 @@
   gap: 0.5rem;
 }
 
-.ticket-qr-code {
+#historial-content .ticket-qr-code {
   font-family: monospace;
   font-size: 0.85rem;
   word-break: break-all;
 }
 
-.ticket-qr-actions {
+#historial-content .ticket-qr-actions {
   display: flex;
   gap: 0.5rem;
 }
 
-.qr-icon-btn {
+#historial-content .qr-icon-btn {
   background: none;
   border: none;
   color: var(--primary-color);
@@ -157,11 +171,11 @@
   transition: color var(--transition-fast);
 }
 
-.qr-icon-btn:hover {
+#historial-content .qr-icon-btn:hover {
   color: var(--secondary-color);
 }
 
-.ticket-footer {
+#historial-content .ticket-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -170,7 +184,7 @@
   border-top: 1px solid var(--border-color);
 }
 
-.ticket-status {
+#historial-content .ticket-status {
   display: inline-block;
   padding: 0.25rem 0.75rem;
   border-radius: var(--radius-full);
@@ -186,39 +200,43 @@
 .status-cancelada { background: #ef4444; color: white; }
 .status-solicitud-enviada { background: #f59e0b; color: white; }
 
-.ticket-date {
+#historial-content .ticket-date {
   font-size: 0.75rem;
   color: var(--text-muted);
 }
 
-.history-empty {
+#historial-content .history-empty {
   text-align: center;
   padding: 3rem;
   background: var(--bg-card);
-  border-radius: var(--radius-lg);
+  border-radius: calc(var(--radius-lg) + 0.15rem);
   margin-top: 1rem;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
 }
 
-.history-empty i {
+#historial-content .history-empty i {
   font-size: 3rem;
   color: var(--text-muted);
   margin-bottom: 1rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
-  .history-filters {
-      flex-direction: column;
-      align-items: stretch;
+  #historial-content .history-filters {
+    flex-direction: column;
+    align-items: stretch;
   }
-  .filter-group {
-      width: 100%;
+
+  #historial-content .filter-group {
+    width: 100%;
   }
-  .ticket-info {
-      grid-template-columns: 1fr;
+
+  #historial-content .ticket-info {
+    grid-template-columns: 1fr;
   }
-  .ticket-qr {
-      flex-direction: column;
-      align-items: flex-start;
+
+  #historial-content .ticket-qr {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

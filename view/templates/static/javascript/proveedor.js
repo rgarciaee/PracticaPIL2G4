@@ -39,7 +39,9 @@ function renderZones(zones) {
     const container = document.getElementById('zones-list');
     if (!container) return;
 
-    if (!zones || zones.length === 0) {
+    const standZones = (zones || []).filter((zone) => String(zone.tipo || 'ticket').toLowerCase() === 'stand');
+
+    if (!standZones.length) {
         container.innerHTML = '<div class="no-zones">No hay zonas disponibles</div>';
         return;
     }
@@ -47,7 +49,7 @@ function renderZones(zones) {
     const isAuthenticated = !!window.app?.currentUser?.id;
     const isProvider = String(window.app?.currentUser?.role || '').toLowerCase() === 'provider';
 
-    container.innerHTML = zones.map(zone => {
+    container.innerHTML = standZones.map(zone => {
         const buttonLabel = isProvider ? 'Anadir al carrito' : 'Solo proveedores';
 
         return `
@@ -164,9 +166,10 @@ function updateStats(zones) {
     const dailyVisitorsSpan = document.getElementById('daily-visitors');
     const minPriceSpan = document.getElementById('zone-min-price');
 
-    const totalZones = zones.length;
-    const totalVisitors = zones.reduce((sum, zone) => sum + Number(zone.aforo_maximo || 0), 0);
-    const prices = zones
+    const standZones = (zones || []).filter((zone) => String(zone.tipo || 'ticket').toLowerCase() === 'stand');
+    const totalZones = standZones.length;
+    const totalVisitors = standZones.reduce((sum, zone) => sum + Number(zone.aforo_maximo || 0), 0);
+    const prices = standZones
         .map(zone => Number(zone.precio || 0))
         .filter(price => !Number.isNaN(price) && price > 0);
     const minPrice = prices.length ? Math.min(...prices) : 0;

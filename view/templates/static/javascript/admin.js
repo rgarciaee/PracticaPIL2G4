@@ -7,6 +7,14 @@ const adminState = {
   zones: [],
   stands: [],
   eventScheduleDraft: [],
+  pageSize: 8,
+  pagination: {
+    users: 1,
+    events: 1,
+    artists: 1,
+    zones: 1,
+    stands: 1,
+  },
 };
 
 window.initAdmin = async function () {
@@ -132,13 +140,15 @@ function renderAdminTables() {
 function renderUsersTable() {
   const tbody = document.getElementById('admin-users-table');
   if (!tbody) return;
+  const users = getPaginatedItems('users', adminState.users);
 
   if (!adminState.users.length) {
     tbody.innerHTML = '<tr><td colspan="4" class="admin-empty">No hay usuarios registrados</td></tr>';
+    renderPagination('users', adminState.users.length, 'admin-users-pagination');
     return;
   }
 
-  tbody.innerHTML = adminState.users.map((user) => `
+  tbody.innerHTML = users.map((user) => `
     <tr>
       <td>
         <strong>${escapeHtml(user.nombre_apellidos || 'Sin nombre')}</strong>
@@ -162,18 +172,22 @@ function renderUsersTable() {
   tbody.querySelectorAll('[data-admin-delete-user]').forEach((button) => {
     button.onclick = () => deleteUser(button.getAttribute('data-admin-delete-user'));
   });
+
+  renderPagination('users', adminState.users.length, 'admin-users-pagination');
 }
 
 function renderEventsTable() {
   const tbody = document.getElementById('admin-events-table');
   if (!tbody) return;
+  const events = getPaginatedItems('events', adminState.events);
 
   if (!adminState.events.length) {
     tbody.innerHTML = '<tr><td colspan="4" class="admin-empty">No hay eventos</td></tr>';
+    renderPagination('events', adminState.events.length, 'admin-events-pagination');
     return;
   }
 
-  tbody.innerHTML = adminState.events.map((eventItem) => `
+  tbody.innerHTML = events.map((eventItem) => `
     <tr>
       <td>
         <strong>${escapeHtml(eventItem.nombre || '')}</strong>
@@ -203,18 +217,22 @@ function renderEventsTable() {
   tbody.querySelectorAll('[data-admin-delete-event]').forEach((button) => {
     button.onclick = () => deleteEvent(button.getAttribute('data-admin-delete-event'));
   });
+
+  renderPagination('events', adminState.events.length, 'admin-events-pagination');
 }
 
 function renderArtistsTable() {
   const tbody = document.getElementById('admin-artists-table');
   if (!tbody) return;
+  const artists = getPaginatedItems('artists', adminState.artists);
 
   if (!adminState.artists.length) {
     tbody.innerHTML = '<tr><td colspan="4" class="admin-empty">No hay artistas</td></tr>';
+    renderPagination('artists', adminState.artists.length, 'admin-artists-pagination');
     return;
   }
 
-  tbody.innerHTML = adminState.artists.map((artist) => `
+  tbody.innerHTML = artists.map((artist) => `
     <tr>
       <td>
         <strong>${escapeHtml(artist.nombre || '')}</strong>
@@ -238,24 +256,29 @@ function renderArtistsTable() {
   tbody.querySelectorAll('[data-admin-delete-artist]').forEach((button) => {
     button.onclick = () => deleteArtist(button.getAttribute('data-admin-delete-artist'));
   });
+
+  renderPagination('artists', adminState.artists.length, 'admin-artists-pagination');
 }
 
 function renderZonesTable() {
   const tbody = document.getElementById('admin-zones-table');
   if (!tbody) return;
+  const zones = getPaginatedItems('zones', adminState.zones);
 
   if (!adminState.zones.length) {
-    tbody.innerHTML = '<tr><td colspan="4" class="admin-empty">No hay zonas</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="admin-empty">No hay zonas</td></tr>';
+    renderPagination('zones', adminState.zones.length, 'admin-zones-pagination');
     return;
   }
 
-  tbody.innerHTML = adminState.zones.map((zone) => `
+  tbody.innerHTML = zones.map((zone) => `
     <tr>
       <td>
         <strong>${escapeHtml(zone.nombre || '')}</strong>
         <small>${formatPrice(zone.precio)} EUR</small>
       </td>
       <td>${escapeHtml(zone.evento_nombre || '-')}</td>
+      <td><span class="badge ${zone.tipo === 'stand' ? 'badge-warning' : 'badge-primary'}">${escapeHtml(zone.tipo || 'ticket')}</span></td>
       <td>${escapeHtml(String(zone.aforo_maximo ?? '-'))}</td>
       <td>
         <div class="admin-actions">
@@ -273,18 +296,22 @@ function renderZonesTable() {
   tbody.querySelectorAll('[data-admin-delete-zone]').forEach((button) => {
     button.onclick = () => deleteZone(button.getAttribute('data-admin-delete-zone'));
   });
+
+  renderPagination('zones', adminState.zones.length, 'admin-zones-pagination');
 }
 
 function renderStandsTable() {
   const tbody = document.getElementById('admin-stands-table');
   if (!tbody) return;
+  const stands = getPaginatedItems('stands', adminState.stands);
 
   if (!adminState.stands.length) {
     tbody.innerHTML = '<tr><td colspan="4" class="admin-empty">No hay stands</td></tr>';
+    renderPagination('stands', adminState.stands.length, 'admin-stands-pagination');
     return;
   }
 
-  tbody.innerHTML = adminState.stands.map((stand) => `
+  tbody.innerHTML = stands.map((stand) => `
     <tr>
       <td>
         <strong>${escapeHtml(stand.nombre || '')}</strong>
@@ -308,6 +335,75 @@ function renderStandsTable() {
   tbody.querySelectorAll('[data-admin-delete-stand]').forEach((button) => {
     button.onclick = () => deleteStand(button.getAttribute('data-admin-delete-stand'));
   });
+
+  renderPagination('stands', adminState.stands.length, 'admin-stands-pagination');
+}
+
+function getPaginatedItems(section, items) {
+  const totalPages = Math.max(1, Math.ceil(items.length / adminState.pageSize));
+  const safePage = Math.min(Math.max(adminState.pagination[section] || 1, 1), totalPages);
+  adminState.pagination[section] = safePage;
+  const start = (safePage - 1) * adminState.pageSize;
+  return items.slice(start, start + adminState.pageSize);
+}
+
+function renderPagination(section, totalItems, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const totalPages = Math.max(1, Math.ceil(totalItems / adminState.pageSize));
+  const currentPage = Math.min(Math.max(adminState.pagination[section] || 1, 1), totalPages);
+  adminState.pagination[section] = currentPage;
+
+  if (totalItems <= adminState.pageSize) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const startItem = (currentPage - 1) * adminState.pageSize + 1;
+  const endItem = Math.min(currentPage * adminState.pageSize, totalItems);
+
+  container.innerHTML = `
+    <div class="admin-pagination-summary">
+      Mostrando ${startItem}-${endItem} de ${totalItems}
+    </div>
+    <div class="admin-pagination-controls">
+      <button
+        type="button"
+        class="btn btn-outline btn-sm"
+        data-admin-page-section="${section}"
+        data-admin-page-target="prev"
+        ${currentPage === 1 ? 'disabled' : ''}
+      >
+        Anterior
+      </button>
+      <span class="admin-pagination-current">Pagina ${currentPage} de ${totalPages}</span>
+      <button
+        type="button"
+        class="btn btn-outline btn-sm"
+        data-admin-page-section="${section}"
+        data-admin-page-target="next"
+        ${currentPage === totalPages ? 'disabled' : ''}
+      >
+        Siguiente
+      </button>
+    </div>
+  `;
+
+  container.querySelectorAll('[data-admin-page-section]').forEach((button) => {
+    button.onclick = () => changeAdminPage(
+      button.getAttribute('data-admin-page-section'),
+      button.getAttribute('data-admin-page-target'),
+    );
+  });
+}
+
+function changeAdminPage(section, direction) {
+  const currentPage = adminState.pagination[section] || 1;
+  adminState.pagination[section] = direction === 'prev'
+    ? Math.max(1, currentPage - 1)
+    : currentPage + 1;
+  renderAdminTables();
 }
 
 function populateAdminSelects() {
@@ -348,7 +444,10 @@ function populateZoneOptionsForStand(selectedZoneId = '') {
   const zoneSelect = document.getElementById('admin-stand-zone');
   if (!zoneSelect) return;
 
-  const zones = adminState.zones.filter((zone) => !eventId || zone.evento_id === eventId);
+  const zones = adminState.zones.filter((zone) => {
+    const zoneType = String(zone.tipo || 'ticket').toLowerCase();
+    return zoneType === 'stand' && (!eventId || zone.evento_id === eventId);
+  });
   const options = [`<option value="">Selecciona una zona</option>`]
     .concat(zones.map((zone) => `<option value="${zone.id}">${escapeHtml(zone.nombre)}</option>`));
 
@@ -411,6 +510,7 @@ function resetZoneForm() {
   setValue('admin-zone-event', '');
   setValue('admin-zone-name', '');
   setValue('admin-zone-capacity', '');
+  setValue('admin-zone-type', 'ticket');
   setValue('admin-zone-price', '');
 }
 
@@ -482,6 +582,7 @@ function editZone(zoneId) {
   setValue('admin-zone-event', zone.evento_id || '');
   setValue('admin-zone-name', zone.nombre || '');
   setValue('admin-zone-capacity', zone.aforo_maximo ?? '');
+  setValue('admin-zone-type', zone.tipo || 'ticket');
   setValue('admin-zone-price', zone.precio ?? '');
 }
 
@@ -596,6 +697,7 @@ async function submitZoneForm(event) {
     evento_id: getValue('admin-zone-event'),
     nombre: getValue('admin-zone-name'),
     aforo_maximo: getValue('admin-zone-capacity'),
+    tipo: getValue('admin-zone-type'),
     precio: getValue('admin-zone-price'),
   };
 

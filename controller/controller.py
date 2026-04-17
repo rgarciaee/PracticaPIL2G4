@@ -77,11 +77,6 @@ def create_user_in_firestore(user_id, email, role="user", avatar_url="", profile
                 "direccion": "",
                 "telefono": "",
                 "avatar_url": "",
-                "preferencias": {
-                    "notificaciones_email": True,
-                    "notificaciones_sms": False,
-                    "idioma": "es"
-                }
             })
         if dni:
             ext_payload["dni"] = dni

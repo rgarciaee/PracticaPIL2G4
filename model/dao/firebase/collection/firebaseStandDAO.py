@@ -19,6 +19,7 @@ class FirebaseStandDAO(InterfaceStandDAO):
                 stand_dto.set_precio_alquiler(stand_data.get("precio_alquiler", 0))
                 stand_dto.set_dimension_m2(stand_data.get("dimension_m2", 0))
                 stand_dto.set_horario(stand_data.get("horario", ""))
+                stand_dto.set_tipo(stand_data.get("tipo", ""))
                 stand_dto.set_nombre(stand_data.get("nombre", ""))
                 stands.insertStand(stand_dto.standdto_to_dict())
         except Exception as e:
@@ -40,6 +41,7 @@ class FirebaseStandDAO(InterfaceStandDAO):
                 stand_dto.set_precio_alquiler(stand_data.get("precio_alquiler", 0))
                 stand_dto.set_dimension_m2(stand_data.get("dimension_m2", 0))
                 stand_dto.set_horario(stand_data.get("horario", ""))
+                stand_dto.set_tipo(stand_data.get("tipo", ""))
                 stand_dto.set_nombre(stand_data.get("nombre", ""))
                 stands.insertStand(stand_dto.standdto_to_dict())
         except Exception as e:

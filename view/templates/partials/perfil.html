@@ -1,7 +1,7 @@
 <div id="perfil-content">
   <section class="profile-header">
     <h1>Mi Perfil</h1>
-    <p>Gestiona tu información personal y preferencias</p>
+    <p>Gestiona tu información personal</p>
   </section>
 
   <div class="profile-layout">
@@ -12,15 +12,6 @@
           id="profile-avatar"
           src="https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg"
           alt="Avatar"
-        />
-        <button id="change-avatar-btn" class="btn-icon">
-          <i class="fas fa-camera"></i>
-        </button>
-        <input
-          type="file"
-          id="avatar-upload"
-          accept="image/*"
-          style="display: none"
         />
       </div>
       <div class="profile-role">
@@ -70,20 +61,13 @@
         </div>
 
         <div class="form-row">
-          <div class="form-group">
+          <div class="form-group full-width">
             <label><i class="fas fa-credit-card"></i> Número de tarjeta</label>
             <input
               type="text"
               id="user-card"
               placeholder="**** **** **** 1234"
             />
-          </div>
-          <div class="form-group">
-            <label><i class="fas fa-globe"></i> Idioma preferido</label>
-            <select id="user-language">
-              <option value="es">Español</option>
-              <option value="en">English</option>
-            </select>
           </div>
         </div>
 
@@ -102,19 +86,6 @@
               style="font-size: 0.75rem; color: var(--text-muted)"
               >Introduce una URL de imagen para tu avatar (jpg, png, gif)</small
             >
-          </div>
-        </div>
-
-        <div class="form-group full-width">
-          <label
-            ><i class="fas fa-bell"></i> Preferencias de notificaciones</label
-          >
-          <div class="checkbox-group">
-            <label
-              ><input type="checkbox" id="notify-email" /> Por correo
-              electrónico</label
-            >
-            <label><input type="checkbox" id="notify-sms" /> Por SMS</label>
           </div>
         </div>
 

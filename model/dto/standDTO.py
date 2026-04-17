@@ -19,6 +19,7 @@ class StandDTO():
         self.precio_alquiler = None
         self.dimension_m2 = None
         self.horario = None
+        self.tipo = None
         self.nombre = None  # Nombre del puesto
 
     def is_Empty(self):
@@ -45,6 +46,9 @@ class StandDTO():
     def get_horario(self): return self.horario
     def set_horario(self, horario): self.horario = horario
 
+    def get_tipo(self): return self.tipo
+    def set_tipo(self, tipo): self.tipo = tipo
+
     def get_nombre(self): return self.nombre
     def set_nombre(self, nombre): self.nombre = nombre
 
@@ -56,5 +60,6 @@ class StandDTO():
             "precio_alquiler": self.precio_alquiler,
             "dimension_m2": self.dimension_m2,
             "horario": self.horario,
+            "tipo": self.tipo,
             "nombre": self.nombre
         }

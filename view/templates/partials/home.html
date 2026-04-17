@@ -1,6 +1,6 @@
 <div id="home-content">
   <section class="hero-section">
-    <div class="hero-badge">✨ Festival 2026</div>
+    <div class="hero-badge">Festival 2026</div>
     <h1 class="hero-title" id="hero-title">Subsonic Festival</h1>
     <p class="hero-description" id="hero-description">
       La experiencia musical definitiva. Vive la magia del sonido.
@@ -32,41 +32,61 @@
   </section>
 
   <section class="featured-section">
-    <div class="section-header">
-      <h2>Eventos destacados</h2>
-      <p>Los más esperados de la temporada</p>
+    <div class="section-header section-header-left">
+      <div>
+        <span class="section-kicker">Seleccion editorial</span>
+        <h2>Eventos que merecen primera fila</h2>
+      </div>
+      <p>Una portada mas limpia, visual y enfocada en lo que realmente importa.</p>
     </div>
 
-    <div class="swiper featured-swiper">
-      <div class="swiper-wrapper" id="featured-swiper-wrapper"></div>
-      <div class="swiper-pagination"></div>
-      <div class="swiper-button-prev"></div>
-      <div class="swiper-button-next"></div>
-    </div>
+    <div id="featured-grid" class="featured-grid"></div>
   </section>
 
   <section class="events-section">
-    <div class="section-header">
-      <h2>Próximos eventos</h2>
-      <p>No te pierdas ninguna fecha</p>
+    <div class="section-header section-header-left">
+      <div>
+        <span class="section-kicker">Agenda completa</span>
+        <h2>Proximos eventos</h2>
+      </div>
+      <p>Descubre fechas, artistas y zonas disponibles de un vistazo.</p>
     </div>
 
-    <div class="events-grid" id="events-grid"></div>
+    <div class="home-carousel-shell">
+      <button id="events-prev" class="home-carousel-nav" type="button" aria-label="Ver eventos anteriores">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div class="events-grid home-carousel-grid" id="events-grid"></div>
+      <button id="events-next" class="home-carousel-nav" type="button" aria-label="Ver mas eventos">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
   </section>
 
   <section class="news-section">
-    <div class="section-header">
-      <h2>Últimas noticias</h2>
-      <p>Mantente al día con todo lo que ocurre</p>
+    <div class="section-header section-header-left">
+      <div>
+        <span class="section-kicker">Actualidad</span>
+        <h2>Ultimas noticias</h2>
+      </div>
+      <p>Mantente al dia con los anuncios mas importantes del festival.</p>
     </div>
 
-    <div class="news-grid" id="news-grid"></div>
+    <div class="home-carousel-shell">
+      <button id="news-prev" class="home-carousel-nav" type="button" aria-label="Ver noticias anteriores">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div class="news-grid home-carousel-grid" id="news-grid"></div>
+      <button id="news-next" class="home-carousel-nav" type="button" aria-label="Ver mas noticias">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
   </section>
 
   <section class="cta-section">
     <div class="cta-content">
-      <h2>¿Listo para la experiencia Subsonic?</h2>
-      <p>Asegura tu lugar y vive la música como nunca antes.</p>
+      <h2>Listo para la experiencia Subsonic?</h2>
+      <p>Asegura tu lugar y vive la musica como nunca antes.</p>
       <button class="btn btn-primary btn-large" id="cta-buy-button">
         Comprar entradas ahora
       </button>

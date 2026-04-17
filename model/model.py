@@ -79,6 +79,7 @@ class Model:
                     for zone in event["zonas"]:
                         if not zone.get("fecha_evento"):
                             zone["fecha_evento"] = event.get("fecha_ini", "")
+                        zone["tipo"] = str(zone.get("tipo", "ticket") or "ticket").strip().lower()
                 except Exception:
                     event["zonas"] = []
 
@@ -118,6 +119,7 @@ class Model:
                 for zone in event["zonas"]:
                     if not zone.get("fecha_evento"):
                         zone["fecha_evento"] = event.get("fecha_ini", "")
+                    zone["tipo"] = str(zone.get("tipo", "ticket") or "ticket").strip().lower()
             except Exception:
                 event["zonas"] = []
 
@@ -154,7 +156,27 @@ class Model:
                             "code": "PROVIDER_ONLY",
                         }
 
-                    rental_entry = self._build_provider_rental_entry(user_id, item)
+                    zone = self._get_zone_summary(item.get("zona_id", ""))
+                    if not zone:
+                        return {"success": False, "error": "La zona seleccionada no existe"}
+                    if zone.get("tipo") != "stand":
+                        return {
+                            "success": False,
+                            "error": "Solo se pueden alquilar zonas de tipo stand",
+                            "code": "INVALID_ZONE_TYPE",
+                        }
+
+                    rental_entry = self._build_provider_rental_entry(
+                        user_id,
+                        {
+                            **item,
+                            "precio": zone["precio"],
+                            "evento_id": zone["evento_id"],
+                            "evento_nombre": zone["evento_nombre"],
+                            "zona_nombre": zone["nombre"],
+                            "fecha_evento": zone["fecha_evento"],
+                        },
+                    )
                     result = self.ticketDAO.add_ticket(rental_entry)
 
                     purchased_tickets.append(
@@ -172,6 +194,16 @@ class Model:
                 cantidad = item.get("cantidad", 1)
                 fecha_evento = item.get("fecha_evento", "")
 
+                zone = self._get_zone_summary(item.get("zona_id", ""))
+                if not zone:
+                    return {"success": False, "error": "La zona seleccionada no existe"}
+                if zone.get("tipo") != "ticket":
+                    return {
+                        "success": False,
+                        "error": "Solo se pueden comprar zonas de tipo ticket",
+                        "code": "INVALID_ZONE_TYPE",
+                    }
+
                 if not fecha_evento and item.get("evento_id"):
                     try:
                         evento = self.get_event_by_id(item.get("evento_id"))
@@ -186,11 +218,11 @@ class Model:
 
                     ticket_data = {
                         "usuario_id": user_id,
-                        "evento_id": item.get("evento_id"),
-                        "evento_nombre": item.get("evento_nombre"),
-                        "zona_id": item.get("zona_id"),
-                        "zona_nombre": item.get("zona_nombre"),
-                        "precio": item.get("precio"),
+                        "evento_id": zone.get("evento_id") or item.get("evento_id"),
+                        "evento_nombre": zone.get("evento_nombre") or item.get("evento_nombre"),
+                        "zona_id": zone.get("id") or item.get("zona_id"),
+                        "zona_nombre": zone.get("nombre") or item.get("zona_nombre"),
+                        "precio": zone.get("precio", item.get("precio")),
                         "localizador_qr": qr_code,
                         "fecha_compra": datetime.now().strftime("%Y-%m-%d"),
                         "fecha_evento": fecha_evento,
@@ -307,6 +339,9 @@ class Model:
                 zones = event.get("zonas", [])
 
                 for zone in zones:
+                    zone["tipo"] = str(zone.get("tipo", "ticket") or "ticket").strip().lower()
+                    if zone["tipo"] != "stand":
+                        continue
                     zone["evento_nombre"] = event.get("nombre")
                     if not zone.get("fecha_evento"):
                         zone["fecha_evento"] = event.get("fecha_ini", "")
@@ -351,6 +386,7 @@ class Model:
             "nombre": zone.get("nombre", ""),
             "precio": zone.get("precio", 0),
             "aforo_maximo": zone.get("aforo_maximo", 0),
+            "tipo": str(zone.get("tipo", "ticket") or "ticket").strip().lower(),
             "evento_id": zone.get("evento_id", ""),
             "evento_nombre": (event or {}).get("nombre", ""),
             "fecha_evento": zone.get("fecha_evento") or (event or {}).get("fecha_ini", ""),
@@ -368,6 +404,12 @@ class Model:
             zone = self._get_zone_summary(zone_id)
             if not zone:
                 return {"success": False, "error": "Zona no encontrada"}
+            if zone.get("tipo") != "stand":
+                return {
+                    "success": False,
+                    "error": "Solo las zonas de tipo stand pueden alquilarse",
+                    "code": "INVALID_ZONE_TYPE",
+                }
 
             rental_entry = self._build_provider_rental_entry(
                 user_id,
@@ -439,6 +481,12 @@ class Model:
             zone = self._get_zone_summary(item.get("zona_id", ""))
             if not zone:
                 return {"success": False, "error": "La zona seleccionada no existe"}
+            if zone.get("tipo") != "stand":
+                return {
+                    "success": False,
+                    "error": "Solo las zonas de tipo stand pueden anadirse al carrito de proveedor",
+                    "code": "INVALID_ZONE_TYPE",
+                }
 
             item = {
                 "id": f"provider_rental_{zone['id']}",
@@ -453,6 +501,18 @@ class Model:
                 "evento_nombre": zone["evento_nombre"],
                 "fecha_evento": zone["fecha_evento"],
             }
+        else:
+            zone_id = item.get("zona_id", "")
+            if zone_id:
+                zone = self._get_zone_summary(zone_id)
+                if not zone:
+                    return {"success": False, "error": "La zona seleccionada no existe"}
+                if zone.get("tipo") != "ticket":
+                    return {
+                        "success": False,
+                        "error": "Solo se pueden anadir al carrito zonas de tipo ticket",
+                        "code": "INVALID_ZONE_TYPE",
+                    }
 
         return self.cartDAO.add_item(user_id, item)
 
@@ -533,12 +593,16 @@ class Model:
     def _sanitize_zone_data(self, zone_data):
         event_id = zone_data.get("evento_id", "").strip()
         event = self._get_doc("events", event_id) if event_id else None
+        zone_type = str(zone_data.get("tipo", "ticket") or "ticket").strip().lower()
+        if zone_type not in {"ticket", "stand"}:
+            zone_type = "ticket"
         return {
             "evento_id": event_id,
             "nombre": zone_data.get("nombre", "").strip(),
             "aforo_maximo": int(zone_data.get("aforo_maximo", 0) or 0),
             "precio": float(zone_data.get("precio", 0) or 0),
             "fecha_evento": zone_data.get("fecha_evento", "") or (event or {}).get("fecha_ini", ""),
+            "tipo": zone_type,
         }
 
     def _sanitize_stand_data(self, stand_data):
@@ -636,14 +700,6 @@ class Model:
                 "telefono": user_data.get("telefono", ""),
                 "rol_asignado": role,
                 "avatar_url": user_data.get("avatar_url", ""),
-                "preferencias": user_data.get(
-                    "preferencias",
-                    {
-                        "notificaciones_email": True,
-                        "notificaciones_sms": False,
-                        "idioma": "es",
-                    },
-                ),
             }
             self.db.collection("users_extended").document(auth_user.uid).set(ext_data)
 
@@ -691,9 +747,6 @@ class Model:
                 "telefono": user_data.get("telefono", ""),
                 "avatar_url": user_data.get("avatar_url", ""),
             }
-
-            if "preferencias" in user_data:
-                ext_payload["preferencias"] = user_data.get("preferencias", {})
 
             self.db.collection("users_extended").document(user_id).set(ext_payload, merge=True)
             return {"success": True}
@@ -819,6 +872,7 @@ class Model:
             zone["evento_nombre"] = event.get("nombre", "")
             if not zone.get("fecha_evento"):
                 zone["fecha_evento"] = event.get("fecha_ini", "")
+            zone["tipo"] = str(zone.get("tipo", "ticket") or "ticket").strip().lower()
 
         zones.sort(key=lambda item: ((item.get("evento_nombre") or "") + (item.get("nombre") or "")).lower())
         return zones
@@ -832,6 +886,8 @@ class Model:
                 return {"success": False, "error": "El evento es obligatorio"}
             if not self._doc_exists("events", payload["evento_id"]):
                 return {"success": False, "error": "El evento seleccionado no existe"}
+            if payload.get("tipo") not in {"ticket", "stand"}:
+                return {"success": False, "error": "El tipo de zona debe ser ticket o stand"}
             return self.zoneDAO.add_zone(payload)
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -847,6 +903,17 @@ class Model:
                 return {"success": False, "error": "El evento es obligatorio"}
             if not self._doc_exists("events", payload["evento_id"]):
                 return {"success": False, "error": "El evento seleccionado no existe"}
+            if payload.get("tipo") not in {"ticket", "stand"}:
+                return {"success": False, "error": "El tipo de zona debe ser ticket o stand"}
+            if payload.get("tipo") != "stand":
+                has_related_stands = any(
+                    True for _ in self.db.collection("stands").where("zona_id", "==", zone_id).stream()
+                )
+                if has_related_stands:
+                    return {
+                        "success": False,
+                        "error": "No puedes cambiar a ticket una zona que ya tiene stands asociados",
+                    }
 
             self.db.collection("zones").document(zone_id).set(payload, merge=True)
 
@@ -898,6 +965,8 @@ class Model:
                 return {"success": False, "error": "La zona seleccionada no existe"}
             if zone.get("evento_id") != payload["evento_id"]:
                 return {"success": False, "error": "La zona no pertenece al evento seleccionado"}
+            if str(zone.get("tipo", "ticket") or "ticket").strip().lower() != "stand":
+                return {"success": False, "error": "Solo se pueden crear stands en zonas de tipo stand"}
 
             doc_ref = self.db.collection("stands").document()
             payload["id"] = doc_ref.id
@@ -924,6 +993,8 @@ class Model:
                 return {"success": False, "error": "La zona seleccionada no existe"}
             if zone.get("evento_id") != payload["evento_id"]:
                 return {"success": False, "error": "La zona no pertenece al evento seleccionado"}
+            if str(zone.get("tipo", "ticket") or "ticket").strip().lower() != "stand":
+                return {"success": False, "error": "Solo se pueden asignar stands a zonas de tipo stand"}
 
             self.db.collection("stands").document(stand_id).set(payload, merge=True)
             return {"success": True}

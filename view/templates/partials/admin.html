@@ -111,6 +111,7 @@
               <tbody id="admin-users-table"></tbody>
             </table>
           </div>
+          <div id="admin-users-pagination" class="admin-pagination"></div>
         </section>
       </div>
     </div>
@@ -217,6 +218,7 @@
               <tbody id="admin-events-table"></tbody>
             </table>
           </div>
+          <div id="admin-events-pagination" class="admin-pagination"></div>
         </section>
       </div>
     </div>
@@ -273,6 +275,7 @@
               <tbody id="admin-artists-table"></tbody>
             </table>
           </div>
+          <div id="admin-artists-pagination" class="admin-pagination"></div>
         </section>
       </div>
     </div>
@@ -299,6 +302,13 @@
               <input id="admin-zone-capacity" type="number" min="0" />
             </div>
             <div class="input-group">
+              <label for="admin-zone-type">Tipo</label>
+              <select id="admin-zone-type">
+                <option value="ticket">ticket</option>
+                <option value="stand">stand</option>
+              </select>
+            </div>
+            <div class="input-group">
               <label for="admin-zone-price">Precio</label>
               <input id="admin-zone-price" type="number" min="0" step="0.01" />
             </div>
@@ -318,6 +328,7 @@
                 <tr>
                   <th>Zona</th>
                   <th>Evento</th>
+                  <th>Tipo</th>
                   <th>Aforo</th>
                   <th>Acciones</th>
                 </tr>
@@ -325,6 +336,7 @@
               <tbody id="admin-zones-table"></tbody>
             </table>
           </div>
+          <div id="admin-zones-pagination" class="admin-pagination"></div>
         </section>
       </div>
     </div>
@@ -389,6 +401,7 @@
               <tbody id="admin-stands-table"></tbody>
             </table>
           </div>
+          <div id="admin-stands-pagination" class="admin-pagination"></div>
         </section>
       </div>
     </div>

@@ -19,6 +19,7 @@ class ZoneDTO():
         self.aforo_maximo = None
         self.precio = None
         self.fecha_evento = None
+        self.tipo = None
 
     def is_Empty(self):
         return (self.id is None and self.evento_id is None and 
@@ -44,6 +45,9 @@ class ZoneDTO():
     def get_fecha_evento(self): return self.fecha_evento
     def set_fecha_evento(self, fecha_evento): self.fecha_evento = fecha_evento
 
+    def get_tipo(self): return self.tipo
+    def set_tipo(self, tipo): self.tipo = tipo
+
     def zonedto_to_dict(self):
         return {
             "id": self.id,
@@ -51,5 +55,6 @@ class ZoneDTO():
             "nombre": self.nombre,
             "aforo_maximo": self.aforo_maximo,
             "precio": self.precio,
-            "fecha_evento": self.fecha_evento
+            "fecha_evento": self.fecha_evento,
+            "tipo": self.tipo
         }

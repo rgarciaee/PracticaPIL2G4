@@ -19,6 +19,7 @@ class FirebaseZoneDAO(InterfaceZoneDAO):
                 zone_dto.set_aforo_maximo(zone_data.get("aforo_maximo", 0))
                 zone_dto.set_precio(zone_data.get("precio", 0))
                 zone_dto.set_fecha_evento(zone_data.get("fecha_evento", ""))
+                zone_dto.set_tipo(zone_data.get("tipo", "ticket"))
                 zones.insertZone(zone_dto.zonedto_to_dict())
         except Exception as e:
             print(f"Error en get_zones_by_event: {e}")
@@ -36,6 +37,7 @@ class FirebaseZoneDAO(InterfaceZoneDAO):
                 zone_dto.set_aforo_maximo(zone_data.get("aforo_maximo", 0))
                 zone_dto.set_precio(zone_data.get("precio", 0))
                 zone_dto.set_fecha_evento(zone_data.get("fecha_evento", ""))
+                zone_dto.set_tipo(zone_data.get("tipo", "ticket"))
                 return zone_dto.zonedto_to_dict()
             return None
         except Exception as e:
