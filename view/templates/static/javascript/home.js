@@ -20,9 +20,7 @@ window.initHome = async function () {
 
   setupHomeCtas();
   setupHomeCarousels();
-  loadGlobalStats();
-  loadEvents();
-  loadNews();
+  await loadHomePayload();
 };
 
 function setupHomeCtas() {
@@ -56,37 +54,26 @@ function handleHomeResize() {
   }
 }
 
-async function loadEvents() {
+async function loadHomePayload() {
   try {
-    const response = await fetch("/api/events");
-    const result = await response.json();
+    const homeData = await window.app?.getHomeData?.();
+    const eventsSource = Array.isArray(homeData?.events) ? homeData.events : [];
+    const news = Array.isArray(homeData?.news) ? homeData.news : [];
+    const stats = homeData?.stats || null;
 
-    if (result.success && Array.isArray(result.data)) {
-      const events = [...result.data].sort(sortEventsByDate);
-      homeState.events = events;
-      homeState.carousels.events.page = 0;
-      renderFeaturedEvents(events);
-      renderEventsGrid(events);
-      bindHomeEventActions();
-    } else {
-      console.error("Error cargando eventos:", result);
-    }
-  } catch (error) {
-    console.error("Error fatal cargando eventos:", error);
-  }
-}
+    const events = [...eventsSource].sort(sortEventsByDate);
+    homeState.events = events;
+    homeState.carousels.events.page = 0;
+    renderFeaturedEvents(events);
+    renderEventsGrid(events);
+    bindHomeEventActions();
 
-async function loadNews() {
-  try {
-    const yamlResponse = await fetch("/static/yaml/data.yaml");
-    const yamlText = await yamlResponse.text();
-    const yamlData = jsyaml.load(yamlText);
-    const news = Array.isArray(yamlData.news) ? yamlData.news : [];
     homeState.news = news;
     homeState.carousels.news.page = 0;
     renderNews(news);
+    renderHomeStats(stats, events);
   } catch (error) {
-    console.error("Error fatal cargando noticias:", error);
+    console.error("Error fatal cargando home:", error);
   }
 }
 
@@ -354,23 +341,34 @@ function bindHomeEventActions() {
   });
 }
 
-async function loadGlobalStats() {
-  try {
-    const res = await fetch("/api/stats");
-    const result = await res.json();
+function renderHomeStats(stats, events = []) {
+  const eventsEl = document.getElementById("stat-events");
+  const artistsEl = document.getElementById("stat-artists");
+  const attendeesEl = document.getElementById("stat-attendees");
 
-    if (result.success && result.data) {
-      const eventsEl = document.getElementById("stat-events");
-      const artistsEl = document.getElementById("stat-artists");
-      const attendeesEl = document.getElementById("stat-attendees");
+  const fallbackStats = buildStatsFromEvents(events);
+  const safeStats = stats || fallbackStats;
 
-      if (eventsEl) eventsEl.textContent = result.data.totalEventos;
-      if (artistsEl) artistsEl.textContent = result.data.totalArtistas;
-      if (attendeesEl) attendeesEl.textContent = formatNumber(result.data.totalAsistentes);
-    }
-  } catch (e) {
-    console.error("Error cargando estadisticas globales:", e);
-  }
+  if (eventsEl) eventsEl.textContent = safeStats.totalEventos;
+  if (artistsEl) artistsEl.textContent = safeStats.totalArtistas;
+  if (attendeesEl) attendeesEl.textContent = formatNumber(safeStats.totalAsistentes);
+}
+
+function buildStatsFromEvents(events) {
+  return (events || []).reduce((accumulator, event) => {
+    accumulator.totalEventos += 1;
+    accumulator.totalArtistas += getArtistCount(event);
+    accumulator.totalAsistentes += (event.zonas || []).reduce((zoneTotal, zone) => {
+      return String(zone?.tipo || "").trim().toLowerCase() === "ticket"
+        ? zoneTotal + Number(zone?.aforo_maximo || 0)
+        : zoneTotal;
+    }, 0);
+    return accumulator;
+  }, {
+    totalEventos: 0,
+    totalArtistas: 0,
+    totalAsistentes: 0,
+  });
 }
 
 function getPalette(index) {

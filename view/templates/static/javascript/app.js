@@ -31,6 +31,11 @@ class SubsonicApp {
   constructor() {
     console.log("Constructor de SubsonicApp llamado");
     this.data = null;
+    this.dataPromise = null;
+    this.eventsCache = null;
+    this.eventsPromise = null;
+    this.homeCache = null;
+    this.homePromise = null;
     this.currentUser = null;
     this.cart = [];
     this.isLoading = false;
@@ -289,30 +294,125 @@ class SubsonicApp {
   // ============================================================
 
   async loadData() {
-    try {
-      const response = await fetch("/static/yaml/data.yaml");
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-      const text = await response.text();
-      this.data = jsyaml.load(text);
-
-      window.dispatchEvent(
-        new CustomEvent("appDataLoaded", {
-          detail: { data: this.data },
-        }),
-      );
-
-      console.log("Datos cargados correctamente");
+    if (this.data) {
       return this.data;
-    } catch (error) {
-      console.error("Error cargando datos:", error);
-      this.showToast("Error al cargar los datos", "error");
     }
+
+    if (this.dataPromise) {
+      return this.dataPromise;
+    }
+
+    this.dataPromise = (async () => {
+      try {
+        const response = await fetch("/static/yaml/data.yaml");
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const text = await response.text();
+        this.data = jsyaml.load(text);
+
+        window.dispatchEvent(
+          new CustomEvent("appDataLoaded", {
+            detail: { data: this.data },
+          }),
+        );
+
+        console.log("Datos cargados correctamente");
+        return this.data;
+      } catch (error) {
+        console.error("Error cargando datos:", error);
+        this.showToast("Error al cargar los datos", "error");
+        this.data = null;
+        return null;
+      } finally {
+        this.dataPromise = null;
+      }
+    })();
+
+    return this.dataPromise;
+  }
+
+  async getAppData() {
+    if (this.data) {
+      return this.data;
+    }
+
+    return this.loadData();
+  }
+
+  async getEventsData(forceRefresh = false) {
+    if (!forceRefresh && Array.isArray(this.eventsCache)) {
+      return this.eventsCache;
+    }
+
+    if (!forceRefresh && this.eventsPromise) {
+      return this.eventsPromise;
+    }
+
+    this.eventsPromise = (async () => {
+      try {
+        const response = await fetch("/api/events");
+        const result = await response.json();
+
+        if (result.success && Array.isArray(result.data)) {
+          this.eventsCache = result.data;
+          return this.eventsCache;
+        }
+
+        console.error("Error cargando eventos:", result);
+        this.eventsCache = [];
+        return [];
+      } catch (error) {
+        console.error("Error cargando eventos:", error);
+        this.eventsCache = [];
+        return [];
+      } finally {
+        this.eventsPromise = null;
+      }
+    })();
+
+    return this.eventsPromise;
+  }
+
+  async getHomeData(forceRefresh = false) {
+    if (!forceRefresh && this.homeCache) {
+      return this.homeCache;
+    }
+
+    if (!forceRefresh && this.homePromise) {
+      return this.homePromise;
+    }
+
+    this.homePromise = (async () => {
+      try {
+        const response = await fetch("/api/home");
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          this.homeCache = result.data;
+          if (Array.isArray(result.data.events)) {
+            this.eventsCache = result.data.events;
+          }
+          return this.homeCache;
+        }
+
+        console.error("Error cargando home:", result);
+        this.homeCache = { events: [], stats: null, news: [] };
+        return this.homeCache;
+      } catch (error) {
+        console.error("Error cargando home:", error);
+        this.homeCache = { events: [], stats: null, news: [] };
+        return this.homeCache;
+      } finally {
+        this.homePromise = null;
+      }
+    })();
+
+    return this.homePromise;
   }
 
   // ============================================================
-  // MÉTODOS PARA PROCESAR COMPRAS
+  // MÉTODOS DE CARGA DE DATOS
   // ============================================================
 
   async processCheckout(items, total) {
@@ -445,19 +545,16 @@ class SubsonicApp {
     this.searchIndex = [];
 
     let events = [];
+    const appData = await this.getAppData();
 
     try {
-      const response = await fetch("/api/events");
-      const result = await response.json();
-      if (result.success && Array.isArray(result.data)) {
-        events = result.data;
-      }
+      events = await this.getEventsData();
     } catch (error) {
       console.error("Error cargando eventos para la busqueda:", error);
     }
 
-    if (!events.length && this.data?.events) {
-      events = this.data.events;
+    if (!events.length && appData?.events) {
+      events = appData.events;
     }
 
     this.searchIndex.push(

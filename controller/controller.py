@@ -6,6 +6,7 @@ from firebase_admin import auth
 from datetime import datetime
 from view.view import View
 from model.model import Model
+from pathlib import Path
 
 import json
 
@@ -18,6 +19,43 @@ sessions = {}
 
 myviewcomponent = View()
 mymodelcomponent = Model()
+_YAML_DATA_PATH = Path("view/templates/static/yaml/data.yaml")
+
+
+def build_global_stats_payload(events):
+    total_eventos = len(events)
+    total_artistas = 0
+    total_asistentes = 0
+
+    for event in events:
+        if "artistas" in event and isinstance(event["artistas"], list):
+            total_artistas += len(event["artistas"])
+
+        if "zonas" in event and isinstance(event["zonas"], list):
+            for zona in event["zonas"]:
+                if str(zona.get("tipo", "")).strip().lower() != "ticket":
+                    continue
+                total_asistentes += int(zona.get("aforo_maximo", 0))
+
+    return {
+        "totalEventos": total_eventos,
+        "totalArtistas": total_artistas,
+        "totalAsistentes": total_asistentes,
+    }
+
+
+def load_home_news():
+    try:
+        import yaml
+
+        with _YAML_DATA_PATH.open("r", encoding="utf-8") as yaml_file:
+            yaml_data = yaml.safe_load(yaml_file) or {}
+
+        news = yaml_data.get("news", [])
+        return news if isinstance(news, list) else []
+    except Exception as e:
+        print("Error cargando noticias home:", e)
+        return []
 
 
 # ============================================================
@@ -240,6 +278,25 @@ async def get_events():
         return {"success": False, "error": str(e)}
 
 
+@app.get("/api/home")
+async def get_home_data():
+    """Publico - Devuelve en una sola respuesta los datos principales de la home"""
+    try:
+        events = json.loads(mymodelcomponent.get_all_events())
+        stats = build_global_stats_payload(events)
+        news = load_home_news()
+        return {
+            "success": True,
+            "data": {
+                "events": events,
+                "stats": stats,
+                "news": news,
+            },
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
 @app.get("/api/events/{event_id}")
 async def get_event(event_id: str):
     """Público - Cualquiera puede ver los detalles de un evento"""
@@ -258,34 +315,10 @@ async def get_event(event_id: str):
 async def get_stats():
     """Público - Calcula y devuelve las estadísticas totales del festival"""
     try:
-        # Obtenemos todos los eventos de la base de datos
         events = json.loads(mymodelcomponent.get_all_events())
-        
-        total_eventos = len(events)
-        total_artistas = 0
-        total_asistentes = 0
-        
-        # Calculamos los totales recorriendo todos los eventos
-        for event in events:
-            # Sumar artistas si existen
-            if "artistas" in event and isinstance(event["artistas"], list):
-                total_artistas += len(event["artistas"])
-                
-            # Sumar solo el aforo de las zonas de tipo ticket
-            if "zonas" in event and isinstance(event["zonas"], list):
-                for zona in event["zonas"]:
-                    if str(zona.get("tipo", "")).strip().lower() != "ticket":
-                        continue
-                    # Usamos .get() con un valor por defecto 0 por si alguna zona no tiene aforo definido
-                    total_asistentes += int(zona.get("aforo_maximo", 0))
-                    
         return {
             "success": True, 
-            "data": {
-                "totalEventos": total_eventos,
-                "totalArtistas": total_artistas,
-                "totalAsistentes": total_asistentes
-            }
+            "data": build_global_stats_payload(events),
         }
         
     except Exception as e:
