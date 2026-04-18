@@ -221,6 +221,21 @@
   margin-bottom: 1rem;
 }
 
+#historial-content .history-pagination {
+  margin-top: 2rem;
+}
+
+#historial-content .history-pagination.is-hidden {
+  display: none;
+}
+
+#historial-content .history-page-summary {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-right: 0.4rem;
+}
+
 @media (max-width: 768px) {
   #historial-content .history-filters {
     flex-direction: column;

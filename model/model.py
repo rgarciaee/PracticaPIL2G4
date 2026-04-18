@@ -84,8 +84,8 @@ class Model:
                     event["zonas"] = []
 
                 try:
-                    event["puestos"] = json.loads(
-                        self.standDAO.get_stands_by_event(event_id)
+                    event["puestos"] = self._enrich_stands_with_zone_names(
+                        json.loads(self.standDAO.get_stands_by_event(event_id))
                     )
                 except Exception:
                     event["puestos"] = []
@@ -124,8 +124,8 @@ class Model:
                 event["zonas"] = []
 
             try:
-                event["puestos"] = json.loads(
-                    self.standDAO.get_stands_by_event(event_id)
+                event["puestos"] = self._enrich_stands_with_zone_names(
+                    json.loads(self.standDAO.get_stands_by_event(event_id))
                 )
             except Exception:
                 event["puestos"] = []
@@ -391,6 +391,17 @@ class Model:
             "evento_nombre": (event or {}).get("nombre", ""),
             "fecha_evento": zone.get("fecha_evento") or (event or {}).get("fecha_ini", ""),
         }
+
+    def _enrich_stands_with_zone_names(self, stands):
+        enriched_stands = []
+
+        for stand in stands or []:
+            stand_data = dict(stand)
+            zone = self._get_zone_summary(stand_data.get("zona_id", ""))
+            stand_data["zona_nombre"] = zone.get("nombre", "") if zone else ""
+            enriched_stands.append(stand_data)
+
+        return enriched_stands
 
     def request_zone_rental(self, zone_id, user_id, request_data):
         try:

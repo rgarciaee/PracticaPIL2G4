@@ -75,9 +75,24 @@
   margin-bottom: 3rem;
 }
 
+#proveedor-content #provider-events-list.provider-events-grid {
+  grid-template-columns: 1fr;
+}
+
+#proveedor-content .provider-zones-section {
+  margin-bottom: 3.5rem;
+}
+
 #proveedor-content .provider-section-head {
   text-align: left;
   margin-bottom: 1.5rem;
+}
+
+#proveedor-content .provider-section-head-split {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
 }
 
 #proveedor-content .provider-section-head h2 {
@@ -89,7 +104,35 @@
   color: var(--text-muted);
 }
 
-#proveedor-content .provider-event-card,
+#proveedor-content .provider-results-copy {
+  margin: 0;
+  color: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+#proveedor-content .provider-zones-tools {
+  display: flex;
+  align-items: end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+#proveedor-content .provider-filter-box {
+  min-width: 240px;
+}
+
+#proveedor-content .provider-filter-box label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+#proveedor-content .provider-consultant-card,
 #proveedor-content .zone-card,
 #proveedor-content .provider-cta {
   background: var(--bg-card);
@@ -98,57 +141,200 @@
   box-shadow: var(--shadow-lg);
 }
 
-#proveedor-content .provider-event-card {
-  padding: 1.5rem;
+#proveedor-content .provider-consultant-card {
+  padding: 1.6rem;
+  background:
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.1), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 70%),
+    var(--bg-card);
 }
 
-#proveedor-content .provider-event-header {
+#proveedor-content .provider-consultant-toolbar {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
-  align-items: baseline;
-  margin-bottom: 0.5rem;
+  gap: 1.5rem;
+  align-items: end;
+  margin-bottom: 1.5rem;
 }
 
-#proveedor-content .provider-event-header h3 {
+#proveedor-content .provider-consultant-copy h3,
+#proveedor-content .provider-event-overview h4 {
   margin: 0;
 }
 
-#proveedor-content .provider-event-dates {
+#proveedor-content .provider-consultant-copy p {
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+}
+
+#proveedor-content .provider-consultant-kicker {
+  display: inline-flex;
+  margin-bottom: 0.65rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary-color) 16%, transparent);
+  color: var(--primary-color);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#proveedor-content .provider-consultant-picker {
+  min-width: 260px;
+}
+
+#proveedor-content .provider-consultant-picker label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+#proveedor-content .provider-event-selector {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font: inherit;
+}
+
+#proveedor-content .provider-event-selector:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 14%, transparent);
+}
+
+#proveedor-content .provider-event-overview {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+  margin-bottom: 1.25rem;
+}
+
+#proveedor-content .provider-event-overview-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+#proveedor-content .provider-event-badge {
+  display: inline-flex;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary-color) 14%, transparent);
   color: var(--primary-color);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.84rem;
+}
+
+#proveedor-content .provider-event-badge-soft {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
 }
 
 #proveedor-content .provider-event-location {
   color: var(--text-muted);
-  margin-bottom: 1rem;
+  margin: 0.45rem 0 0;
 }
 
 #proveedor-content .provider-event-schedule {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+#proveedor-content .provider-schedule-day {
+  border: 1px solid color-mix(in srgb, var(--primary-color) 20%, var(--border-color));
+  border-radius: calc(var(--radius-md) + 0.1rem);
+  padding: 1rem;
+  background: color-mix(in srgb, var(--bg-secondary) 82%, transparent);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-#proveedor-content .provider-schedule-day {
-  padding-top: 0.75rem;
-  border-top: 1px dashed var(--border-color);
+#proveedor-content .provider-schedule-date {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary-color) 14%, transparent);
+  color: var(--primary-color);
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
-#proveedor-content .provider-schedule-day ul {
-  margin: 0.5rem 0 0;
-  padding-left: 1rem;
+#proveedor-content .provider-schedule-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
 }
 
-#proveedor-content .provider-schedule-day li {
+#proveedor-content .provider-schedule-slot {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+#proveedor-content .provider-schedule-time {
+  flex: 0 0 auto;
+  min-width: 3.6rem;
+  text-align: center;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+#proveedor-content .provider-schedule-artist {
   color: var(--text-secondary);
-  margin-bottom: 0.25rem;
+  line-height: 1.35;
+}
+
+#proveedor-content .provider-schedule-slot-empty {
+  justify-content: center;
+  color: var(--text-muted);
 }
 
 #proveedor-content .provider-event-empty {
   color: var(--text-muted);
   margin: 0;
+}
+
+#proveedor-content .provider-event-empty-state {
+  display: grid;
+  place-items: center;
+  gap: 0.65rem;
+  min-height: 260px;
+  padding: 2rem;
+  border-radius: calc(var(--radius-md) + 0.1rem);
+  background: color-mix(in srgb, var(--bg-secondary) 82%, transparent);
+  border: 1px dashed var(--border-color);
+  text-align: center;
+}
+
+#proveedor-content .provider-event-empty-state i {
+  font-size: 2rem;
+  color: var(--primary-color);
+}
+
+#proveedor-content .provider-event-empty-state h4 {
+  margin: 0;
+}
+
+#proveedor-content .provider-event-empty-state p {
+  margin: 0;
+  color: var(--text-muted);
+  max-width: 28rem;
 }
 
 #proveedor-content .zone-card {
@@ -215,9 +401,49 @@
   margin-top: 1rem;
 }
 
+#proveedor-content .provider-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.75rem;
+}
+
+#proveedor-content .provider-page-btn {
+  min-width: 7.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+#proveedor-content .provider-page-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--primary-color) 34%, var(--border-color));
+  box-shadow: var(--shadow-md);
+}
+
+#proveedor-content .provider-page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+#proveedor-content .provider-page-status {
+  padding: 0.8rem 1.2rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-secondary) 84%, transparent);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
 #proveedor-content .provider-cta {
   text-align: center;
   padding: 2rem;
+  margin-top: 1rem;
   background:
     radial-gradient(circle at top right, rgba(236, 72, 153, 0.1), transparent 32%),
     var(--bg-card);
@@ -232,6 +458,34 @@
   margin-bottom: 1.5rem;
 }
 
+[data-theme="light"] #proveedor-content .provider-header {
+  background:
+    radial-gradient(circle at top left, rgba(250, 204, 21, 0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.1), transparent 30%),
+    linear-gradient(135deg, #ffffff, color-mix(in srgb, var(--primary-color) 10%, #ffffff));
+  border: 1px solid color-mix(in srgb, var(--border-color) 88%, white 12%);
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] #proveedor-content .provider-header h1 {
+  color: var(--text-primary);
+}
+
+[data-theme="light"] #proveedor-content .provider-header p {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] #proveedor-content .provider-schedule-slot {
+  background: color-mix(in srgb, var(--bg-card) 92%, white 8%);
+  border: 1px solid color-mix(in srgb, var(--border-color) 78%, white 22%);
+}
+
+[data-theme="light"] #proveedor-content .provider-cta {
+  background:
+    radial-gradient(circle at top right, rgba(236, 72, 153, 0.08), transparent 32%),
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-card) 96%, white 4%), var(--bg-card));
+}
+
 @media (max-width: 768px) {
   #proveedor-content .provider-stats {
     grid-template-columns: 1fr;
@@ -242,8 +496,38 @@
     grid-template-columns: 1fr;
   }
 
-  #proveedor-content .provider-event-header {
+  #proveedor-content .provider-section-head-split,
+  #proveedor-content .provider-consultant-toolbar,
+  #proveedor-content .provider-event-overview {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  #proveedor-content .provider-results-copy {
+    white-space: normal;
+  }
+
+  #proveedor-content .provider-pagination {
+    flex-direction: column;
+  }
+
+  #proveedor-content .provider-consultant-picker {
+    min-width: 100%;
+  }
+
+  #proveedor-content .provider-zones-tools,
+  #proveedor-content .provider-filter-box {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  #proveedor-content .provider-event-schedule {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1180px) {
+  #proveedor-content .provider-event-schedule {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

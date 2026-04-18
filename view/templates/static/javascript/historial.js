@@ -1,4 +1,8 @@
 let allTickets = [];
+let filteredTickets = [];
+let currentPage = 1;
+
+const TICKETS_PER_PAGE = 8;
 
 window.initHistorial = async function () {
     console.log('Inicializando historial...');
@@ -9,6 +13,8 @@ window.initHistorial = async function () {
 
 async function loadHistoryData() {
     allTickets = [];
+    filteredTickets = [];
+    currentPage = 1;
 
     try {
         const response = await fetch('/api/history', {
@@ -38,24 +44,34 @@ async function loadHistoryData() {
         console.error('Error cargando historial:', error);
     }
 
-    renderTickets(allTickets);
+    filteredTickets = [...allTickets];
+    renderTickets();
 }
 
-function renderTickets(ticketsToShow) {
+function renderTickets() {
     const container = document.getElementById('history-list');
     const emptyMsg = document.getElementById('no-tickets-message');
+    const pagination = document.getElementById('history-pagination');
 
-    if (!container || !emptyMsg) return;
+    if (!container || !emptyMsg || !pagination) return;
 
-    if (!ticketsToShow || ticketsToShow.length === 0) {
+    if (!filteredTickets.length) {
         container.innerHTML = '';
         emptyMsg.classList.remove('is-hidden');
+        pagination.innerHTML = '';
+        pagination.classList.add('is-hidden');
         return;
     }
 
     emptyMsg.classList.add('is-hidden');
 
-    container.innerHTML = ticketsToShow.map(ticket => {
+    const totalPages = Math.max(1, Math.ceil(filteredTickets.length / TICKETS_PER_PAGE));
+    currentPage = Math.min(Math.max(1, currentPage), totalPages);
+
+    const start = (currentPage - 1) * TICKETS_PER_PAGE;
+    const visibleTickets = filteredTickets.slice(start, start + TICKETS_PER_PAGE);
+
+    container.innerHTML = visibleTickets.map(ticket => {
         const normalizedStatus = normalizeClassName(ticket.estado);
         const typeLabel = ticket.detalle_tipo || 'Entrada';
         const codeLabel = 'Codigo';
@@ -82,7 +98,7 @@ function renderTickets(ticketsToShow) {
                     </div>
                     <div class="ticket-info-item">
                         <span class="label">Importe</span>
-                        <span class="value">${Number(ticket.precio || 0).toFixed(2)} EUR</span>
+                        <span class="value">${formatCurrencyValue(ticket.precio || 0)}</span>
                     </div>
                 </div>
                 <div class="ticket-qr">
@@ -109,6 +125,66 @@ function renderTickets(ticketsToShow) {
             window.app?.showToast('Codigo copiado', 'success');
         };
     });
+
+    renderHistoryPagination(totalPages);
+}
+
+function renderHistoryPagination(totalPages) {
+    const pagination = document.getElementById('history-pagination');
+    if (!pagination) return;
+
+    pagination.classList.remove('is-hidden');
+    pagination.dataset.totalPages = String(totalPages);
+    pagination.dataset.totalItems = String(filteredTickets.length);
+
+    const pageItems = Array.from({ length: totalPages }, (_, index) => {
+        const page = index + 1;
+        return `
+            <button
+                type="button"
+                class="page-item pagination-button ${page === currentPage ? 'active' : ''}"
+                data-history-page="${page}"
+                aria-label="Ir a la pagina ${page}"
+                aria-current="${page === currentPage ? 'page' : 'false'}"
+            >
+                ${page}
+            </button>
+        `;
+    }).join('');
+
+    pagination.innerHTML = `
+        <span class="history-page-summary">Pagina ${currentPage} de ${totalPages}</span>
+        <button
+            type="button"
+            class="page-item pagination-button pagination-button-nav history-page-nav"
+            data-history-page="${currentPage - 1}"
+            ${currentPage === 1 ? 'disabled' : ''}
+            aria-label="Pagina anterior"
+        >
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        ${pageItems}
+        <button
+            type="button"
+            class="page-item pagination-button pagination-button-nav history-page-nav"
+            data-history-page="${currentPage + 1}"
+            ${currentPage === totalPages ? 'disabled' : ''}
+            aria-label="Pagina siguiente"
+        >
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    `;
+
+    pagination.querySelectorAll('[data-history-page]').forEach(button => {
+        button.addEventListener('click', () => {
+            if (button.disabled) return;
+            const nextPage = Number(button.dataset.historyPage);
+            if (!Number.isFinite(nextPage) || nextPage === currentPage) return;
+            currentPage = nextPage;
+            renderTickets();
+            pagination.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    });
 }
 
 function setupFilters() {
@@ -129,7 +205,7 @@ function setupFilters() {
         const fromValue = dateFrom.value;
         const toValue = dateTo.value;
 
-        const filtered = allTickets.filter(ticket => {
+        filteredTickets = allTickets.filter(ticket => {
             if (eventValue && !ticket.evento.toLowerCase().includes(eventValue)) {
                 return false;
             }
@@ -158,7 +234,8 @@ function setupFilters() {
             return true;
         });
 
-        renderTickets(filtered);
+        currentPage = 1;
+        renderTickets();
     };
 
     eventInput.addEventListener('input', applyFilters);
@@ -172,7 +249,9 @@ function setupFilters() {
             statusSelect.value = 'all';
             dateFrom.value = '';
             dateTo.value = '';
-            renderTickets(allTickets);
+            filteredTickets = [...allTickets];
+            currentPage = 1;
+            renderTickets();
             window.app?.showToast('Filtros limpiados', 'info');
         };
     }
@@ -226,4 +305,13 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+function formatCurrencyValue(value) {
+    if (window.formatCurrency) {
+        return window.formatCurrency(value);
+    }
+
+    const parsed = Number(value);
+    return `${Number.isFinite(parsed) ? parsed.toFixed(2) : '0.00'} EUR`;
 }

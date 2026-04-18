@@ -1,21 +1,21 @@
 <div id="proveedor-content">
-  <section class="provider-header">
+  <section class="provider-header page-hero page-hero-dark">
       <h1>Zonas para proveedores</h1>
       <p>Alquila un espacio dentro del festival para ofrecer tus productos o servicios</p>
   </section>
 
   <div class="provider-stats">
-      <div class="stat-card">
+      <div class="stat-card surface-card">
           <i class="fas fa-store"></i>
           <span class="stat-number" id="total-zones">--</span>
           <span class="stat-label">Zonas disponibles</span>
       </div>
-      <div class="stat-card">
+      <div class="stat-card surface-card">
           <i class="fas fa-chart-line"></i>
           <span class="stat-number" id="daily-visitors">--</span>
-          <span class="stat-label">Visitantes diarios</span>
+          <span class="stat-label">Capacidad de stands</span>
       </div>
-      <div class="stat-card">
+      <div class="stat-card surface-card">
           <i class="fas fa-tag"></i>
           <span class="stat-number" id="zone-min-price">--</span>
           <span class="stat-label">Precio por zona</span>
@@ -24,15 +24,34 @@
 
   <section class="provider-events-section">
       <div class="provider-section-head">
-          <h2>Eventos y horarios</h2>
-          <p>Consulta el calendario de cada evento antes de solicitar una zona.</p>
+          <h2>Consultor de horarios</h2>
+          <p>Selecciona un evento y revisa su agenda por dias antes de elegir la zona que quieres solicitar.</p>
       </div>
       <div class="provider-events-grid" id="provider-events-list"></div>
   </section>
 
-  <div class="zones-grid" id="zones-list"></div>
+  <section class="provider-zones-section">
+      <div class="provider-section-head provider-section-head-split">
+          <div>
+              <h2>Zonas para exponer</h2>
+              <p>Selecciona el espacio que mejor encaja con tu actividad y revisa sus datos antes de solicitarlo.</p>
+          </div>
+          <div class="provider-zones-tools">
+              <div class="provider-filter-box">
+                  <label for="provider-zone-event-filter">Filtrar por evento</label>
+                  <select id="provider-zone-event-filter" class="provider-event-selector">
+                      <option value="">Todos los eventos</option>
+                  </select>
+              </div>
+              <p class="provider-results-copy" id="provider-zones-summary"></p>
+          </div>
+      </div>
 
-  <div class="provider-cta">
+      <div class="zones-grid" id="zones-list"></div>
+      <div class="provider-pagination" id="provider-zones-pagination"></div>
+  </section>
+
+  <div class="provider-cta surface-card">
       <h3>Tienes dudas?</h3>
       <p>Contactanos para mas informacion sobre los espacios disponibles</p>
       <button class="btn btn-outline" id="contact-provider">Contactar</button>

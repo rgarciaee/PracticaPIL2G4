@@ -12,18 +12,16 @@
     />
     <title>Subsonic Festival</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/static/css/main.css" />
-    <link rel="stylesheet" href="/static/css/componentes.css" />
-    <link rel="stylesheet" href="/static/css/home.css" />
-    <link rel="stylesheet" href="/static/css/evento.css" />
-    <link rel="stylesheet" href="/static/css/carrito.css" />
-    <link rel="stylesheet" href="/static/css/perfil.css" />
-    <link rel="stylesheet" href="/static/css/historial.css" />
-    <link rel="stylesheet" href="/static/css/proveedor.css" />
-    <link rel="stylesheet" href="/static/css/admin.css" />
+    <link rel="stylesheet" href="/static/css/main.css?v=20260418-3" />
+    <link rel="stylesheet" href="/static/css/componentes.css?v=20260418-3" />
+    <link rel="stylesheet" href="/static/css/home.css?v=20260418-3" />
+    <link rel="stylesheet" href="/static/css/evento.css?v=20260418-3" />
+    <link rel="stylesheet" href="/static/css/carrito.css?v=20260418-3" />
+    <link rel="stylesheet" href="/static/css/perfil.css?v=20260418-3" />
+    <link rel="stylesheet" href="/static/css/historial.css?v=20260418-3" />
+    <link rel="stylesheet" href="/static/css/proveedor.css?v=20260418-3" />
+    <link rel="stylesheet" href="/static/css/admin.css?v=20260418-3" />
 
-    <!-- Librerías externas -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -38,7 +36,6 @@
     />
   </head>
   <body>
-    <!-- Header con navegación -->
     <header class="main-header">
       <nav class="navbar">
         <div class="nav-container">
@@ -51,6 +48,7 @@
               </div>
             </a>
           </div>
+
           <div class="nav-menu" id="nav-menu">
             <ul class="nav-links">
               <li>
@@ -64,22 +62,22 @@
                   ><i class="fas fa-store"></i> Proveedores</a
                 >
               </li>
-              <li id="admin-nav-item" style="display: none">
-                <a href="#" data-page="admin" class="nav-link"
-                  ><i class="fas fa-shield-halved"></i> Administracion</a
-                >
-              </li>
             </ul>
           </div>
+
           <div class="nav-actions">
-            <button id="theme-toggle" class="icon-btn">
+            <button
+              id="theme-toggle"
+              class="icon-btn"
+              aria-label="Tema oscuro activo"
+              title="Tema oscuro activo"
+            >
               <i class="fas fa-moon"></i>
             </button>
             <button id="search-toggle" class="icon-btn">
               <i class="fas fa-search"></i>
             </button>
 
-            <!-- Botones de autenticación (visibles solo para usuarios no autenticados) -->
             <div id="auth-buttons" class="auth-buttons">
               <button id="login-nav-btn" class="btn btn-outline btn-sm">
                 <i class="fas fa-sign-in-alt"></i> Iniciar sesión
@@ -89,7 +87,6 @@
               </button>
             </div>
 
-            <!-- Menú de usuario (visible solo para usuarios autenticados) -->
             <div id="user-menu" class="profile-preview" style="display: none">
               <img
                 id="nav-profile-image"
@@ -129,6 +126,7 @@
           </div>
         </div>
       </nav>
+
       <div id="search-bar" class="search-bar is-hidden">
         <div class="search-container">
           <i class="fas fa-search"></i>
@@ -141,12 +139,10 @@
       </div>
     </header>
 
-    <!-- Contenido principal donde se inyectan los partials -->
     <main class="main-content">
       <div id="page-content"></div>
     </main>
 
-    <!-- Footer -->
     <footer class="main-footer">
       <div class="footer-content">
         <div class="footer-section">
@@ -159,13 +155,6 @@
             <li><a href="#" data-page="home">Inicio</a></li>
             <li><a href="#" data-page="carrito">Carrito</a></li>
             <li><a href="#" data-page="proveedor">Proveedores</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h4>Legal</h4>
-          <ul>
-            <li><a href="#">Términos y condiciones</a></li>
-            <li><a href="#">Política de privacidad</a></li>
           </ul>
         </div>
       </div>
@@ -182,41 +171,33 @@
     <div id="toast-container" class="toast-container"></div>
     <div id="modal-container" class="modal-container is-hidden"></div>
 
-    <!-- Firebase SDKs (necesarios para cambio de contraseña y gestión de usuario) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <script>
-      // Configuración de Firebase (misma que en login.js)
-      const firebaseConfig = {
-        apiKey: "AIzaSyChVLwUVRUi1uU_trNd_QbfM8zme9kE_bk",
-        authDomain: "pi-l2-g4-2.firebaseapp.com",
-        databaseURL:
-          "https://pi-l2-g4-2-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "pi-l2-g4-2",
-        storageBucket: "pi-l2-g4-2.firebasestorage.app",
-        messagingSenderId: "556420796675",
-        appId: "1:556420796675:web:a31cd4dbfed4a790709936",
-      };
+      window.firebaseConfig = {{ firebase_config | tojson }};
 
-      // Inicializar Firebase solo si no está ya inicializado
-      if (typeof firebase !== "undefined" && !firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
+      if (
+        typeof firebase !== "undefined" &&
+        window.firebaseConfig &&
+        window.firebaseConfig.apiKey &&
+        !firebase.apps.length
+      ) {
+        firebase.initializeApp(window.firebaseConfig);
         console.log("Firebase inicializado en index.html");
       }
     </script>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="/static/javascript/app.js"></script>
-    <script src="/static/javascript/home.js"></script>
-    <script src="/static/javascript/evento.js"></script>
-    <script src="/static/javascript/carrito.js"></script>
-    <script src="/static/javascript/perfil.js"></script>
-    <script src="/static/javascript/historial.js"></script>
-    <script src="/static/javascript/proveedor.js"></script>
-    <script src="/static/javascript/admin.js"></script>
-    <script src="/static/javascript/router.js"></script>
+    <script src="/static/javascript/app.js?v=20260418-3"></script>
+    <script src="/static/javascript/home.js?v=20260418-3"></script>
+    <script src="/static/javascript/evento.js?v=20260418-3"></script>
+    <script src="/static/javascript/carrito.js?v=20260418-3"></script>
+    <script src="/static/javascript/perfil.js?v=20260418-3"></script>
+    <script src="/static/javascript/historial.js?v=20260418-3"></script>
+    <script src="/static/javascript/proveedor.js?v=20260418-3"></script>
+    <script src="/static/javascript/admin.js?v=20260418-3"></script>
+    <script src="/static/javascript/router.js?v=20260418-3"></script>
   </body>
 </html>

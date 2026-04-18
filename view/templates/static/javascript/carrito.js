@@ -1,4 +1,4 @@
-window.initCarrito = async function () {
+﻿window.initCarrito = async function () {
     console.log('Inicializando carrito...');
 
     let attempts = 0;
@@ -38,6 +38,8 @@ window.initCarrito = async function () {
     setupCartButtons();
 };
 
+const CART_MANAGEMENT_FEE = 2.5;
+
 async function renderCartItems() {
     const container = document.getElementById('cart-items-list');
     const subtotalEl = document.getElementById('summary-subtotal');
@@ -54,8 +56,8 @@ async function renderCartItems() {
     if (cart.length === 0) {
         container.innerHTML = '';
         if (emptyMsg) emptyMsg.classList.remove('is-hidden');
-        subtotalEl.textContent = '0.00 EUR';
-        totalEl.textContent = '0.00 EUR';
+        subtotalEl.textContent = formatCurrencyValue(0);
+        totalEl.textContent = formatCurrencyValue(0);
         return;
     }
 
@@ -67,7 +69,7 @@ async function renderCartItems() {
                 <h4>${escapeHtml(item.nombre)}</h4>
                 <p>${item.tipo || 'General'} | ${item.evento_nombre || 'Subsonic Festival'}</p>
             </div>
-            <div class="cart-item-price">${(item.precio || 0).toFixed(2)} EUR</div>
+            <div class="cart-item-price">${formatCurrencyValue(item.precio || 0)}</div>
             <div class="cart-item-quantity">
                 ${item.item_category === 'provider_rental'
                     ? `<span>Solicitud unica</span>`
@@ -75,7 +77,7 @@ async function renderCartItems() {
                 <span>${item.cantidad || 1}</span>
                 <button class="qty-plus" data-id="${item.id}">+</button>`}
             </div>
-            <div class="cart-item-subtotal">${((item.precio || 0) * (item.cantidad || 1)).toFixed(2)} EUR</div>
+            <div class="cart-item-subtotal">${formatCurrencyValue((item.precio || 0) * (item.cantidad || 1))}</div>
             <div class="cart-item-remove" data-id="${item.id}">
                 <i class="fas fa-trash-alt"></i>
             </div>
@@ -86,10 +88,10 @@ async function renderCartItems() {
     cart.forEach(item => {
         subtotal += (item.precio || 0) * (item.cantidad || 1);
     });
-    const total = subtotal + 2.5;
+    const total = subtotal + CART_MANAGEMENT_FEE;
 
-    subtotalEl.textContent = `${subtotal.toFixed(2)} EUR`;
-    totalEl.textContent = `${total.toFixed(2)} EUR`;
+    subtotalEl.textContent = formatCurrencyValue(subtotal);
+    totalEl.textContent = formatCurrencyValue(total);
 
     document.querySelectorAll('.qty-minus').forEach(btn => {
         btn.onclick = async (e) => {
@@ -146,7 +148,7 @@ function setupCartButtons() {
             const subtotal = (window.app.cart || []).reduce(
                 (sum, item) => sum + ((item.precio || 0) * (item.cantidad || 1)), 0
             );
-            const total = subtotal + 2.50;
+            const total = subtotal + CART_MANAGEMENT_FEE;
 
             const completionResult = await window.app.getProfileCompletionStatus();
             if (!completionResult.success) {
@@ -160,7 +162,7 @@ function setupCartButtons() {
             }
 
             const itemsList = window.app.cart.map(item =>
-                `<li>${escapeHtml(item.nombre)} x ${item.cantidad} = ${((item.precio || 0) * (item.cantidad || 1)).toFixed(2)} EUR</li>`
+                `<li>${escapeHtml(item.nombre)} x ${item.cantidad} = ${formatCurrencyValue((item.precio || 0) * (item.cantidad || 1))}</li>`
             ).join('');
 
             window.app.showModal(
@@ -169,9 +171,9 @@ function setupCartButtons() {
                 <div class="checkout-summary">
                     <h4>Resumen de tu compra:</h4>
                     <ul style="max-height: 200px; overflow-y: auto;">${itemsList}</ul>
-                    <p><strong>Subtotal:</strong> ${subtotal.toFixed(2)} EUR</p>
-                    <p><strong>Gastos de gestion:</strong> 2.50 EUR</p>
-                    <p><strong>Total:</strong> ${total.toFixed(2)} EUR</p>
+                    <p><strong>Subtotal:</strong> ${formatCurrencyValue(subtotal)}</p>
+                    <p><strong>Gastos de gestion:</strong> ${formatCurrencyValue(CART_MANAGEMENT_FEE)}</p>
+                    <p><strong>Total:</strong> ${formatCurrencyValue(total)}</p>
                     <hr>
                     <p>Deseas proceder con el pago?</p>
                 </div>
@@ -236,3 +238,13 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+function formatCurrencyValue(value) {
+    if (window.formatCurrency) {
+        return window.formatCurrency(value);
+    }
+
+    const parsed = Number(value);
+    return `${Number.isFinite(parsed) ? parsed.toFixed(2) : '0.00'} EUR`;
+}
+

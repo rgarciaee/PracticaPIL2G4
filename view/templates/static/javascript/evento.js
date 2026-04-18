@@ -1,4 +1,16 @@
-let currentEvent = null;
+﻿let currentEvent = null;
+
+const EVENT_SECTION_PAGE_SIZE = {
+  artists: 8,
+  tickets: 8,
+  stands: 4,
+};
+
+const eventSectionState = {
+  artists: 1,
+  tickets: 1,
+  stands: 1,
+};
 
 window.initEvento = async function () {
   console.log("Inicializando evento...");
@@ -34,6 +46,7 @@ window.initEvento = async function () {
     }
 
     currentEvent = result.data;
+    resetEventSectionState();
 
     document.getElementById("event-name").textContent = currentEvent.nombre;
     document.getElementById("event-dates").innerHTML = `<i class="fas fa-calendar-alt"></i> ${formatDate(currentEvent.fecha_ini)} - ${formatDate(currentEvent.fecha_fin)}`;
@@ -61,6 +74,62 @@ window.initEvento = async function () {
   }
 };
 
+function resetEventSectionState() {
+  eventSectionState.artists = 1;
+  eventSectionState.tickets = 1;
+  eventSectionState.stands = 1;
+}
+
+function paginateEventSection(items, sectionKey) {
+  const pageSize = EVENT_SECTION_PAGE_SIZE[sectionKey] || items.length || 1;
+  const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+  eventSectionState[sectionKey] = Math.min(Math.max(1, eventSectionState[sectionKey]), totalPages);
+
+  const startIndex = (eventSectionState[sectionKey] - 1) * pageSize;
+  return {
+    visibleItems: items.slice(startIndex, startIndex + pageSize),
+    totalPages,
+  };
+}
+
+function updateEventSectionNav(sectionKey, totalPages) {
+  const prevButton = document.getElementById(`${sectionKey}-prev`);
+  const nextButton = document.getElementById(`${sectionKey}-next`);
+  if (!prevButton || !nextButton) return;
+
+  const currentPage = eventSectionState[sectionKey] || 1;
+  prevButton.disabled = currentPage <= 1;
+  nextButton.disabled = currentPage >= totalPages;
+
+  prevButton.onclick = () => {
+    if (eventSectionState[sectionKey] <= 1) return;
+    eventSectionState[sectionKey] -= 1;
+    renderEventSection(sectionKey);
+  };
+
+  nextButton.onclick = () => {
+    if (eventSectionState[sectionKey] >= totalPages) return;
+    eventSectionState[sectionKey] += 1;
+    renderEventSection(sectionKey);
+  };
+}
+
+function renderEventSection(sectionKey) {
+  switch (sectionKey) {
+    case "artists":
+      renderArtists();
+      break;
+    case "tickets":
+      renderTicketZones();
+      break;
+    case "stands":
+      renderStands();
+      break;
+    default:
+      break;
+  }
+}
+
 function renderEventHeroMedia() {
   const hero = document.querySelector("#evento-content .event-hero");
   const media = document.getElementById("event-hero-media");
@@ -86,14 +155,14 @@ function renderSchedule() {
 
   const schedule = Array.isArray(currentEvent?.horario) ? currentEvent.horario : [];
   if (!schedule.length) {
-    scheduleContainer.innerHTML = '<div class="schedule-day"><div class="schedule-day-header"><h3>Horario por confirmar</h3></div></div>';
+    scheduleContainer.innerHTML = '<div class="schedule-day lift-hover-card"><div class="schedule-day-header"><h3>Horario por confirmar</h3></div></div>';
     return;
   }
 
   scheduleContainer.innerHTML = schedule
     .map(
       (day) => `
-        <div class="schedule-day">
+        <div class="schedule-day lift-hover-card">
           <div class="schedule-day-header">
             <h3>${escapeHtml(formatScheduleDay(day.dia))}</h3>
           </div>
@@ -119,7 +188,23 @@ function renderArtists() {
   const artistsContainer = document.getElementById("artists-list");
   if (!artistsContainer || !Array.isArray(currentEvent?.artistas)) return;
 
-  artistsContainer.innerHTML = currentEvent.artistas
+  const artists = currentEvent.artistas;
+  if (!artists.length) {
+    artistsContainer.innerHTML = `
+      <div class="artist-card">
+        <div class="artist-icon"><i class="fas fa-user-musician"></i></div>
+        <h3>Lineup por confirmar</h3>
+        <p class="artist-genre">Artistas pendientes de anunciar</p>
+        <p class="artist-description">Todavia no se han publicado artistas para este evento.</p>
+      </div>
+    `;
+    updateEventSectionNav("artists", 1);
+    return;
+  }
+
+  const { visibleItems, totalPages } = paginateEventSection(artists, "artists");
+
+  artistsContainer.innerHTML = visibleItems
     .map(
       (artist) => `
         <div class="artist-card">
@@ -133,6 +218,8 @@ function renderArtists() {
       `,
     )
     .join("");
+
+  updateEventSectionNav("artists", totalPages);
 }
 
 function renderTicketZones() {
@@ -150,17 +237,20 @@ function renderTicketZones() {
         <div class="ticket-zone">Todavia no hay zonas de tipo ticket disponibles para este evento.</div>
       </div>
     `;
+    updateEventSectionNav("tickets", 1);
     return;
   }
 
-  ticketsContainer.innerHTML = ticketZones
+  const { visibleItems, totalPages } = paginateEventSection(ticketZones, "tickets");
+
+  ticketsContainer.innerHTML = visibleItems
     .map(
       (zone) => `
         <div class="ticket-card">
           <div class="ticket-icon"><i class="fas fa-ticket-alt"></i></div>
           <h3>${escapeHtml(zone.nombre)}</h3>
           <div class="ticket-zone">${escapeHtml(zone.descripcion) || `Aforo: ${zone.aforo_maximo || "Ilimitado"}`}</div>
-          <div class="ticket-price">${zone.precio || 0} EUR</div>
+          <div class="ticket-price">${escapeHtml(formatCurrencyValue(zone.precio || 0))}</div>
           <button class="btn btn-primary buy-ticket-btn"
                   data-zone-id="${escapeAttribute(zone.id || "")}"
                   data-zone-name="${escapeAttribute(zone.nombre || "")}"
@@ -210,24 +300,47 @@ function renderTicketZones() {
       }
     };
   });
+
+  updateEventSectionNav("tickets", totalPages);
 }
 
 function renderStands() {
   const standsContainer = document.getElementById("stands-list");
   if (!standsContainer || !Array.isArray(currentEvent?.puestos)) return;
 
-  standsContainer.innerHTML = currentEvent.puestos
-    .map(
-      (stand) => `
+  if (!currentEvent.puestos.length) {
+    standsContainer.innerHTML = `
+      <div class="stand-card">
+        <div class="stand-icon"><i class="fas fa-store-slash"></i></div>
+        <h3>Puestos por confirmar</h3>
+        <p>Este evento todavia no tiene puestos publicados.</p>
+        <div class="stand-type">Estado: Pendiente de publicacion</div>
+      </div>
+    `;
+    updateEventSectionNav("stands", 1);
+    return;
+  }
+
+  const { visibleItems, totalPages } = paginateEventSection(currentEvent.puestos, "stands");
+
+  standsContainer.innerHTML = visibleItems
+    .map((stand) => {
+      const zoneName = String(stand.zona_nombre || "").trim();
+      const zoneLabel = zoneName
+        || (stand.zona_id ? "Zona vinculada no disponible" : "Zona pendiente de asignacion");
+
+      return `
         <div class="stand-card">
           <div class="stand-icon"><i class="fas fa-utensils"></i></div>
           <h3>${escapeHtml(stand.nombre)}</h3>
           <p>Tipo: ${escapeHtml(stand.tipo || "No especificado")}</p>
-          <div class="stand-type">Zona: ${escapeHtml(stand.zona || "Sin zona asignada")}</div>
+          <div class="stand-type">Zona: ${escapeHtml(zoneLabel)}</div>
         </div>
-      `,
-    )
+      `;
+    })
     .join("");
+
+  updateEventSectionNav("stands", totalPages);
 }
 
 function renderMap() {
@@ -292,3 +405,13 @@ function escapeAttribute(text) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 }
+
+function formatCurrencyValue(value) {
+  if (window.formatCurrency) {
+    return window.formatCurrency(value);
+  }
+
+  const parsed = Number(value);
+  return `${Number.isFinite(parsed) ? parsed.toFixed(2) : "0.00"} EUR`;
+}
+

@@ -1,41 +1,37 @@
+import json
+from pathlib import Path
+
 from fastapi import Request
-from fastapi.responses import FileResponse
 from fastapi.templating import Jinja2Templates
-import os
 
 templates = Jinja2Templates(directory="view/templates")
+_CREDENTIALS_PATH = Path("model/dao/firebase/credentials.json")
+
+
+def get_firebase_web_config():
+    try:
+        with _CREDENTIALS_PATH.open("r", encoding="utf-8") as credentials_file:
+            credentials_data = json.load(credentials_file)
+        return credentials_data.get("web_config", {})
+    except Exception:
+        return {}
 
 
 class View:
-    def __init__(self):
-        pass
-
     def get_login_view(self, request: Request):
-        return templates.TemplateResponse("login.html", {"request": request})
+        return templates.TemplateResponse(
+            "login.html",
+            {
+                "request": request,
+                "firebase_config": get_firebase_web_config(),
+            },
+        )
 
     def get_app_view(self, request: Request):
-        return templates.TemplateResponse("index.html", {"request": request})
-
-    def get_index_view(self, request: Request):
-        return templates.TemplateResponse("index.html", {"request": request})
-
-    def serve_static(self, path: str):
-        file_path = os.path.join("view/templates/static", path)
-        if os.path.exists(file_path):
-            return FileResponse(file_path)
-        return None
-
-    def serve_partial(self, page: str):
-        file_path = os.path.join("view/templates/partials", f"{page}.html")
-        if os.path.exists(file_path):
-            return FileResponse(file_path)
-        return None
-
-    def get_404_view(self, request: Request):
-        return templates.TemplateResponse("404.html", {"request": request})
-
-    def get_error_view(self, request: Request, error_message: str):
         return templates.TemplateResponse(
-            "error.html",
-            {"request": request, "error": error_message},
+            "index.html",
+            {
+                "request": request,
+                "firebase_config": get_firebase_web_config(),
+            },
         )

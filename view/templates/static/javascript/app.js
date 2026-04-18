@@ -1,4 +1,31 @@
-const DEFAULT_AVATAR = 'https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg';
+﻿const DEFAULT_AVATAR = 'https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg';
+const EURO_FORMATTER = new Intl.NumberFormat("es-ES", {
+  style: "currency",
+  currency: "EUR",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+function formatCurrency(value) {
+  const numericValue = Number(value);
+  return EURO_FORMATTER.format(Number.isFinite(numericValue) ? numericValue : 0);
+}
+
+function syncThemeToggleIcon(theme) {
+  const themeToggle = document.getElementById("theme-toggle");
+  const icon = themeToggle?.querySelector("i");
+  if (!themeToggle || !icon) return;
+
+  icon.classList.remove("fa-sun", "fa-moon");
+  icon.classList.add(theme === "dark" ? "fa-moon" : "fa-sun");
+
+  const label = theme === "dark" ? "Tema oscuro activo" : "Tema claro activo";
+  themeToggle.setAttribute("aria-label", label);
+  themeToggle.setAttribute("title", label);
+}
+
+window.formatCurrency = formatCurrency;
+window.syncThemeToggleIcon = syncThemeToggleIcon;
 
 class SubsonicApp {
   constructor() {
@@ -15,7 +42,6 @@ class SubsonicApp {
     await this.loadData();
     await this.initSearch();
     this.setupTheme();
-    this.setupPreloader();
     await this.checkAuth();
     await this.loadCart();
     this.updateCartBadge();
@@ -154,12 +180,40 @@ class SubsonicApp {
     }
   }
 
+  getCartStorageKey(userId = this.currentUser?.id) {
+    return userId ? `subsonic_cart_backup_${userId}` : null;
+  }
+
+  clearLocalCartData() {
+    const keysToRemove = [];
+
+    for (let index = 0; index < localStorage.length; index += 1) {
+      const key = localStorage.key(index);
+      if (key === "subsonic_cart_backup" || key?.startsWith("subsonic_cart_backup_")) {
+        keysToRemove.push(key);
+      }
+    }
+
+    keysToRemove.forEach((key) => localStorage.removeItem(key));
+  }
+
   saveCartToLocal() {
-    localStorage.setItem("subsonic_cart_backup", JSON.stringify(this.cart));
+    const storageKey = this.getCartStorageKey();
+    if (!storageKey) {
+      this.clearLocalCartData();
+      return;
+    }
+
+    localStorage.setItem(storageKey, JSON.stringify(this.cart));
   }
 
   loadCartFromLocal() {
-    const stored = localStorage.getItem("subsonic_cart_backup");
+    const storageKey = this.getCartStorageKey();
+    if (!storageKey) {
+      return false;
+    }
+
+    const stored = localStorage.getItem(storageKey);
     if (stored) {
       this.cart = JSON.parse(stored);
       this.updateCartBadge();
@@ -168,13 +222,27 @@ class SubsonicApp {
         this.cart.length,
         "items",
       );
+      return true;
     }
+
+    return false;
   }
 
   async loadCart() {
+    if (!this.currentUser?.id) {
+      this.cart = [];
+      this.clearLocalCartData();
+      this.updateCartBadge();
+      return;
+    }
+
     const success = await this.loadCartFromAPI();
     if (!success) {
-      this.loadCartFromLocal();
+      const localSuccess = this.loadCartFromLocal();
+      if (!localSuccess) {
+        this.cart = [];
+        this.updateCartBadge();
+      }
     }
   }
 
@@ -204,10 +272,7 @@ class SubsonicApp {
   async removeFromCart(itemId) {
     const success = await this.removeFromCartAPI(itemId);
     if (!success) {
-      this.cart = this.cart.filter((i) => i.id !== itemId);
-      this.updateCartBadge();
-      this.saveCartToLocal();
-      this.showToast("Producto eliminado del carrito", "info");
+      this.showToast("No se pudo eliminar el producto del carrito", "error");
     }
   }
 
@@ -218,28 +283,6 @@ class SubsonicApp {
   // ============================================================
   // MÉTODOS DE API
   // ============================================================
-
-  async apiCall(endpoint, method = "GET", data = null) {
-    const options = {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    };
-
-    if (data) {
-      options.body = JSON.stringify(data);
-    }
-
-    try {
-      const response = await fetch(`/api${endpoint}`, options);
-      return await response.json();
-    } catch (error) {
-      console.error("API Error:", error);
-      return { success: false, error: error.message };
-    }
-  }
 
   // ============================================================
   // MÉTODOS DE CARGA DE DATOS
@@ -304,18 +347,6 @@ class SubsonicApp {
     }
   }
 
-  generateQRCode() {
-    const prefix = "SUB";
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let result = "";
-    for (let i = 0; i < 8; i++) {
-      result += characters.charAt(
-        Math.floor(Math.random() * characters.length),
-      );
-    }
-    return `${prefix}-${result}`;
-  }
-
   // === MÉTODOS DE INTERFAZ ===
   setupEventListeners() {
     const themeToggle = document.getElementById("theme-toggle");
@@ -345,13 +376,6 @@ class SubsonicApp {
       mobileToggle.addEventListener("click", () => {
         navMenu.classList.toggle("active");
       });
-    }
-
-    const newsletterForm = document.getElementById("newsletter-form");
-    if (newsletterForm) {
-      newsletterForm.addEventListener("submit", (e) =>
-        this.handleNewsletter(e),
-      );
     }
 
     const logoutBtn = document.getElementById("logout-btn");
@@ -400,18 +424,7 @@ class SubsonicApp {
   setupTheme() {
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
-
-    const themeToggle = document.getElementById("theme-toggle");
-    if (themeToggle) {
-      const icon = themeToggle.querySelector("i");
-      if (savedTheme === "dark") {
-        icon.classList.remove("fa-moon");
-        icon.classList.add("fa-sun");
-      } else {
-        icon.classList.remove("fa-sun");
-        icon.classList.add("fa-moon");
-      }
-    }
+    syncThemeToggleIcon(savedTheme);
   }
 
   toggleTheme() {
@@ -420,35 +433,12 @@ class SubsonicApp {
 
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme);
-
-    const themeToggle = document.getElementById("theme-toggle");
-    if (themeToggle) {
-      const icon = themeToggle.querySelector("i");
-      if (newTheme === "dark") {
-        icon.classList.remove("fa-sun");
-        icon.classList.add("fa-moon");
-      } else {
-        icon.classList.remove("fa-moon");
-        icon.classList.add("fa-sun");
-      }
-    }
+    syncThemeToggleIcon(newTheme);
 
     this.showToast(
       `Modo ${newTheme === "dark" ? "oscuro" : "claro"} activado`,
       "info",
     );
-  }
-
-  setupPreloader() {
-    const preloader = document.getElementById("preloader");
-    if (preloader) {
-      setTimeout(() => {
-        preloader.classList.add("fade-out");
-        setTimeout(() => {
-          preloader.style.display = "none";
-        }, 500);
-      }, 1000);
-    }
   }
 
   async initSearch() {
@@ -583,23 +573,6 @@ class SubsonicApp {
       const results = document.getElementById("search-results");
       if (results) results.innerHTML = "";
     }
-  }
-
-  async handleNewsletter(e) {
-    e.preventDefault();
-    const email = e.target.querySelector("input").value;
-
-    if (email && this.validateEmail(email)) {
-      this.showToast("¡Suscripción exitosa! Revisa tu correo", "success");
-      e.target.reset();
-    } else {
-      this.showToast("Por favor, introduce un email válido", "error");
-    }
-  }
-
-  validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
   }
 
   showToast(message, type = "info") {
@@ -760,6 +733,9 @@ class SubsonicApp {
       if (response.status === 401 || !result.success) {
         this.currentUser = this.getEmptyUser();
         this.clearStoredUser();
+        this.cart = [];
+        this.clearLocalCartData();
+        this.updateCartBadge();
         await this.syncFirebaseLogout();
       } else if (result.data) {
         this.currentUser = {
@@ -808,6 +784,8 @@ class SubsonicApp {
       this.clearStoredUser();
       await this.syncFirebaseLogout();
       this.cart = [];
+      this.clearLocalCartData();
+      this.updateCartBadge();
       this.currentUser = this.getEmptyUser();
       window.location.href = "/";
     });
@@ -825,22 +803,6 @@ class SubsonicApp {
     }
   }
 
-  saveCart() {
-    this.saveCartToLocal();
-  }
-
-  loadCartOld() {
-    this.loadCartFromLocal();
-  }
-
-  getData() {
-    return this.data;
-  }
-
-  getUser() {
-    return this.currentUser;
-  }
-
   async checkAuthStatus() {
     try {
       const response = await fetch('/api/profile', {
@@ -849,6 +811,9 @@ class SubsonicApp {
       if (response.status === 401) {
         this.clearStoredUser();
         this.currentUser = this.getEmptyUser();
+        this.cart = [];
+        this.clearLocalCartData();
+        this.updateCartBadge();
         this.updateUserUI();
         this.updateAuthUI();
         await this.syncFirebaseLogout();
@@ -867,7 +832,6 @@ class SubsonicApp {
   updateAuthUI() {
     const authButtons = document.getElementById('auth-buttons');
     const userMenu = document.getElementById('user-menu');
-    const adminNavItem = document.getElementById('admin-nav-item');
     const adminMenuLink = document.getElementById('admin-menu-link');
 
     const isAuthenticated = this.currentUser && this.currentUser.id;
@@ -879,10 +843,6 @@ class SubsonicApp {
     } else {
       if (authButtons) authButtons.style.display = 'flex';
       if (userMenu) userMenu.style.display = 'none';
-    }
-
-    if (adminNavItem) {
-      adminNavItem.style.display = isAdmin ? 'list-item' : 'none';
     }
 
     if (adminMenuLink) {
@@ -899,3 +859,4 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.getOwnPropertyNames(SubsonicApp.prototype),
   );
 });
+

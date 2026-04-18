@@ -1,4 +1,4 @@
-const adminState = {
+﻿const adminState = {
   loaded: false,
   sessionUserId: null,
   users: [],
@@ -125,6 +125,7 @@ function renderAdminError(message) {
 function renderAdminStats() {
   setText('admin-stat-users', adminState.users.length);
   setText('admin-stat-events', adminState.events.length);
+  setText('admin-stat-artists', adminState.artists.length);
   setText('admin-stat-zones', adminState.zones.length);
   setText('admin-stat-stands', adminState.stands.length);
 }
@@ -275,7 +276,7 @@ function renderZonesTable() {
     <tr>
       <td>
         <strong>${escapeHtml(zone.nombre || '')}</strong>
-        <small>${formatPrice(zone.precio)} EUR</small>
+        <small>${formatPrice(zone.precio)}</small>
       </td>
       <td>${escapeHtml(zone.evento_nombre || '-')}</td>
       <td><span class="badge ${zone.tipo === 'stand' ? 'badge-warning' : 'badge-primary'}">${escapeHtml(zone.tipo || 'ticket')}</span></td>
@@ -485,7 +486,6 @@ function resetEventForm() {
   setValue('admin-event-start', '');
   setValue('admin-event-end', '');
   setValue('admin-event-description', '');
-  setValue('admin-event-schedule', '');
   adminState.eventScheduleDraft = [];
   setValue('admin-event-venue', '');
   setValue('admin-event-city', '');
@@ -551,7 +551,6 @@ function editEvent(eventId) {
   setValue('admin-event-start', normalizeDateInput(eventItem.fecha_ini));
   setValue('admin-event-end', normalizeDateInput(eventItem.fecha_fin));
   setValue('admin-event-description', eventItem.descripcion || '');
-  setValue('admin-event-schedule', stringifyEventSchedule(eventItem.horario));
   adminState.eventScheduleDraft = flattenEventSchedule(eventItem.horario);
   setValue('admin-event-venue', eventItem.ubicacion?.nombre || '');
   setValue('admin-event-city', eventItem.ubicacion?.ciudad || '');
@@ -864,16 +863,12 @@ function normalizeDateInput(value) {
 }
 
 function formatPrice(value) {
-  const parsed = Number(value || 0);
-  return Number.isFinite(parsed) ? parsed.toFixed(2) : '0.00';
-}
+  if (window.formatCurrency) {
+    return window.formatCurrency(value);
+  }
 
-function stringifyEventSchedule(schedule) {
-  if (!Array.isArray(schedule) || schedule.length === 0) return '';
-  return schedule.flatMap((day) => {
-    const dayLabel = day?.dia || '';
-    return (day?.slots || []).map((slot) => `${dayLabel} | ${slot.hora || ''} | ${slot.artista || ''}`);
-  }).join('\n');
+  const parsed = Number(value || 0);
+  return `${Number.isFinite(parsed) ? parsed.toFixed(2) : '0.00'} EUR`;
 }
 
 function flattenEventSchedule(schedule) {
@@ -1207,3 +1202,4 @@ function escapeHtml(text) {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
 }
+

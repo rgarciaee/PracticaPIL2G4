@@ -1,14 +1,13 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyChVLwUVRUi1uU_trNd_QbfM8zme9kE_bk",
-  authDomain: "pi-l2-g4-2.firebaseapp.com",
-  databaseURL: "https://pi-l2-g4-2-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "pi-l2-g4-2",
-  storageBucket: "pi-l2-g4-2.firebasestorage.app",
-  messagingSenderId: "556420796675",
-  appId: "1:556420796675:web:a31cd4dbfed4a790709936"
-};
+const firebaseConfig = window.firebaseConfig || {};
 
-firebase.initializeApp(firebaseConfig);
+if (!firebaseConfig.apiKey) {
+  throw new Error("No se ha podido cargar la configuracion publica de Firebase desde credentials.json");
+}
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
 const auth = firebase.auth();
 
 const authWrapper = document.getElementById("authWrapper");

@@ -232,7 +232,3 @@
     right: 1rem;
   }
 }
-
-.cart-empty.hidden {
-  display: none !important;
-}

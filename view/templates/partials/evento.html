@@ -12,23 +12,39 @@
     </div>
   </section>
 
-  <section class="event-section">
+  <section class="event-section section-card">
     <div class="section-header">
       <h2><i class="fas fa-microphone-alt"></i> Artistas participantes</h2>
       <p>Descubre el lineup completo</p>
     </div>
-    <div id="artists-list" class="artists-grid"></div>
+    <div class="content-carousel-shell">
+      <button id="artists-prev" class="content-carousel-nav" type="button" aria-label="Artistas anteriores">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div id="artists-list" class="artists-grid event-carousel-grid"></div>
+      <button id="artists-next" class="content-carousel-nav" type="button" aria-label="Mas artistas">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
   </section>
 
-  <section class="event-section">
+  <section class="event-section section-card">
     <div class="section-header">
       <h2><i class="fas fa-ticket-alt"></i> Entradas disponibles</h2>
       <p>Elige tu experiencia</p>
     </div>
-    <div id="tickets-list" class="tickets-grid"></div>
+    <div class="content-carousel-shell">
+      <button id="tickets-prev" class="content-carousel-nav" type="button" aria-label="Entradas anteriores">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div id="tickets-list" class="tickets-grid event-carousel-grid"></div>
+      <button id="tickets-next" class="content-carousel-nav" type="button" aria-label="Mas entradas">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
   </section>
 
-  <section class="event-section">
+  <section class="event-section section-card">
     <div class="section-header">
       <h2><i class="fas fa-clock"></i> Horario del evento</h2>
       <p>No te pierdas ningun concierto</p>
@@ -36,7 +52,7 @@
     <div id="schedule-list" class="schedule-container"></div>
   </section>
 
-  <section class="event-section">
+  <section class="event-section section-card">
     <div class="section-header">
       <h2><i class="fas fa-map-marker-alt"></i> Ubicacion</h2>
       <p>Como llegar</p>
@@ -46,11 +62,19 @@
     </div>
   </section>
 
-  <section class="event-section">
+  <section class="event-section section-card">
     <div class="section-header">
       <h2><i class="fas fa-store"></i> Puestos disponibles</h2>
       <p>Comida, bebida y merchandising</p>
     </div>
-    <div id="stands-list" class="stands-grid"></div>
+    <div class="content-carousel-shell">
+      <button id="stands-prev" class="content-carousel-nav" type="button" aria-label="Puestos anteriores">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div id="stands-list" class="stands-grid event-carousel-grid stands-carousel-grid"></div>
+      <button id="stands-next" class="content-carousel-nav" type="button" aria-label="Mas puestos">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
   </section>
 </div>

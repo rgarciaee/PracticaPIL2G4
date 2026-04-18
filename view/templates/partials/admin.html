@@ -1,5 +1,5 @@
 <div id="admin-content" class="admin-page container">
-  <section class="admin-hero card">
+  <section class="admin-hero card page-hero">
     <div>
       <p class="admin-kicker">Panel de administracion</p>
       <h1>Gestion central del festival</h1>
@@ -15,26 +15,30 @@
     </div>
   </section>
 
-  <section class="admin-stats grid-4">
-    <article class="card admin-stat-card">
+  <section class="admin-stats">
+    <article class="card admin-stat-card surface-card">
       <span class="admin-stat-label">Usuarios</span>
       <strong id="admin-stat-users">0</strong>
     </article>
-    <article class="card admin-stat-card">
+    <article class="card admin-stat-card surface-card">
       <span class="admin-stat-label">Eventos</span>
       <strong id="admin-stat-events">0</strong>
     </article>
-    <article class="card admin-stat-card">
+    <article class="card admin-stat-card surface-card">
+      <span class="admin-stat-label">Artistas</span>
+      <strong id="admin-stat-artists">0</strong>
+    </article>
+    <article class="card admin-stat-card surface-card">
       <span class="admin-stat-label">Zonas</span>
       <strong id="admin-stat-zones">0</strong>
     </article>
-    <article class="card admin-stat-card">
+    <article class="card admin-stat-card surface-card">
       <span class="admin-stat-label">Stands</span>
       <strong id="admin-stat-stands">0</strong>
     </article>
   </section>
 
-  <section class="card admin-tabs-shell">
+  <section class="card admin-tabs-shell surface-card">
     <div class="tabs admin-tabs">
       <button class="tab active" data-admin-tab="users">Usuarios</button>
       <button class="tab" data-admin-tab="events">Eventos</button>
@@ -45,7 +49,7 @@
 
     <div class="admin-tab-panel active" data-admin-panel="users">
       <div class="admin-grid">
-        <section class="card">
+        <section class="card surface-card">
           <div class="admin-section-head">
             <h2>Formulario de usuario</h2>
             <button id="admin-user-reset" class="btn btn-secondary">Nuevo</button>
@@ -94,7 +98,7 @@
           </form>
         </section>
 
-        <section class="card">
+        <section class="card surface-card">
           <div class="admin-section-head">
             <h2>Usuarios registrados</h2>
           </div>
@@ -118,7 +122,7 @@
 
     <div class="admin-tab-panel" data-admin-panel="events">
       <div class="admin-grid">
-        <section class="card">
+        <section class="card surface-card">
           <div class="admin-section-head">
             <h2>Formulario de evento</h2>
             <button id="admin-event-reset" class="btn btn-secondary">Nuevo</button>
@@ -146,8 +150,7 @@
               <textarea id="admin-event-description" rows="4"></textarea>
             </div>
             <div class="input-group full-width">
-              <label for="admin-event-schedule">Horario</label>
-              <input id="admin-event-schedule" type="hidden" />
+              <label>Horario</label>
               <div class="admin-schedule-builder">
                 <p id="admin-event-schedule-help" class="admin-schedule-help">
                   Guarda el evento y crea sus artistas para poder asignarlos al horario.
@@ -201,7 +204,7 @@
           </form>
         </section>
 
-        <section class="card">
+        <section class="card surface-card">
           <div class="admin-section-head">
             <h2>Eventos</h2>
           </div>
@@ -225,7 +228,7 @@
 
     <div class="admin-tab-panel" data-admin-panel="artists">
       <div class="admin-grid">
-        <section class="card">
+        <section class="card surface-card">
           <div class="admin-section-head">
             <h2>Formulario de artista</h2>
             <button id="admin-artist-reset" class="btn btn-secondary">Nuevo</button>
@@ -258,7 +261,7 @@
           </form>
         </section>
 
-        <section class="card">
+        <section class="card surface-card">
           <div class="admin-section-head">
             <h2>Artistas</h2>
           </div>
@@ -282,7 +285,7 @@
 
     <div class="admin-tab-panel" data-admin-panel="zones">
       <div class="admin-grid">
-        <section class="card">
+        <section class="card surface-card">
           <div class="admin-section-head">
             <h2>Formulario de zona</h2>
             <button id="admin-zone-reset" class="btn btn-secondary">Nuevo</button>
@@ -318,7 +321,7 @@
           </form>
         </section>
 
-        <section class="card">
+        <section class="card surface-card">
           <div class="admin-section-head">
             <h2>Zonas</h2>
           </div>
@@ -343,7 +346,7 @@
 
     <div class="admin-tab-panel" data-admin-panel="stands">
       <div class="admin-grid">
-        <section class="card">
+        <section class="card surface-card">
           <div class="admin-section-head">
             <h2>Formulario de stand</h2>
             <button id="admin-stand-reset" class="btn btn-secondary">Nuevo</button>
@@ -384,7 +387,7 @@
           </form>
         </section>
 
-        <section class="card">
+        <section class="card surface-card">
           <div class="admin-section-head">
             <h2>Stands</h2>
           </div>

@@ -1,4 +1,15 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+:root {
+    --login-primary: #6366f1;
+    --login-secondary: #ec4899;
+    --login-accent: #06b6d4;
+    --login-bg-card: #ffffff;
+    --login-text: #0f172a;
+    --login-text-muted: #64748b;
+    --login-border: #dbe4f0;
+    --login-surface: #f8fafc;
+}
 
 * {
     box-sizing: border-box;
@@ -7,12 +18,15 @@
 }
 
 body {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background:
+        radial-gradient(circle at top left, rgba(99, 102, 241, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(236, 72, 153, 0.12), transparent 30%),
+        linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    font-family: "Poppins", sans-serif;
+    font-family: "Inter", sans-serif;
     min-height: 100vh;
     padding: 20px;
 }
@@ -58,9 +72,9 @@ a:hover {
 }
 
 button {
-    border-radius: 25px;
+    border-radius: 999px;
     border: none;
-    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+    background: linear-gradient(135deg, var(--login-primary) 0%, var(--login-secondary) 100%);
     color: #ffffff;
     font-size: 13px;
     font-weight: 600;
@@ -69,12 +83,12 @@ button {
     text-transform: uppercase;
     transition: all 0.3s ease;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+    box-shadow: 0 14px 28px rgba(99, 102, 241, 0.22);
 }
 
 button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
+    box-shadow: 0 18px 34px rgba(99, 102, 241, 0.28);
 }
 
 button:active {
@@ -96,14 +110,24 @@ button.transparent-btn:hover {
 }
 
 form {
-    background-color: #ffffff;
+    background-color: var(--login-bg-card);
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: column;
-    padding: 0 50px;
+    padding: 3rem 50px;
     height: 100%;
     text-align: center;
+    overflow-y: auto;
+    gap: 0.15rem;
+}
+
+.login-form-box form {
+    justify-content: center;
+}
+
+.register-form-box form {
+    justify-content: flex-start;
 }
 
 .remember-option {
@@ -113,7 +137,7 @@ form {
     justify-content: flex-start;
     gap: 0.65rem;
     margin: 0.75rem 0 0.25rem;
-    color: #475569;
+    color: var(--login-text-muted);
     font-size: 13px;
     cursor: pointer;
 }
@@ -121,15 +145,15 @@ form {
 .remember-option input {
     width: auto;
     margin: 0;
-    accent-color: #38bdf8;
+    accent-color: var(--login-primary);
 }
 
 .remember-option span {
-    color: #475569;
+    color: var(--login-text-muted);
 }
 
 input {
-    background-color: #f3f4f6;
+    background-color: var(--login-surface);
     border: 2px solid transparent;
     border-radius: 12px;
     padding: 14px 18px;
@@ -141,20 +165,22 @@ input {
 
 input:focus {
     outline: none;
-    border-color: #38bdf8;
+    border-color: var(--login-primary);
     background-color: #fff;
-    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
 .auth-wrapper {
     background-color: #fff;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 28px 80px rgba(15, 23, 42, 0.26);
     position: relative;
     overflow: hidden;
-    width: 850px;
+    width: 980px;
     max-width: 100%;
-    min-height: 550px;
+    min-height: 680px;
+    max-height: min(92vh, 760px);
 }
 
 .auth-form-box {
@@ -215,7 +241,7 @@ input:focus {
 }
 
 .slide-panel {
-    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+    background: linear-gradient(135deg, var(--login-accent) 0%, var(--login-primary) 55%, var(--login-secondary) 100%);
     background-size: cover;
     background-position: center;
     color: #ffffff;
@@ -264,11 +290,11 @@ input:focus {
 }
 
 .social-links {
-    margin: 25px 0;
+    margin: 18px 0 14px;
 }
 
 .social-links a {
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--login-border);
     border-radius: 50%;
     display: inline-flex;
     justify-content: center;
@@ -277,15 +303,15 @@ input:focus {
     height: 45px;
     width: 45px;
     transition: all 0.3s ease;
-    color: #38bdf8;
+    color: var(--login-primary);
 }
 
 .social-links a:hover {
-    border-color: #38bdf8;
-    background: #38bdf8;
+    border-color: var(--login-primary);
+    background: var(--login-primary);
     color: #fff;
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
+    box-shadow: 0 10px 24px rgba(99, 102, 241, 0.24);
 }
 
 .mobile-switch {
@@ -295,12 +321,32 @@ input:focus {
 .error-message {
     background: #ef4444;
     color: white;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    font-size: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin: 0 0 14px;
+    font-size: 13px;
+    line-height: 1.45;
     text-align: center;
     width: 100%;
+    white-space: normal;
+    word-break: break-word;
+    box-shadow: 0 12px 24px rgba(239, 68, 68, 0.18);
+}
+
+.auth-form-box form h1 {
+    margin-bottom: 0.25rem;
+}
+
+.auth-form-box form > span {
+    margin-bottom: 0.35rem;
+}
+
+#forgot-password {
+    margin: 12px 0 16px;
+}
+
+.auth-form-box form button[type="submit"] {
+    margin-top: 0.75rem;
 }
 
 /* Responsive */
@@ -313,6 +359,7 @@ input:focus {
         min-height: auto;
         width: 100%;
         max-width: 100%;
+        max-height: none;
         border-radius: 15px;
     }
     
@@ -353,6 +400,7 @@ input:focus {
         padding: 30px 25px;
         position: static;
         height: auto;
+        overflow: visible;
     }
     
     h2 {
@@ -378,7 +426,7 @@ input:focus {
     .mobile-switch {
         display: block;
         margin-top: 20px;
-        color: #38bdf8;
+    color: var(--login-primary);
         font-size: 14px;
     }
     
@@ -389,15 +437,15 @@ input:focus {
     
     .mobile-switch button {
         background: transparent;
-        color: #38bdf8;
-        border: 2px solid #38bdf8;
+        color: var(--login-primary);
+        border: 2px solid var(--login-primary);
         padding: 10px 30px;
         margin-top: 10px;
         box-shadow: none;
     }
     
     .mobile-switch button:hover {
-        background: #38bdf8;
+        background: var(--login-primary);
         color: #fff;
     }
 }

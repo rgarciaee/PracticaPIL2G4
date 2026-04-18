@@ -30,10 +30,6 @@ function setupHomeCtas() {
     document.getElementById("events-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
-  document.getElementById("explore-events-cta")?.addEventListener("click", () => {
-    document.getElementById("events-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-
   document.getElementById("cta-buy-button")?.addEventListener("click", () => {
     document.getElementById("events-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
@@ -187,7 +183,14 @@ function buildEventCard(event, index) {
   const artistCount = getArtistCount(event);
   const zoneCount = getZoneCount(event);
   const minPrice = getMinimumPrice(event);
-  const priceLabel = minPrice !== null ? `Desde ${formatPrice(minPrice)}` : "Precio por confirmar";
+  const priceMarkup = minPrice !== null
+    ? `
+      <div class="event-metric-price">
+        <span class="event-metric-price-prefix">Desde</span>
+        <strong class="event-metric-value event-metric-value-price">${escapeHtml(formatPrice(minPrice))}</strong>
+      </div>
+    `
+    : '<strong class="event-metric-value">Por confirmar</strong>';
 
   return `
     <article class="event-card" style="${palette.style}">
@@ -205,15 +208,15 @@ function buildEventCard(event, index) {
         <div class="event-card-metrics">
           <div class="event-metric">
             <span class="event-metric-label">Artistas</span>
-            <strong>${artistCount}</strong>
+            <strong class="event-metric-value">${artistCount}</strong>
           </div>
           <div class="event-metric">
             <span class="event-metric-label">Zonas</span>
-            <strong>${zoneCount}</strong>
+            <strong class="event-metric-value">${zoneCount}</strong>
           </div>
-          <div class="event-metric">
+          <div class="event-metric event-metric-ticket">
             <span class="event-metric-label">Entradas</span>
-            <strong>${escapeHtml(priceLabel)}</strong>
+            ${priceMarkup}
           </div>
         </div>
 
@@ -423,7 +426,12 @@ function formatNumber(num) {
 }
 
 function formatPrice(value) {
-  return `${Number(value).toFixed(Number(value) % 1 === 0 ? 0 : 2)} EUR`;
+  if (window.formatCurrency) {
+    return window.formatCurrency(value);
+  }
+
+  const parsed = Number(value);
+  return `${Number.isFinite(parsed) ? parsed.toFixed(2) : "0.00"} EUR`;
 }
 
 function formatDate(date) {

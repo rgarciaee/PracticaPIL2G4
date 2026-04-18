@@ -1,4 +1,4 @@
-// router.js
+﻿// router.js
 class Router {
     constructor() {
         this.currentPage = null;
@@ -66,25 +66,13 @@ class Router {
         this.loadPage(page);
     }
 
-    showLoader() {
-        const loader = document.getElementById('content-loader');
-        if (loader) loader.classList.add('active');
-    }
-
-    hideLoader() {
-        const loader = document.getElementById('content-loader');
-        if (loader) loader.classList.remove('active');
-    }
-
     async loadPage(route) {
         const content = document.getElementById('page-content');
         const { basePage, queryParams } = this.parseRoute(route);
         
         console.log('loadPage - route:', route);
         console.log('basePage:', basePage);
-        console.log('queryParams:', Object.fromEntries(queryParams.entries()));
-
-        this.showLoader();
+        console.log('queryParams:', Object.fromEntries(queryParams.entries()));
 
         try {
             const response = await fetch(`/partials/${basePage}`);
@@ -124,8 +112,6 @@ class Router {
                     </div>
                 `;
             }
-        } finally {
-            this.hideLoader();
         }
     }
 
@@ -179,3 +165,5 @@ class Router {
 document.addEventListener('DOMContentLoaded', () => {
     window.router = new Router();
 });
+
+

@@ -1,16 +1,13 @@
 # API WEB FASTAPI
 
 from fastapi import APIRouter, Request, Response
-from fastapi.responses import FileResponse, RedirectResponse, JSONResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from firebase_admin import auth
 from datetime import datetime
 from view.view import View
 from model.model import Model
-from datetime import timezone
 
 import json
-import os
-import uuid
 
 app = APIRouter()
 
@@ -146,26 +143,6 @@ async def login_page(request: Request):
     return myviewcomponent.get_login_view(request)
 
 # ============================================================
-# STATIC Y PARTIALS
-# ============================================================
-
-@app.get("/static/{path:path}")
-async def serve_static(path: str):
-    file_path = os.path.join("view/templates/static", path)
-    if os.path.exists(file_path):
-        return FileResponse(file_path)
-    return {"error": "File not found"}
-
-
-@app.get("/partials/{page}")
-async def serve_partial(page: str):
-    file_path = os.path.join("view/templates/partials", f"{page}.html")
-    if os.path.exists(file_path):
-        return FileResponse(file_path)
-    return {"error": "Page not found"}
-
-
-# ============================================================
 # LOGIN
 # ============================================================
 
@@ -294,9 +271,11 @@ async def get_stats():
             if "artistas" in event and isinstance(event["artistas"], list):
                 total_artistas += len(event["artistas"])
                 
-            # Sumar aforo de todas las zonas si existen
+            # Sumar solo el aforo de las zonas de tipo ticket
             if "zonas" in event and isinstance(event["zonas"], list):
                 for zona in event["zonas"]:
+                    if str(zona.get("tipo", "")).strip().lower() != "ticket":
+                        continue
                     # Usamos .get() con un valor por defecto 0 por si alguna zona no tiene aforo definido
                     total_asistentes += int(zona.get("aforo_maximo", 0))
                     

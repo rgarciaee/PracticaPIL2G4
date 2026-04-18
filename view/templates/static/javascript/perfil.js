@@ -204,45 +204,30 @@ async function saveProfile() {
 }
 
 function setupPasswordSection() {
-    console.log('Configurando seccion de contrasena...');
-
     const header = document.getElementById('password-header');
     const content = document.getElementById('password-content');
-
-    if (!header) {
-        console.error('No se encontro password-header');
-        return;
-    }
-
-    if (!content) {
-        console.error('No se encontro password-content');
-        return;
-    }
+    if (!header || !content) return;
 
     content.classList.add('is-hidden');
+    const icon = header.querySelector('.password-header-icon i');
 
-    const icon = header.querySelector('i:last-child');
-    if (icon) {
-        icon.classList.remove('fa-chevron-up');
-        icon.classList.add('fa-chevron-down');
-    }
+    const syncPasswordToggle = () => {
+        const isHidden = content.classList.contains('is-hidden');
+        header.setAttribute('aria-expanded', String(!isHidden));
+        header.classList.toggle('is-open', !isHidden);
+
+        if (icon) {
+            icon.classList.toggle('fa-chevron-down', isHidden);
+            icon.classList.toggle('fa-chevron-up', !isHidden);
+        }
+    };
+
+    syncPasswordToggle();
 
     header.onclick = function (e) {
         e.preventDefault();
-        e.stopPropagation();
-
-        console.log('Click en password-header');
         content.classList.toggle('is-hidden');
-
-        if (icon) {
-            if (content.classList.contains('is-hidden')) {
-                icon.classList.remove('fa-chevron-up');
-                icon.classList.add('fa-chevron-down');
-            } else {
-                icon.classList.remove('fa-chevron-down');
-                icon.classList.add('fa-chevron-up');
-            }
-        }
+        syncPasswordToggle();
     };
 
     const changeBtn = document.getElementById('change-password-btn');
@@ -304,10 +289,7 @@ function setupPasswordSection() {
                     document.getElementById('confirm-password').value = '';
 
                     content.classList.add('is-hidden');
-                    if (icon) {
-                        icon.classList.remove('fa-chevron-up');
-                        icon.classList.add('fa-chevron-down');
-                    }
+                    syncPasswordToggle();
                 } catch (reauthError) {
                     console.error('Error de reautenticacion:', reauthError);
                     if (reauthError.code === 'auth/wrong-password') {
@@ -329,6 +311,4 @@ function setupPasswordSection() {
             }
         };
     }
-
-    console.log('Seccion de contrasena configurada correctamente');
 }
