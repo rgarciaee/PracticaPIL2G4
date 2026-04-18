@@ -1,0 +1,305 @@
+web:
+  title: "Subsonic Festival"
+  profile_image: "https://i.pravatar.cc/100?img=12"
+  description: >
+    Plataforma oficial del Subsonic Festival donde los usuarios podrán
+    consultar eventos, comprar entradas, descubrir artistas participantes,
+    acceder a merchandising y explorar servicios disponibles dentro del
+    festival.
+
+# Lista completa de eventos (cada uno con sus propios detalles)
+events:
+  - id: 1
+    nombre: "Subsonic Opening Night"
+    fecha_inicio: "15 Abril 2026"
+    fecha_fin: "17 Abril 2026"
+    descripcion: "La noche de apertura con los mejores artistas electrónicos y un ambiente inolvidable."
+    ubicacion:
+      nombre: "Palacio Vistalegre"
+      ciudad: "Madrid"
+      lat: 40.3869
+      lng: -3.7312
+    artistas:
+      - nombre: "Neon Pulse"
+        genero: "Electrónica"
+      - nombre: "The Sonic Waves"
+        genero: "Indie Rock"
+      - nombre: "DJ Quantum"
+        genero: "Techno"
+      - nombre: "Luna Solaris"
+        genero: "Synthwave"
+      - nombre: "Los Gatos Eléctricos"
+        genero: "Rock Alternativo"
+    entradas:
+      - tipo: "General"
+        zona: "Pista"
+        precio: 60
+        disponibles: 500
+      - tipo: "VIP"
+        zona: "Zona VIP"
+        precio: 120
+        disponibles: 150
+      - tipo: "Platinum"
+        zona: "Palco Premium"
+        precio: 200
+        disponibles: 50
+    horario:
+      - dia: "15 Abril"
+        slots:
+          - hora: "18:00"
+            artista: "Neon Pulse"
+          - hora: "20:00"
+            artista: "DJ Quantum"
+          - hora: "22:00"
+            artista: "Luna Solaris"
+      - dia: "16 Abril"
+        slots:
+          - hora: "19:00"
+            artista: "The Sonic Waves"
+          - hora: "21:00"
+            artista: "Los Gatos Eléctricos"
+      - dia: "17 Abril"
+        slots:
+          - hora: "20:00"
+            artista: "DJ Quantum (Closing Set)"
+    puestos:
+      - nombre: "Burger Stage"
+        tipo: "Comida"
+        zona: "Food Court"
+      - nombre: "Festival Merch"
+        tipo: "Merchandising"
+        zona: "Zona central"
+      - nombre: "Cervecería Subsonic"
+        tipo: "Bebidas"
+        zona: "Barra Norte"
+    imagenes:
+      - "https://picsum.photos/id/104/800/400"
+      - "https://picsum.photos/id/106/800/400"
+
+  - id: 2
+    nombre: "Electro Weekend"
+    fecha_inicio: "2 Mayo 2026"
+    fecha_fin: "3 Mayo 2026"
+    descripcion: "Un fin de semana de pura electrónica con los mejores DJs nacionales e internacionales."
+    ubicacion:
+      nombre: "IFEMA"
+      ciudad: "Madrid"
+      lat: 40.4637
+      lng: -3.6145
+    artistas:
+      - nombre: "DJ Krypto"
+        genero: "House"
+      - nombre: "MegaBeats"
+        genero: "Drum & Bass"
+      - nombre: "Synthia"
+        genero: "Electro Pop"
+      - nombre: "Binary Mind"
+        genero: "Techno"
+      - nombre: "Nova Wave"
+        genero: "Synthwave"
+    entradas:
+      - tipo: "General"
+        zona: "Pista"
+        precio: 45
+        disponibles: 800
+      - tipo: "VIP"
+        zona: "Zona Elevada"
+        precio: 95
+        disponibles: 200
+    horario:
+      - dia: "2 Mayo"
+        slots:
+          - hora: "17:00"
+            artista: "Binary Mind"
+          - hora: "19:00"
+            artista: "Synthia"
+          - hora: "21:00"
+            artista: "DJ Krypto"
+          - hora: "23:00"
+            artista: "MegaBeats"
+      - dia: "3 Mayo"
+        slots:
+          - hora: "18:00"
+            artista: "Nova Wave"
+          - hora: "20:00"
+            artista: "DJ Krypto (B2B)"
+    puestos:
+      - nombre: "Electro Food"
+        tipo: "Comida fusión"
+        zona: "Zona Este"
+      - nombre: "Merchandising Oficial"
+        tipo: "Tienda"
+        zona: "Hall Principal"
+    imagenes:
+      - "https://picsum.photos/id/107/800/400"
+      - "https://picsum.photos/id/108/800/400"
+
+  - id: 3
+    nombre: "Indie Sessions"
+    fecha_inicio: "20 Junio 2026"
+    fecha_fin: "21 Junio 2026"
+    descripcion: "Las mejores bandas indie en un entorno natural al atardecer."
+    ubicacion:
+      nombre: "Parque del Retiro"
+      ciudad: "Madrid"
+      lat: 40.4153
+      lng: -3.6844
+    artistas:
+      - nombre: "Los Planetas"
+        genero: "Indie Rock"
+      - nombre: "Vetusta Morla"
+        genero: "Indie Rock"
+      - nombre: "La Habitación Roja"
+        genero: "Indie Pop"
+      - nombre: "Russian Red"
+        genero: "Folk Indie"
+      - nombre: "The New Raemon"
+        genero: "Indie Pop"
+    entradas:
+      - tipo: "General"
+        zona: "Zona Público"
+        precio: 40
+        disponibles: 1000
+      - tipo: "Zona Chill Out"
+        zona: "Área Relax"
+        precio: 70
+        disponibles: 300
+    horario:
+      - dia: "20 Junio"
+        slots:
+          - hora: "19:00"
+            artista: "Russian Red"
+          - hora: "20:30"
+            artista: "La Habitación Roja"
+          - hora: "22:00"
+            artista: "Vetusta Morla"
+      - dia: "21 Junio"
+        slots:
+          - hora: "19:00"
+            artista: "The New Raemon"
+          - hora: "20:30"
+            artista: "Los Planetas"
+    puestos:
+      - nombre: "Barra de Gin Tonic"
+        tipo: "Bebidas"
+        zona: "Zona Central"
+      - nombre: "Puestos de Artesanía"
+        tipo: "Venta"
+        zona: "Mercadillo"
+    imagenes:
+      - "https://picsum.photos/id/109/800/400"
+      - "https://picsum.photos/id/110/800/400"
+
+# Zonas para proveedores (asociadas a eventos)
+zonas:
+  - id: 1
+    evento_id: 1
+    nombre: "Zona Food Trucks Norte"
+    aforo_maximo: 300
+    precio: 500
+  - id: 2
+    evento_id: 1
+    nombre: "Zona Merchandising Central"
+    aforo_maximo: 150
+    precio: 350
+  - id: 3
+    evento_id: 1
+    nombre: "Zona Bebidas Principal"
+    aforo_maximo: 200
+    precio: 400
+  - id: 4
+    evento_id: 2
+    nombre: "Zona Food Court Sur"
+    aforo_maximo: 250
+    precio: 450
+  - id: 5
+    evento_id: 2
+    nombre: "Zona Merchandising Electrónico"
+    aforo_maximo: 120
+    precio: 300
+  - id: 6
+    evento_id: 3
+    nombre: "Zona Artesanal"
+    aforo_maximo: 180
+    precio: 380
+
+# Noticias ampliadas
+news:
+  - titulo: "Artistas confirmados"
+    contenido: "Se anuncian nuevos artistas internacionales para el Opening Night."
+    fecha: "2026-02-10"
+    categoria: "artistas"
+  - titulo: "Venta de entradas"
+    contenido: "Las entradas ya están disponibles con descuentos por lanzamiento."
+    fecha: "2026-02-15"
+    categoria: "ventas"
+  - titulo: "Espacios para proveedores"
+    contenido: "Se abre el plazo para solicitar puestos en los tres eventos."
+    fecha: "2026-02-20"
+    categoria: "proveedores"
+  - titulo: "Horarios completos"
+    contenido: "Ya puedes consultar los horarios de todos los conciertos."
+    fecha: "2026-03-01"
+    categoria: "horarios"
+  - titulo: "Zonas de acampada"
+    contenido: "Habilitamos zonas de acampada para los asistentes al Electro Weekend."
+    fecha: "2026-03-05"
+    categoria: "servicios"
+
+# Historial de compras (más entradas)
+historial:
+  - evento_id: 1
+    evento: "Subsonic Opening Night"
+    zona: "VIP"
+    fecha_evento: "15 Abril 2026"
+    localizador_qr: "SUB-938472"
+    fecha_compra: "2026-03-01"
+    estado: "Activa"
+  - evento_id: 2
+    evento: "Electro Weekend"
+    zona: "General"
+    fecha_evento: "2 Mayo 2026"
+    localizador_qr: "SUB-827362"
+    fecha_compra: "2026-03-02"
+    estado: "Activa"
+  - evento_id: 1
+    evento: "Subsonic Opening Night"
+    zona: "Platinum"
+    fecha_evento: "15 Abril 2026"
+    localizador_qr: "SUB-123456"
+    fecha_compra: "2026-03-10"
+    estado: "Activa"
+  - evento_id: 3
+    evento: "Indie Sessions"
+    zona: "General"
+    fecha_evento: "20 Junio 2026"
+    localizador_qr: "IND-987654"
+    fecha_compra: "2026-03-15"
+    estado: "Activa"
+  - evento_id: 3
+    evento: "Indie Sessions"
+    zona: "Zona Chill Out"
+    fecha_evento: "20 Junio 2026"
+    localizador_qr: "IND-456789"
+    fecha_compra: "2026-03-20"
+    estado: "Usada"  # ejemplo de entrada usada
+
+# Usuario (podemos añadir más campos si se desea)
+user:
+  id: 1
+  dni: "12345678A"
+  nombre_apellidos: "Carlos Martínez"
+  fecha_nacimiento: "1995-06-12"
+  num_tarjeta: "4532 1234 5678 9012"
+  direccion: "Calle Mayor 12, Madrid"
+  email: "carlos@email.com"
+  rol_asignado: "cliente"
+  telefono: "+34 600 123 456"
+  preferencias:
+    idioma: "es"
+    notificaciones_email: true
+    notificaciones_sms: false
+
+# Carrito vacío (puedes añadir items de ejemplo si quieres)
+cart:
+  entradas: []

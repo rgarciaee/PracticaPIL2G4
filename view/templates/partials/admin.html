@@ -1,0 +1,412 @@
+<div id="admin-content" class="admin-page container">
+  <section class="admin-hero card page-hero">
+    <div>
+      <p class="admin-kicker">Panel de administracion</p>
+      <h1>Gestion central del festival</h1>
+      <p>
+        Crea, edita y elimina usuarios, eventos, artistas, zonas y stands sin
+        perder las relaciones entre entidades.
+      </p>
+    </div>
+    <div class="admin-hero-actions">
+      <button id="admin-refresh-btn" class="btn btn-outline">
+        <i class="fas fa-rotate-right"></i> Recargar datos
+      </button>
+    </div>
+  </section>
+
+  <section class="admin-stats">
+    <article class="card admin-stat-card surface-card">
+      <span class="admin-stat-label">Usuarios</span>
+      <strong id="admin-stat-users">0</strong>
+    </article>
+    <article class="card admin-stat-card surface-card">
+      <span class="admin-stat-label">Eventos</span>
+      <strong id="admin-stat-events">0</strong>
+    </article>
+    <article class="card admin-stat-card surface-card">
+      <span class="admin-stat-label">Artistas</span>
+      <strong id="admin-stat-artists">0</strong>
+    </article>
+    <article class="card admin-stat-card surface-card">
+      <span class="admin-stat-label">Zonas</span>
+      <strong id="admin-stat-zones">0</strong>
+    </article>
+    <article class="card admin-stat-card surface-card">
+      <span class="admin-stat-label">Stands</span>
+      <strong id="admin-stat-stands">0</strong>
+    </article>
+  </section>
+
+  <section class="card admin-tabs-shell surface-card">
+    <div class="tabs admin-tabs">
+      <button class="tab active" data-admin-tab="users">Usuarios</button>
+      <button class="tab" data-admin-tab="events">Eventos</button>
+      <button class="tab" data-admin-tab="artists">Artistas</button>
+      <button class="tab" data-admin-tab="zones">Zonas</button>
+      <button class="tab" data-admin-tab="stands">Stands</button>
+    </div>
+
+    <div class="admin-tab-panel active" data-admin-panel="users">
+      <div class="admin-grid">
+        <section class="card surface-card">
+          <div class="admin-section-head">
+            <h2>Formulario de usuario</h2>
+            <button id="admin-user-reset" class="btn btn-secondary">Nuevo</button>
+          </div>
+          <form id="admin-user-form" class="admin-form">
+            <input type="hidden" id="admin-user-id" />
+            <div class="input-group">
+              <label for="admin-user-email">Email</label>
+              <input id="admin-user-email" type="email" required />
+            </div>
+            <div class="input-group">
+              <label for="admin-user-password">Contrasena</label>
+              <input id="admin-user-password" type="password" />
+            </div>
+            <div class="input-group">
+              <label for="admin-user-role">Rol</label>
+              <select id="admin-user-role">
+                <option value="user">user</option>
+                <option value="admin">admin</option>
+                <option value="provider">provider</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="admin-user-name">Nombre y apellidos</label>
+              <input id="admin-user-name" type="text" />
+            </div>
+            <div class="input-group">
+              <label for="admin-user-phone">Telefono</label>
+              <input id="admin-user-phone" type="text" />
+            </div>
+            <div class="input-group">
+              <label for="admin-user-address">Direccion</label>
+              <input id="admin-user-address" type="text" />
+            </div>
+            <div class="input-group">
+              <label for="admin-user-dni">DNI</label>
+              <input id="admin-user-dni" type="text" />
+            </div>
+            <div class="input-group">
+              <label for="admin-user-birth">Fecha de nacimiento</label>
+              <input id="admin-user-birth" type="date" />
+            </div>
+            <div class="input-group admin-form-actions">
+              <button type="submit" class="btn btn-primary">Guardar usuario</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card surface-card">
+          <div class="admin-section-head">
+            <h2>Usuarios registrados</h2>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Rol</th>
+                  <th>Telefono</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-table"></tbody>
+            </table>
+          </div>
+          <div id="admin-users-pagination" class="admin-pagination"></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="admin-tab-panel" data-admin-panel="events">
+      <div class="admin-grid">
+        <section class="card surface-card">
+          <div class="admin-section-head">
+            <h2>Formulario de evento</h2>
+            <button id="admin-event-reset" class="btn btn-secondary">Nuevo</button>
+          </div>
+          <form id="admin-event-form" class="admin-form">
+            <input type="hidden" id="admin-event-id" />
+            <div class="input-group">
+              <label for="admin-event-name">Nombre</label>
+              <input id="admin-event-name" type="text" required />
+            </div>
+            <div class="input-group">
+              <label for="admin-event-image">Imagen URL</label>
+              <input id="admin-event-image" type="text" />
+            </div>
+            <div class="input-group">
+              <label for="admin-event-start">Fecha inicio</label>
+              <input id="admin-event-start" type="date" required />
+            </div>
+            <div class="input-group">
+              <label for="admin-event-end">Fecha fin</label>
+              <input id="admin-event-end" type="date" required />
+            </div>
+            <div class="input-group full-width">
+              <label for="admin-event-description">Descripcion</label>
+              <textarea id="admin-event-description" rows="4"></textarea>
+            </div>
+            <div class="input-group full-width">
+              <label>Horario</label>
+              <div class="admin-schedule-builder">
+                <p id="admin-event-schedule-help" class="admin-schedule-help">
+                  Guarda el evento y crea sus artistas para poder asignarlos al horario.
+                </p>
+                <div class="admin-schedule-controls">
+                  <div class="input-group">
+                    <label for="admin-event-schedule-day">Dia</label>
+                    <select id="admin-event-schedule-day"></select>
+                  </div>
+                  <div class="input-group">
+                    <label for="admin-event-schedule-time">Hora</label>
+                    <input id="admin-event-schedule-time" type="time" />
+                  </div>
+                  <div class="input-group">
+                    <label for="admin-event-schedule-artist">Artista</label>
+                    <select id="admin-event-schedule-artist"></select>
+                  </div>
+                  <div class="input-group admin-schedule-add">
+                    <label>&nbsp;</label>
+                    <button id="admin-event-schedule-add" type="button" class="btn btn-secondary">
+                      Anadir pase
+                    </button>
+                  </div>
+                </div>
+                <div id="admin-event-schedule-list" class="admin-schedule-list"></div>
+              </div>
+            </div>
+            <div class="input-group">
+              <label for="admin-event-venue">Recinto</label>
+              <input id="admin-event-venue" type="text" />
+            </div>
+            <div class="input-group">
+              <label for="admin-event-city">Ciudad</label>
+              <input id="admin-event-city" type="text" />
+            </div>
+            <div class="input-group full-width">
+              <label for="admin-event-address">Direccion</label>
+              <input id="admin-event-address" type="text" />
+            </div>
+            <div class="input-group">
+              <label for="admin-event-lat">Latitud</label>
+              <input id="admin-event-lat" type="number" step="any" />
+            </div>
+            <div class="input-group">
+              <label for="admin-event-lng">Longitud</label>
+              <input id="admin-event-lng" type="number" step="any" />
+            </div>
+            <div class="input-group admin-form-actions">
+              <button type="submit" class="btn btn-primary">Guardar evento</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card surface-card">
+          <div class="admin-section-head">
+            <h2>Eventos</h2>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Evento</th>
+                  <th>Fechas</th>
+                  <th>Relaciones</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="admin-events-table"></tbody>
+            </table>
+          </div>
+          <div id="admin-events-pagination" class="admin-pagination"></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="admin-tab-panel" data-admin-panel="artists">
+      <div class="admin-grid">
+        <section class="card surface-card">
+          <div class="admin-section-head">
+            <h2>Formulario de artista</h2>
+            <button id="admin-artist-reset" class="btn btn-secondary">Nuevo</button>
+          </div>
+          <form id="admin-artist-form" class="admin-form">
+            <input type="hidden" id="admin-artist-id" />
+            <div class="input-group">
+              <label for="admin-artist-event">Evento</label>
+              <select id="admin-artist-event" required></select>
+            </div>
+            <div class="input-group">
+              <label for="admin-artist-name">Nombre</label>
+              <input id="admin-artist-name" type="text" required />
+            </div>
+            <div class="input-group">
+              <label for="admin-artist-genre">Genero</label>
+              <input id="admin-artist-genre" type="text" />
+            </div>
+            <div class="input-group">
+              <label for="admin-artist-image">Imagen URL</label>
+              <input id="admin-artist-image" type="text" />
+            </div>
+            <div class="input-group full-width">
+              <label for="admin-artist-description">Descripcion</label>
+              <textarea id="admin-artist-description" rows="4"></textarea>
+            </div>
+            <div class="input-group admin-form-actions">
+              <button type="submit" class="btn btn-primary">Guardar artista</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card surface-card">
+          <div class="admin-section-head">
+            <h2>Artistas</h2>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Artista</th>
+                  <th>Evento</th>
+                  <th>Genero</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="admin-artists-table"></tbody>
+            </table>
+          </div>
+          <div id="admin-artists-pagination" class="admin-pagination"></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="admin-tab-panel" data-admin-panel="zones">
+      <div class="admin-grid">
+        <section class="card surface-card">
+          <div class="admin-section-head">
+            <h2>Formulario de zona</h2>
+            <button id="admin-zone-reset" class="btn btn-secondary">Nuevo</button>
+          </div>
+          <form id="admin-zone-form" class="admin-form">
+            <input type="hidden" id="admin-zone-id" />
+            <div class="input-group">
+              <label for="admin-zone-event">Evento</label>
+              <select id="admin-zone-event" required></select>
+            </div>
+            <div class="input-group">
+              <label for="admin-zone-name">Nombre</label>
+              <input id="admin-zone-name" type="text" required />
+            </div>
+            <div class="input-group">
+              <label for="admin-zone-capacity">Aforo maximo</label>
+              <input id="admin-zone-capacity" type="number" min="0" />
+            </div>
+            <div class="input-group">
+              <label for="admin-zone-type">Tipo</label>
+              <select id="admin-zone-type">
+                <option value="ticket">ticket</option>
+                <option value="stand">stand</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="admin-zone-price">Precio</label>
+              <input id="admin-zone-price" type="number" min="0" step="0.01" />
+            </div>
+            <div class="input-group admin-form-actions">
+              <button type="submit" class="btn btn-primary">Guardar zona</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card surface-card">
+          <div class="admin-section-head">
+            <h2>Zonas</h2>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Zona</th>
+                  <th>Evento</th>
+                  <th>Tipo</th>
+                  <th>Aforo</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="admin-zones-table"></tbody>
+            </table>
+          </div>
+          <div id="admin-zones-pagination" class="admin-pagination"></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="admin-tab-panel" data-admin-panel="stands">
+      <div class="admin-grid">
+        <section class="card surface-card">
+          <div class="admin-section-head">
+            <h2>Formulario de stand</h2>
+            <button id="admin-stand-reset" class="btn btn-secondary">Nuevo</button>
+          </div>
+          <form id="admin-stand-form" class="admin-form">
+            <input type="hidden" id="admin-stand-id" />
+            <div class="input-group">
+              <label for="admin-stand-event">Evento</label>
+              <select id="admin-stand-event" required></select>
+            </div>
+            <div class="input-group">
+              <label for="admin-stand-zone">Zona</label>
+              <select id="admin-stand-zone" required></select>
+            </div>
+            <div class="input-group">
+              <label for="admin-stand-name">Nombre</label>
+              <input id="admin-stand-name" type="text" required />
+            </div>
+            <div class="input-group">
+              <label for="admin-stand-type">Tipo</label>
+              <input id="admin-stand-type" type="text" />
+            </div>
+            <div class="input-group">
+              <label for="admin-stand-price">Precio alquiler</label>
+              <input id="admin-stand-price" type="number" min="0" step="0.01" />
+            </div>
+            <div class="input-group">
+              <label for="admin-stand-size">Dimension m2</label>
+              <input id="admin-stand-size" type="number" min="0" step="0.1" />
+            </div>
+            <div class="input-group full-width">
+              <label for="admin-stand-schedule">Horario</label>
+              <input id="admin-stand-schedule" type="text" />
+            </div>
+            <div class="input-group admin-form-actions">
+              <button type="submit" class="btn btn-primary">Guardar stand</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card surface-card">
+          <div class="admin-section-head">
+            <h2>Stands</h2>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Stand</th>
+                  <th>Evento</th>
+                  <th>Zona</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="admin-stands-table"></tbody>
+            </table>
+          </div>
+          <div id="admin-stands-pagination" class="admin-pagination"></div>
+        </section>
+      </div>
+    </div>
+  </section>
+</div>

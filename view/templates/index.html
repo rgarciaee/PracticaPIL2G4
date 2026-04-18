@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <meta
+      name="description"
+      content="Subsonic Festival - La experiencia musical definitiva"
+    />
+    <title>Subsonic Festival</title>
+
+    <link rel="stylesheet" href="/static/css/main.css?v=20260418-4" />
+    <link rel="stylesheet" href="/static/css/componentes.css?v=20260418-4" />
+    <link rel="stylesheet" href="/static/css/home.css?v=20260418-4" />
+    <link rel="stylesheet" href="/static/css/evento.css?v=20260418-4" />
+    <link rel="stylesheet" href="/static/css/carrito.css?v=20260418-4" />
+    <link rel="stylesheet" href="/static/css/perfil.css?v=20260418-4" />
+    <link rel="stylesheet" href="/static/css/historial.css?v=20260418-4" />
+    <link rel="stylesheet" href="/static/css/proveedor.css?v=20260418-4" />
+    <link rel="stylesheet" href="/static/css/admin.css?v=20260418-4" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+  </head>
+  <body>
+    <header class="main-header">
+      <nav class="navbar">
+        <div class="nav-container">
+          <div class="logo-wrapper">
+            <a href="#" data-page="home" class="logo-link">
+              <div class="logo-icon">🎵</div>
+              <div class="logo-text">
+                <span class="logo-main">Subsonic</span>
+                <span class="logo-sub">Festival</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="nav-menu" id="nav-menu">
+            <ul class="nav-links">
+              <li>
+                <a href="#" data-page="carrito" class="nav-link"
+                  ><i class="fas fa-shopping-cart"></i> Carrito
+                  <span id="cart-count-badge" class="cart-badge">0</span></a
+                >
+              </li>
+              <li>
+                <a href="#" data-page="proveedor" class="nav-link"
+                  ><i class="fas fa-store"></i> Proveedores</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div class="nav-actions">
+            <button
+              id="theme-toggle"
+              class="icon-btn"
+              aria-label="Tema oscuro activo"
+              title="Tema oscuro activo"
+            >
+              <i class="fas fa-moon"></i>
+            </button>
+            <button id="search-toggle" class="icon-btn">
+              <i class="fas fa-search"></i>
+            </button>
+
+            <div id="auth-buttons" class="auth-buttons">
+              <button id="login-nav-btn" class="btn btn-outline btn-sm">
+                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+              </button>
+              <button id="register-nav-btn" class="btn btn-primary btn-sm">
+                <i class="fas fa-user-plus"></i> Registrarse
+              </button>
+            </div>
+
+            <div id="user-menu" class="profile-preview" style="display: none">
+              <img
+                id="nav-profile-image"
+                src="https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg"
+                alt="Perfil"
+                class="profile-avatar"
+              />
+              <div class="profile-dropdown">
+                <div class="dropdown-header">
+                  <strong id="dropdown-user-name">Usuario</strong>
+                  <span id="dropdown-user-email">email@ejemplo.com</span>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="#" data-page="perfil"
+                  ><i class="fas fa-user-circle"></i> Mi Perfil</a
+                >
+                <a href="#" data-page="historial"
+                  ><i class="fas fa-ticket-alt"></i> Mis Entradas</a
+                >
+                <a
+                  href="#"
+                  data-page="admin"
+                  id="admin-menu-link"
+                  style="display: none"
+                  ><i class="fas fa-shield-halved"></i> Panel Admin</a
+                >
+                <div class="dropdown-divider"></div>
+                <a href="#" id="logout-btn"
+                  ><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a
+                >
+              </div>
+            </div>
+
+            <button id="mobile-menu-toggle" class="mobile-menu-btn icon-btn">
+              <i class="fas fa-bars"></i>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div id="search-bar" class="search-bar is-hidden">
+        <div class="search-container">
+          <i class="fas fa-search"></i>
+          <input type="text" id="global-search" placeholder="Buscar..." />
+          <button id="close-search" class="close-search-btn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div id="search-results" class="search-results"></div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div id="page-content"></div>
+    </main>
+
+    <footer class="main-footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Subsonic Festival</h3>
+          <p>La experiencia musical definitiva</p>
+        </div>
+        <div class="footer-section">
+          <h4>Enlaces</h4>
+          <ul>
+            <li><a href="#" data-page="home">Inicio</a></li>
+            <li><a href="#" data-page="carrito">Carrito</a></li>
+            <li><a href="#" data-page="proveedor">Proveedores</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Subsonic Festival. Todos los derechos reservados.</p>
+        <div class="footer-payments">
+          <i class="fab fa-cc-visa"></i>
+          <i class="fab fa-cc-mastercard"></i>
+          <i class="fab fa-cc-paypal"></i>
+        </div>
+      </div>
+    </footer>
+
+    <div id="toast-container" class="toast-container"></div>
+    <div id="modal-container" class="modal-container is-hidden"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <script>
+      window.firebaseConfig = {{ firebase_config | tojson }};
+
+      if (
+        typeof firebase !== "undefined" &&
+        window.firebaseConfig &&
+        window.firebaseConfig.apiKey &&
+        !firebase.apps.length
+      ) {
+        firebase.initializeApp(window.firebaseConfig);
+        console.log("Firebase inicializado en index.html");
+      }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="/static/javascript/app.js?v=20260418-4"></script>
+    <script src="/static/javascript/home.js?v=20260418-4"></script>
+    <script src="/static/javascript/evento.js?v=20260418-4"></script>
+    <script src="/static/javascript/carrito.js?v=20260418-4"></script>
+    <script src="/static/javascript/perfil.js?v=20260418-4"></script>
+    <script src="/static/javascript/historial.js?v=20260418-4"></script>
+    <script src="/static/javascript/proveedor.js?v=20260418-4"></script>
+    <script src="/static/javascript/admin.js?v=20260418-4"></script>
+    <script src="/static/javascript/router.js?v=20260418-4"></script>
+  </body>
+</html>

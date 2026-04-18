@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subsonic Festival - Iniciar Sesion</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/login.css?v=20260418-4">
+</head>
+<body>
+    <div class="auth-wrapper" id="authWrapper">
+        <div class="auth-form-box register-form-box">
+            <form id="register-form" onsubmit="return false;">
+                <h1>Crear una cuenta</h1>
+                <div class="social-links">
+                    <a href="#" id="google-register" aria-label="Google"><i class="fab fa-google"></i></a>
+                </div>
+                <span>o usa tu correo electronico para registrarte</span>
+                <input type="text" id="reg-name" placeholder="Nombre completo" required>
+                <input type="text" id="reg-dni" placeholder="DNI / NIE" required>
+                <input type="email" id="reg-email" placeholder="Direccion de correo electronico" required>
+                <input type="password" id="reg-password" placeholder="Contrasena" required>
+                <input type="password" id="reg-confirm-password" placeholder="Confirmar contrasena" required>
+                <label class="remember-option" for="register-remember">
+                    <input type="checkbox" id="register-remember">
+                    <span>Recuerdame en este dispositivo</span>
+                </label>
+                <button type="submit" id="register-submit">Registrarse</button>
+                <div class="mobile-switch">
+                    <p>Ya tienes cuenta?</p>
+                    <button id="mobileLoginBtn" type="button">Iniciar sesion</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="auth-form-box login-form-box">
+            <form id="login-form" onsubmit="return false;">
+                <h1>Iniciar sesion</h1>
+                <div class="social-links">
+                    <a href="#" id="google-login" aria-label="Google"><i class="fab fa-google"></i></a>
+                </div>
+                <span>o usa tu cuenta</span>
+                <input type="email" id="login-email" placeholder="Correo electronico" required>
+                <input type="password" id="login-password" placeholder="Contrasena" required>
+                <label class="remember-option" for="login-remember">
+                    <input type="checkbox" id="login-remember">
+                    <span>Recuerdame en este dispositivo</span>
+                </label>
+                <a href="#" id="forgot-password">Olvidaste tu contrasena?</a>
+                <button type="submit" id="login-submit">Iniciar sesion</button>
+                <div class="mobile-switch">
+                    <p>No tienes cuenta?</p>
+                    <button id="mobileRegisterBtn" type="button">Registrarse</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="slide-panel-wrapper">
+            <div class="slide-panel">
+                <div class="panel-content panel-content-left">
+                    <h1>Bienvenido de nuevo</h1>
+                    <p>Inicia sesion para continuar tu experiencia Subsonic.</p>
+                    <button class="transparent-btn" id="loginBtn">Iniciar sesion</button>
+                </div>
+                <div class="panel-content panel-content-right">
+                    <h1>Hola, fan de la musica</h1>
+                    <p>Registrate y vive la mejor experiencia del festival.</p>
+                    <button class="transparent-btn" id="registerBtn">Registrarse</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script>
+        window.firebaseConfig = {{ firebase_config | tojson }};
+    </script>
+    <script src="/static/javascript/login.js?v=20260418-4"></script>
+</body>
+</html>

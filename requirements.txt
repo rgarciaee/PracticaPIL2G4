@@ -1,4 +1,7 @@
-# requirements.txt
-fastapi
-uvicorn[standard]   # servidor ASGI con extras recomendados
-firebase-admin
+fastapi==0.104.1
+uvicorn==0.24.0
+starlette==0.27.0
+firebase-admin==6.4.0
+jinja2==3.1.2
+python-multipart==0.0.6
+PyYAML==6.0.1
