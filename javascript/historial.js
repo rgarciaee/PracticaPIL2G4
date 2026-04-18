@@ -7,7 +7,7 @@ async function loadHistory() {
 
     renderProfile(data.web)
     renderHistory(data.historial)
-
+ 
 }
 
 function renderProfile(web) {
