@@ -1,20 +1,9 @@
-import json
-from pathlib import Path
-
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
+from model.dao.firebase.firebase_settings import get_firebase_web_config
+
 templates = Jinja2Templates(directory="view/templates")
-_CREDENTIALS_PATH = Path("model/dao/firebase/credentials.json")
-
-
-def get_firebase_web_config():
-    try:
-        with _CREDENTIALS_PATH.open("r", encoding="utf-8") as credentials_file:
-            credentials_data = json.load(credentials_file)
-        return credentials_data.get("web_config", {})
-    except Exception:
-        return {}
 
 
 class View:
@@ -23,7 +12,7 @@ class View:
             "login.html",
             {
                 "request": request,
-                "firebase_config": get_firebase_web_config(),
+                "firebase_config": self._safe_web_config(),
             },
         )
 
@@ -32,6 +21,13 @@ class View:
             "index.html",
             {
                 "request": request,
-                "firebase_config": get_firebase_web_config(),
+                "firebase_config": self._safe_web_config(),
             },
         )
+
+    @staticmethod
+    def _safe_web_config():
+        try:
+            return get_firebase_web_config()
+        except Exception:
+            return {}

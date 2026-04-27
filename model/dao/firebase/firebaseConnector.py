@@ -1,5 +1,7 @@
 from firebase_admin import auth, credentials, firestore, initialize_app
 
+from .firebase_settings import get_firebase_certificate_source
+
 TOKEN_CLOCK_SKEW_SECONDS = 60
 
 
@@ -7,10 +9,11 @@ class FirebaseConnector:
     firebase_app_initializated = False
 
     def __init__(self):
+        self.db = None
         try:
             if not FirebaseConnector.firebase_app_initializated:
                 self.credentials = credentials.Certificate(
-                    "model//dao//firebase//credentials.json"
+                    get_firebase_certificate_source()
                 )
                 initialize_app(self.credentials)
             self.db = firestore.client()
