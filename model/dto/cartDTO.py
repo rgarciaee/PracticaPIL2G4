@@ -26,7 +26,6 @@ class CartDTO():
         self._calculate_totals()
 
     def add_item(self, item):
-        # Buscar si el item ya existe (mismo evento y zona)
         existing = next((i for i in self.items if i.get("id") == item.get("id")), None)
         if existing:
             if item.get("item_category") == "provider_rental":

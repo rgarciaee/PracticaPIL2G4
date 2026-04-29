@@ -21,10 +21,10 @@ class FirebaseTicketDAO(InterfaceTicketDAO):
 
                 fecha_compra = ticket_data.get("fecha_compra", "")
                 ticket_dto.set_fecha_compra(fecha_compra)
-                
+
                 fecha_evento = ticket_data.get("fecha_evento", "")
                 ticket_dto.set_fecha_evento(fecha_evento)
-                
+
                 ticket_dto.set_estado(ticket_data.get("estado", "Activa"))
                 ticket_dto.set_evento_nombre(ticket_data.get("evento_nombre", ""))
                 ticket_dto.set_zona_nombre(ticket_data.get("zona_nombre", ""))
@@ -64,11 +64,10 @@ class FirebaseTicketDAO(InterfaceTicketDAO):
                 ticket_dto.set_evento_id(ticket_data.get("evento_id", ""))
                 ticket_dto.set_zona_id(ticket_data.get("zona_id", ""))
                 ticket_dto.set_localizador_qr(ticket_data.get("localizador_qr", ""))
-                
-                # CORRECCIÓN: fecha_compra ya es string
+
                 fecha_compra = ticket_data.get("fecha_compra", "")
                 ticket_dto.set_fecha_compra(fecha_compra)
-                
+
                 ticket_dto.set_estado(ticket_data.get("estado", "Activa"))
                 ticket_dto.set_evento_nombre(ticket_data.get("evento_nombre", ""))
                 ticket_dto.set_zona_nombre(ticket_data.get("zona_nombre", ""))

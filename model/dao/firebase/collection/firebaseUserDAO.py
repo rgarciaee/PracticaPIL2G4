@@ -5,7 +5,7 @@ class FirebaseUserDAO(InterfaceUserDAO):
     def __init__(self, collection, connector):
         self.collection = collection
         self.firebaseConnector = connector
- 
+
     def checking_user(self, token):
         user_token = self.firebaseConnector.verify_token(token)
         print("USER DAO TOKEN:", user_token)
@@ -18,7 +18,7 @@ class FirebaseUserDAO(InterfaceUserDAO):
                 user_res = next(query, None)
                 if not user_res or not user_res.exists:
                     print("USER DAO: Usuario no encontrado en Firestore")
-                    return user_dto.userdto_to_json()  # Devolver JSON vacío
+                    return user_dto.userdto_to_json()
                 else:
                     user_data = user_res.to_dict()
                     print("USER FOUND")
@@ -35,7 +35,7 @@ class FirebaseUserDAO(InterfaceUserDAO):
                         user_dto.set_session(session)
                     except Exception as e:
                         print(e)
-                    return user_dto.userdto_to_json()  # Devolver JSON string
+                    return user_dto.userdto_to_json()
             except Exception as e:
                 print(e)
         else:

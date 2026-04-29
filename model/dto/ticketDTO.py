@@ -10,7 +10,6 @@ class TicketsDTO():
     def ticketlist_to_json(self):
         return json.dumps(self.ticketlist, default=str)
 
-
 class TicketDTO():
     def __init__(self):
         self.id = None
@@ -27,11 +26,10 @@ class TicketDTO():
         self.detalle_tipo = None
 
     def is_Empty(self):
-        return (self.id is None and self.usuario_id is None and 
-                self.zona_id is None and self.localizador_qr is None and 
+        return (self.id is None and self.usuario_id is None and
+                self.zona_id is None and self.localizador_qr is None and
                 self.fecha_compra is None and self.estado is None)
 
-    # Getters y Setters
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
 
@@ -52,7 +50,7 @@ class TicketDTO():
 
     def get_fecha_evento(self): return self.fecha_evento
     def set_fecha_evento(self, fecha_evento): self.fecha_evento = fecha_evento
-    
+
     def get_estado(self): return self.estado
     def set_estado(self, estado): self.estado = estado
 
@@ -69,15 +67,14 @@ class TicketDTO():
     def set_detalle_tipo(self, detalle_tipo): self.detalle_tipo = detalle_tipo
 
     def ticketdto_to_dict(self):
-        # Si fecha_compra es datetime, convertirlo a string
         fecha = self.fecha_compra
-        if hasattr(fecha, 'isoformat'):
+        if hasattr(fecha, "isoformat"):
             fecha = fecha.isoformat()
-        
+
         fecha_evento = self.fecha_evento
-        if hasattr(fecha_evento, 'isoformat'):
+        if hasattr(fecha_evento, "isoformat"):
             fecha_evento = fecha_evento.isoformat()
-        
+
         return {
             "id": self.id,
             "usuario_id": self.usuario_id,

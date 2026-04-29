@@ -9,17 +9,15 @@ class EventsDTO():
         self.eventlist.append(elem)
 
     def eventlist_to_json(self):
-        # Convertir fechas a string si son datetime
         def convert_dates(obj):
             if isinstance(obj, dict):
                 return {k: convert_dates(v) for k, v in obj.items()}
             elif isinstance(obj, datetime):
                 return obj.isoformat()
             return obj
-        
+
         converted = [convert_dates(event) for event in self.eventlist]
         return json.dumps(converted, default=str)
-
 
 class EventDTO():
     def __init__(self):
@@ -33,12 +31,11 @@ class EventDTO():
         self.horario = None
 
     def is_Empty(self):
-        return (self.id is None and self.nombre is None and 
-                self.imagen is None and self.fecha_ini is None and 
+        return (self.id is None and self.nombre is None and
+                self.imagen is None and self.fecha_ini is None and
                 self.fecha_fin is None and self.descripcion is None and
                 self.ubicacion is None and self.horario is None)
 
-    # Getters y Setters
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
 

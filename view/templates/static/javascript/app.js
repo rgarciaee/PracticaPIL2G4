@@ -252,7 +252,6 @@ class SubsonicApp {
   }
 
   async addToCart(item) {
-    // Verificar autenticación antes de añadir al carrito
     const isAuthenticated = await this.checkAuthStatus();
     if (!isAuthenticated) {
       this.showModal(
@@ -262,13 +261,11 @@ class SubsonicApp {
           window.location.href = '/login';
         }
       );
-      return;  // Salir sin añadir nada
+      return;
     }
-    
-    // Solo llegar aquí si está autenticado
+
     const success = await this.addToCartAPI(item);
     if (!success) {
-      // Solo mostrar error, no guardar en local
       console.error('Error al añadir al carrito en el servidor');
       this.showToast('Error al añadir al carrito. Inténtalo de nuevo.', 'error');
     }
@@ -447,7 +444,6 @@ class SubsonicApp {
     }
   }
 
-  // === MÉTODOS DE INTERFAZ ===
   setupEventListeners() {
     const themeToggle = document.getElementById("theme-toggle");
     if (themeToggle) {
@@ -483,7 +479,6 @@ class SubsonicApp {
       logoutBtn.addEventListener("click", () => this.logout());
     }
 
-    // Botones de autenticación
     const loginNavBtn = document.getElementById("login-nav-btn");
     const registerNavBtn = document.getElementById("register-nav-btn");
     if (loginNavBtn) {
@@ -948,7 +943,6 @@ class SubsonicApp {
   }
 }
 
-// Inicializar la aplicación
 document.addEventListener("DOMContentLoaded", () => {
   window.app = new SubsonicApp();
   console.log(

@@ -10,7 +10,6 @@ class ArtistsDTO():
     def artistlist_to_json(self):
         return json.dumps(self.artistlist)
 
-
 class ArtistDTO():
     def __init__(self):
         self.id = None
@@ -18,14 +17,13 @@ class ArtistDTO():
         self.descripcion = None
         self.genero = None
         self.imagen = None
-        self.evento_id = None  # Relación con evento
+        self.evento_id = None
 
     def is_Empty(self):
-        return (self.id is None and self.nombre is None and 
-                self.descripcion is None and self.genero is None and 
+        return (self.id is None and self.nombre is None and
+                self.descripcion is None and self.genero is None and
                 self.imagen is None and self.evento_id is None)
 
-    # Getters y Setters
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
 

@@ -13,15 +13,13 @@ class UserExtDTO():
         self.rol_asignado = None
         self.telefono = None
         self.avatar_url = None
-        
 
     def is_Empty(self):
-        return (self.id is None and self.dni is None and 
-                self.nombre_apellidos is None and self.fecha_nacimiento is None and 
-                self.num_tarjeta is None and self.direccion is None and 
+        return (self.id is None and self.dni is None and
+                self.nombre_apellidos is None and self.fecha_nacimiento is None and
+                self.num_tarjeta is None and self.direccion is None and
                 self.email is None and self.rol_asignado is None)
 
-    # Getters y Setters
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
 
@@ -53,13 +51,12 @@ class UserExtDTO():
     def set_avatar_url(self, avatar_url): self.avatar_url = avatar_url
 
     def userextdto_to_dict(self):
-        # Manejar fecha_nacimiento correctamente
         fecha = self.fecha_nacimiento
         if isinstance(fecha, datetime):
             fecha = fecha.isoformat()
-        elif hasattr(fecha, 'isoformat'):
+        elif hasattr(fecha, "isoformat"):
             fecha = fecha.isoformat()
-        
+
         return {
             "id": self.id,
             "dni": self.dni,

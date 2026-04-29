@@ -1,5 +1,3 @@
-# API WEB FASTAPI
-
 from fastapi import APIRouter, Request, Response
 from fastapi.responses import RedirectResponse, JSONResponse
 from firebase_admin import auth
@@ -14,7 +12,6 @@ app = APIRouter()
 
 TOKEN_CLOCK_SKEW_SECONDS = 60
 
-# Sesiones en memoria
 sessions = {}
 
 myviewcomponent = View()

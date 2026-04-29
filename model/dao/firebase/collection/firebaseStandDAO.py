@@ -29,11 +29,9 @@ class FirebaseStandDAO(InterfaceStandDAO):
     def get_stands_available(self, event_id):
         stands = StandsDTO()
         try:
-            # Aquí podrías filtrar por disponibilidad si tienes ese campo
             query = self.collection.where("evento_id", "==", event_id).stream()
             for doc in query:
                 stand_data = doc.to_dict()
-                # Si tienes campo "disponible", filtrar aquí
                 stand_dto = StandDTO()
                 stand_dto.set_id(doc.id)
                 stand_dto.set_evento_id(stand_data.get("evento_id", ""))
@@ -50,8 +48,6 @@ class FirebaseStandDAO(InterfaceStandDAO):
 
     def request_stand_rental(self, stand_id, user_id, request_data):
         try:
-            # Aquí puedes crear una colección "rental_requests"
-            # Por ahora solo simulamos
             return {"success": True, "message": "Solicitud enviada correctamente"}
         except Exception as e:
             return {"success": False, "error": str(e)}

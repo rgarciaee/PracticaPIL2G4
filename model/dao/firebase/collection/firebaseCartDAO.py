@@ -27,7 +27,7 @@ class FirebaseCartDAO(InterfaceCartDAO):
             cart.set_user_id(user_id)
             cart.set_items(items)
             cart.set_updated_at()
-            
+
             self.collection.document(user_id).set(cart.to_dict())
             return {"success": True, "cart": cart.to_dict()}
         except Exception as e:
@@ -39,14 +39,13 @@ class FirebaseCartDAO(InterfaceCartDAO):
         try:
             cart = self.get_cart(user_id)
             cart.set_user_id(user_id)
-            
-            # Asegurar que el item tiene added_at
+
             if "added_at" not in item:
                 item["added_at"] = datetime.now().isoformat()
-            
+
             cart.add_item(item)
             cart.set_updated_at()
-            
+
             self.collection.document(user_id).set(cart.to_dict())
             return {"success": True, "cart": cart.to_dict()}
         except Exception as e:
@@ -60,7 +59,7 @@ class FirebaseCartDAO(InterfaceCartDAO):
             cart.set_user_id(user_id)
             cart.remove_item(item_id)
             cart.set_updated_at()
-            
+
             self.collection.document(user_id).set(cart.to_dict())
             return {"success": True, "cart": cart.to_dict()}
         except Exception as e:
@@ -74,7 +73,7 @@ class FirebaseCartDAO(InterfaceCartDAO):
             cart.set_user_id(user_id)
             cart.update_quantity(item_id, quantity)
             cart.set_updated_at()
-            
+
             self.collection.document(user_id).set(cart.to_dict())
             return {"success": True, "cart": cart.to_dict()}
         except Exception as e:
@@ -88,7 +87,7 @@ class FirebaseCartDAO(InterfaceCartDAO):
             cart.set_user_id(user_id)
             cart.clear()
             cart.set_updated_at()
-            
+
             self.collection.document(user_id).set(cart.to_dict())
             return {"success": True, "cart": cart.to_dict()}
         except Exception as e:

@@ -10,7 +10,6 @@ class StandsDTO():
     def standlist_to_json(self):
         return json.dumps(self.standlist)
 
-
 class StandDTO():
     def __init__(self):
         self.id = None
@@ -20,14 +19,13 @@ class StandDTO():
         self.dimension_m2 = None
         self.horario = None
         self.tipo = None
-        self.nombre = None  # Nombre del puesto
+        self.nombre = None
 
     def is_Empty(self):
-        return (self.id is None and self.evento_id is None and 
-                self.zona_id is None and self.precio_alquiler is None and 
+        return (self.id is None and self.evento_id is None and
+                self.zona_id is None and self.precio_alquiler is None and
                 self.dimension_m2 is None and self.horario is None)
 
-    # Getters y Setters
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
 

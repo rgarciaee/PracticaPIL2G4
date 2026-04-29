@@ -10,7 +10,6 @@ class ZonesDTO():
     def zonelist_to_json(self):
         return json.dumps(self.zonelist)
 
-
 class ZoneDTO():
     def __init__(self):
         self.id = None
@@ -22,11 +21,16 @@ class ZoneDTO():
         self.tipo = None
 
     def is_Empty(self):
-        return (self.id is None and self.evento_id is None and 
-                self.nombre is None and self.aforo_maximo is None and 
-                self.precio is None)
+        return (
+            self.id is None
+            and self.evento_id is None
+            and self.nombre is None
+            and self.aforo_maximo is None
+            and self.precio is None
+            and self.fecha_evento is None
+            and self.tipo is None
+        )
 
-    # Getters y Setters
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
 
@@ -56,5 +60,5 @@ class ZoneDTO():
             "aforo_maximo": self.aforo_maximo,
             "precio": self.precio,
             "fecha_evento": self.fecha_evento,
-            "tipo": self.tipo
+            "tipo": self.tipo,
         }

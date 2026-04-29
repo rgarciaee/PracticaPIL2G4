@@ -1,0 +1,11 @@
+services:
+  subsonic:
+    build:
+      context: ..
+      dockerfile: Docker/Dockerfile
+    image: subsonic-festival:local
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: 8000
+      FIREBASE_CREDENTIALS_JSON: ${FIREBASE_CREDENTIALS_JSON}

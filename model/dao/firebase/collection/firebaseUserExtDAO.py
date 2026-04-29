@@ -1,9 +1,6 @@
-from ....dao.interfaceUserDAO import InterfaceUserDAO
 from ....dto.userExtDTO import UserExtDTO
 
 class FirebaseUserExtDAO():
-    # Esta clase extiende la información del usuario con los campos adicionales
-
     def __init__(self, collection):
         self.collection = collection
 

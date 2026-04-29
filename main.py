@@ -1,12 +1,9 @@
-# main.py - versión corregida
-
 from fastapi import FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from controller.controller import app, sessions
 import os
 
-# Crear la aplicación principal
 main_app = FastAPI(
     title="Subsonic Festival API",
     description="API para la plataforma del Subsonic Festival",
@@ -66,6 +63,4 @@ main_app.include_router(app)
 
 if __name__ == "__main__":
     import uvicorn
-    # CAMBIO IMPORTANTE: Usar la aplicación como string y quitar reload
-    # o usar reload pero con la app como string
     uvicorn.run(main_app, host="localhost", port=8000, reload=False, log_level="info")

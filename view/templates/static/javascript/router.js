@@ -1,5 +1,4 @@
-﻿// router.js
-class Router {
+﻿class Router {
     constructor() {
         this.currentPage = null;
         this.init();
@@ -28,7 +27,6 @@ class Router {
 
     getRouteFromHash() {
         const hash = window.location.hash.slice(1);
-        // Decodificar solo una vez
         try {
             return decodeURIComponent(hash);
         } catch (e) {
@@ -37,7 +35,6 @@ class Router {
     }
 
     parseRoute(route) {
-        // Separar correctamente la página de los parámetros
         const questionMarkIndex = route.indexOf('?');
         let basePage = route;
         let queryString = '';
@@ -59,7 +56,6 @@ class Router {
         if (this.currentPage === page) return;
 
         if (addToHistory) {
-            // No codificar la página completa, usar directamente
             window.history.pushState({ page }, '', `#${page}`);
         }
 
@@ -72,7 +68,8 @@ class Router {
         
         console.log('loadPage - route:', route);
         console.log('basePage:', basePage);
-        console.log('queryParams:', Object.fromEntries(queryParams.entries()));
+        console.log('queryParams:', Object.fromEntries(queryParams.entries()));
+
 
         try {
             const response = await fetch(`/partials/${basePage}`);
