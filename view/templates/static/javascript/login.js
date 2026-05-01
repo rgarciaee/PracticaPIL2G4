@@ -1,4 +1,6 @@
 const firebaseConfig = window.firebaseConfig || {};
+const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1"])
+const DEPLOYMENT_BASE_URL = "https://subsonicl2g4.duckdns.org";
 
 if (!firebaseConfig.apiKey) {
   throw new Error("No se ha podido cargar la configuracion publica de Firebase desde credentials.json");
@@ -15,6 +17,12 @@ const registerBtn = document.getElementById("registerBtn");
 const loginBtn = document.getElementById("loginBtn");
 const mobileRegisterBtn = document.getElementById("mobileRegisterBtn");
 const mobileLoginBtn = document.getElementById("mobileLoginBtn");
+
+function getBackendBaseUrl() {
+  return LOCAL_HOSTS.has(window.location.hostname)
+    ? window.location.origin
+    : DEPLOYMENT_BASE_URL;
+}
 
 function clearStoredUser() {
   localStorage.removeItem("subsonic_user");
@@ -79,9 +87,10 @@ function setButtonLoading(button, isLoading, originalText = null) {
 
 async function sendTokenToBackend(token, provider, profile = null, rememberMe = false) {
   const endpoint = provider === "google" ? "/login-google" : "/login-credentials";
+  const backendUrl = `${getBackendBaseUrl()}${endpoint}`;
 
   try {
-    const response = await fetch(endpoint, {
+    const response = await fetch(backendUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, profile, remember_me: rememberMe }),
@@ -96,7 +105,7 @@ async function sendTokenToBackend(token, provider, profile = null, rememberMe = 
 }
 
 function redirectToApp() {
-  window.location.href = "/app";
+  window.location.href = `${getBackendBaseUrl()}/app`;
 }
 
 function buildStoredUser(user, fallbackEmail, fallbackAvatar, role) {
