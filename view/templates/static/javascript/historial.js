@@ -1,9 +1,26 @@
+/**
+ * ============================================================================
+ * historial.js - Página de historial de entradas
+ * ============================================================================
+ * Este archivo proporciona:
+ * - Carga del historial de entradas/solicitudes del usuario
+ * - Filtrado por evento, estado y rango de fechas
+ * - Paginación de resultados
+ * - Visualización de código QR de entradas
+ * - Copia de códigos al portapapeles
+ * - Búsqueda y clasificación de estados (Activa, Usada, Cancelada)
+ * ============================================================================
+ */
+
+// Array de todas las entradas del usuario
 let allTickets = [];
 let filteredTickets = [];
 let currentPage = 1;
 
+// Número de entradas a mostrar por página
 const TICKETS_PER_PAGE = 8;
 
+// Inicializa el historial: carga datos y configura filtros
 window.initHistorial = async function () {
     console.log('Inicializando historial...');
 
@@ -11,6 +28,7 @@ window.initHistorial = async function () {
     setupFilters();
 };
 
+// Carga el historial de entradas desde la API
 async function loadHistoryData() {
     allTickets = [];
     filteredTickets = [];
@@ -48,6 +66,7 @@ async function loadHistoryData() {
     renderTickets();
 }
 
+// Renderiza las tarjetas de entradas en el contenedor
 function renderTickets() {
     const container = document.getElementById('history-list');
     const emptyMsg = document.getElementById('no-tickets-message');

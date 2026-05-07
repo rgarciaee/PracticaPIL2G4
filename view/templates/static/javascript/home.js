@@ -1,3 +1,18 @@
+/**
+ * ============================================================================
+ * home.js - Página de inicio del festival
+ * ============================================================================
+ * Este archivo gestiona:
+ * - Carrusel de eventos destacados
+ * - Rejilla de próximos eventos
+ * - Sección de noticias
+ * - Estadísticas del festival (visitantes, artistas, etc)
+ * - Botones de llamada a la acción (CTA)
+ * - Paleta de colores dinámicos para tarjetas
+ * ============================================================================
+ */
+
+// Paletas de colores para las tarjetas de eventos (se asignan al azar)
 const HOME_EVENT_PALETTES = [
   ["#2563eb", "#ec4899"],
   ["#f97316", "#ef4444"],
@@ -6,6 +21,7 @@ const HOME_EVENT_PALETTES = [
   ["#22c55e", "#84cc16"],
 ];
 
+// Estado global de la página home (eventos, noticias, página actual)
 const homeState = {
   events: [],
   news: [],
@@ -15,6 +31,7 @@ const homeState = {
   },
 };
 
+// Inicialización de la página home: carrusel, CTA, datos
 window.initHome = async function () {
   console.log("Inicializando home...");
 
@@ -23,6 +40,7 @@ window.initHome = async function () {
   await loadHomePayload();
 };
 
+// Configura los botones de llamada a la acción (CTA)
 function setupHomeCtas() {
   document.getElementById("buy-tickets-cta")?.addEventListener("click", () => {
     document.getElementById("events-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -33,6 +51,7 @@ function setupHomeCtas() {
   });
 }
 
+// Configura los controles del carrusel de eventos y noticias
 function setupHomeCarousels() {
   document.getElementById("events-prev")?.addEventListener("click", () => changeCarouselPage("events", -1));
   document.getElementById("events-next")?.addEventListener("click", () => changeCarouselPage("events", 1));
@@ -45,6 +64,7 @@ function setupHomeCarousels() {
   }
 }
 
+// Maneja el redimensionamiento de la ventana para actualizar carrusel
 function handleHomeResize() {
   if (homeState.events.length) {
     renderEventsGrid(homeState.events);
@@ -54,6 +74,7 @@ function handleHomeResize() {
   }
 }
 
+// Carga todos los datos para la página (eventos, noticias, estadísticas)
 async function loadHomePayload() {
   try {
     const homeData = await window.app?.getHomeData?.();
@@ -77,6 +98,7 @@ async function loadHomePayload() {
   }
 }
 
+// Renderiza la rejilla de eventos en HTML
 function renderEventsGrid(events) {
   const grid = document.getElementById("events-grid");
   if (!grid) return;

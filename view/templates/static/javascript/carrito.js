@@ -1,4 +1,19 @@
-﻿window.initCarrito = async function () {
+﻿/**
+ * ============================================================================
+ * carrito.js - Página del carrito de compras
+ * ============================================================================
+ * Este archivo maneja:
+ * - Carga y renderizado de items en el carrito
+ * - Modificación de cantidades (sumar/restar items)
+ * - Eliminación de items
+ * - Cálculo de subtotal, comisión y total
+ * - Proceso de checkout (pago)
+ * - Validación de autenticación (solo usuarios logueados)
+ * ============================================================================
+ */
+
+// Inicializa la página del carrito: carga datos y configura listeners
+window.initCarrito = async function () {
     console.log('Inicializando carrito...');
 
     let attempts = 0;
@@ -38,8 +53,10 @@
     setupCartButtons();
 };
 
+// Comisión de gestión agregada al total del carrito
 const CART_MANAGEMENT_FEE = 2.5;
 
+// Renderiza todos los items del carrito con su información y totales
 async function renderCartItems() {
     const container = document.getElementById('cart-items-list');
     const subtotalEl = document.getElementById('summary-subtotal');
@@ -130,6 +147,7 @@ async function renderCartItems() {
     });
 }
 
+// Configura los botones del carrito (checkout, continuar comprando)
 function setupCartButtons() {
     const checkoutBtn = document.getElementById('checkout-btn');
     const continueBtn = document.getElementById('continue-shopping');

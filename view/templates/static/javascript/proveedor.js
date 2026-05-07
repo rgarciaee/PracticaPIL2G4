@@ -1,4 +1,19 @@
-﻿const providerState = {
+﻿/**
+ * ============================================================================
+ * proveedor.js - Página de proveedores
+ * ============================================================================
+ * Este archivo gestiona:
+ * - Catálogo de zonas disponibles para alquilar (food trucks, stand, etc)
+ * - Consultor de horarios de eventos
+ * - Filtrado de zonas por evento
+ * - Información de capacidad y precio de alquiler
+ * - Solicitud de alquiler de zonas (solo para users con rol 'provider')
+ * - Paginación del listado de zonas
+ * ============================================================================
+ */
+
+// Estado global de la página: zonas, eventos, paginación
+const providerState = {
     standZones: [],
     currentPage: 1,
     pageSize: 8,
@@ -7,6 +22,7 @@
     zoneFilterEventId: '',
 };
 
+// Inicializa la página de proveedores: carga zonas y eventos
 window.initProveedor = async function () {
     console.log('Inicializando proveedor...');
 
@@ -46,6 +62,7 @@ window.initProveedor = async function () {
     }
 };
 
+// Almacena las zonas disponibles para proveedores
 function setProviderZones(zones) {
     providerState.standZones = (zones || []).filter((zone) => String(zone.tipo || 'ticket').toLowerCase() === 'stand');
     providerState.currentPage = 1;
@@ -63,6 +80,7 @@ function setProviderEvents(events) {
     renderProviderEventConsultant();
 }
 
+// Renderiza las tarjetas de zonas disponibles
 function renderZones() {
     const container = document.getElementById('zones-list');
     if (!container) return;

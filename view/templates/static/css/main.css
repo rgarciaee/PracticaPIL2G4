@@ -1,4 +1,18 @@
-﻿/* ===== VARIABLES GLOBALES ===== */
+﻿/*
+ * ================================================================
+ * main.css - Estilos globales de toda la aplicación
+ * ================================================================
+ * Este archivo define:
+ * - Variables CSS (colores, espaciado, sombras, transiciones)
+ * - Estilos base de HTML y body
+ * - Header (barra de navegación)
+ * - Footer (pie de página)
+ * - Componentes reutilizables (botones, badges, etc)
+ * - Temas (claro/oscuro) usando [data-theme="dark"]
+ * ================================================================
+ */
+
+/* ===== VARIABLES GLOBALES ===== */
 :root {
     /* Colores principales - Modo claro */
     --primary-color: #6366f1;

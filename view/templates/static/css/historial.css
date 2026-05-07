@@ -1,3 +1,17 @@
+/*
+ * ================================================================
+ * historial.css - Estilos de la página de historial
+ * ================================================================
+ * Este archivo proporciona estilos para:
+ * - Filtros de búsqueda (input, select, date)
+ * - Tarjetas de entradas (grid)
+ * - Información de entrada (zona, evento, estado, QR)
+ * - Códigos QR y botón de copia
+ * - Paginación
+ * - Mensaje vacío
+ * ================================================================
+ */
+
 /* Historial Page Styles */
 
 #historial-content .history-header {

@@ -1,3 +1,16 @@
+/*
+ * ================================================================
+ * perfil.css - Estilos de la página de perfil de usuario
+ * ================================================================
+ * Este archivo estiliza:
+ * - Avatar e información del usuario
+ * - Formulario de edición de datos
+ * - Vista previa de avatar
+ * - Sección desplegable de cambio de contraseña
+ * - Validación y estados de formulario
+ * ================================================================
+ */
+
 /* Profile Page Styles */
 
 #perfil-content .profile-header {

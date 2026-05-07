@@ -1,9 +1,27 @@
-﻿class Router {
+﻿/**
+ * ============================================================================
+ * router.js - Sistema de enrutamiento de la aplicación
+ * ============================================================================
+ * Este archivo implementa el Router que controla:
+ * - Navegación entre páginas (home, evento, carrito, perfil, historial, etc)
+ * - Manejo de rutas dinámicas con URL hash (#página?param=valor)
+ * - Carga de templates HTML desde el servidor
+ * - Historial del navegador (botones atrás/adelante)
+ * - Ejecución de código de inicialización de cada página
+ * ============================================================================
+ */
+
+/**
+ * Clase Router: Controla la navegación de páginas en la SPA (Single Page App)
+ * Utiliza URLs con hash para cambiar entre páginas sin recargar la página completa
+ */
+class Router {
     constructor() {
         this.currentPage = null;
         this.init();
     }
 
+    // Inicializa listeners para clics en enlaces y cambios de URL
     init() {
         document.addEventListener('click', (e) => {
             const link = e.target.closest('[data-page]');
@@ -25,6 +43,7 @@
         this.loadPage(initialPage);
     }
 
+    // Obtiene la ruta actual desde el URL hash
     getRouteFromHash() {
         const hash = window.location.hash.slice(1);
         try {
@@ -34,6 +53,7 @@
         }
     }
 
+    // Divide la ruta en página base y parámetros de query (ej: evento?id=123)
     parseRoute(route) {
         const questionMarkIndex = route.indexOf('?');
         let basePage = route;
@@ -52,6 +72,7 @@
         };
     }
 
+    // Cambia a una página diferente
     navigate(page, addToHistory = true) {
         if (this.currentPage === page) return;
 
@@ -62,6 +83,7 @@
         this.loadPage(page);
     }
 
+    // Carga el HTML de una página desde el servidor e inicializa su lógica
     async loadPage(route) {
         const content = document.getElementById('page-content');
         const { basePage, queryParams } = this.parseRoute(route);

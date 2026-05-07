@@ -1,3 +1,17 @@
+/*
+ * ================================================================
+ * home.css - Estilos de la página de inicio
+ * ================================================================
+ * Este archivo proporciona estilos para:
+ * - Sección hero (bienvenida)
+ * - Carrusel de eventos destacados
+ * - Rejilla de próximos eventos
+ * - Sección de noticias
+ * - Tarjetas de eventos con gradientes
+ * - Botones de navegación del carrusel
+ * ================================================================
+ */
+
 /* ===== HOME PAGE STYLES ===== */
 
 .hero-section {

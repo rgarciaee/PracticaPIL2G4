@@ -1,4 +1,20 @@
+/**
+ * ============================================================================
+ * login.js - Sistema de autenticación con Firebase
+ * ============================================================================
+ * Este archivo maneja:
+ * - Inicialización de Firebase y configuración
+ * - Formularios de login y registro
+ * - Autenticación con email/contraseña
+ * - Autenticación con Google (OAuth)
+ * - Recuperación de contraseña olvidada
+ * - Persistencia de sesión (recordar dispositivo)
+ * - Validación de datos y manejo de errores
+ * ============================================================================
+ */
+
 const firebaseConfig = window.firebaseConfig || {};
+// Detecta si se está ejecutando en local o en producción
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1"])
 const DEPLOYMENT_BASE_URL = "https://subsonicl2g4.duckdns.org";
 
@@ -10,6 +26,7 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
+// Instancia de Firebase Auth para manejo de autenticación
 const auth = firebase.auth();
 
 const authWrapper = document.getElementById("authWrapper");
@@ -18,12 +35,14 @@ const loginBtn = document.getElementById("loginBtn");
 const mobileRegisterBtn = document.getElementById("mobileRegisterBtn");
 const mobileLoginBtn = document.getElementById("mobileLoginBtn");
 
+// Retorna la URL base del backend (local o produccción)
 function getBackendBaseUrl() {
   return LOCAL_HOSTS.has(window.location.hostname)
     ? window.location.origin
     : DEPLOYMENT_BASE_URL;
 }
 
+// Limpia toda la información de usuario almacenada localmente
 function clearStoredUser() {
   localStorage.removeItem("subsonic_user");
   localStorage.removeItem("subsonic_auth_persistence");
@@ -31,6 +50,7 @@ function clearStoredUser() {
   sessionStorage.removeItem("subsonic_auth_persistence");
 }
 
+// Almacena datos del usuario en localStorage o sessionStorage según 'recordarme'
 function persistUser(userData, rememberMe) {
   clearStoredUser();
   if (rememberMe) {
@@ -42,6 +62,7 @@ function persistUser(userData, rememberMe) {
   }
 }
 
+// Configura la persistencia de sesión en Firebase
 async function applyAuthPersistence(rememberMe) {
   const persistence = rememberMe
     ? firebase.auth.Auth.Persistence.LOCAL

@@ -1,3 +1,17 @@
+/*
+ * ================================================================
+ * evento.css - Estilos de la página de detalle de evento
+ * ================================================================
+ * Este archivo estiliza:
+ * - Hero del evento (con imagen opcional)
+ * - Tarjetas de secciones (artistas, entradas, horario, stands)
+ * - Grid de artistas y zonas con paginación
+ * - Mapa de ubicación
+ * - Información de evento (título, fechas, ubicación)
+ * - Botones de acción (agregar al carrito, solicitar alquiler)
+ * ================================================================
+ */
+
 /* Event Page Styles */
 
 #evento-content {

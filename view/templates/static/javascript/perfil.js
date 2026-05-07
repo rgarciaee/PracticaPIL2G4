@@ -1,7 +1,24 @@
+/**
+ * ============================================================================
+ * perfil.js - Página de perfil de usuario
+ * ============================================================================
+ * Este archivo controla:
+ * - Carga de datos del perfil actual del usuario
+ * - Formulario de edición de datos personales
+ * - Vista previa en tiempo real de avatar personalizado
+ * - Sección desplegable de cambio de contraseña
+ * - Guardado de cambios en el backend
+ * - Cierre de sesión desde perfil
+ * ============================================================================
+ */
+
+// Almacena los datos del perfil actual del usuario
 let currentUserData = null;
 
+// Avatar por defecto si no hay imagen personalizada
 const DEFAULT_AVATAR_URL = 'https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg';
 
+// Inicializa la página de perfil: carga datos y configura formulario
 window.initPerfil = async function () {
     console.log('Inicializando perfil...');
 
@@ -31,6 +48,7 @@ window.initPerfil = async function () {
     await loadUserData();
 };
 
+// Carga los datos del perfil desde la API
 async function loadUserData() {
     try {
         const response = await fetch('/api/profile', {
@@ -60,6 +78,7 @@ async function loadUserData() {
     fillForm(currentUserData);
 }
 
+// Rellena el formulario con los datos del usuario
 function fillForm(data) {
     const dni = document.getElementById('user-dni');
     const name = document.getElementById('user-name');

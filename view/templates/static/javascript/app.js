@@ -1,4 +1,19 @@
-﻿const DEFAULT_AVATAR = 'https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg';
+﻿/**
+ * ============================================================================
+ * app.js - Controlador principal de la aplicación
+ * ============================================================================
+ * Este archivo contiene la clase SubsonicApp que gestiona:
+ * - Inicialización y configuración global de la aplicación
+ * - Gestión de datos (eventos, usuarios, noticias)
+ * - Control del carrito de compras
+ * - Autenticación y sesión de usuario
+ * - Manejo del tema (claro/oscuro)
+ * - Búsqueda global
+ * - Llamadas a API del backend
+ * ============================================================================
+ */
+
+const DEFAULT_AVATAR = 'https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg';
 const EURO_FORMATTER = new Intl.NumberFormat("es-ES", {
   style: "currency",
   currency: "EUR",
@@ -6,11 +21,13 @@ const EURO_FORMATTER = new Intl.NumberFormat("es-ES", {
   maximumFractionDigits: 2,
 });
 
+// Convierte números a formato de moneda (ej: 9.99 EUR)
 function formatCurrency(value) {
   const numericValue = Number(value);
   return EURO_FORMATTER.format(Number.isFinite(numericValue) ? numericValue : 0);
 }
 
+// Sincroniza el icono del tema (sol/luna) con el estado actual del tema
 function syncThemeToggleIcon(theme) {
   const themeToggle = document.getElementById("theme-toggle");
   const icon = themeToggle?.querySelector("i");
@@ -27,6 +44,7 @@ function syncThemeToggleIcon(theme) {
 window.formatCurrency = formatCurrency;
 window.syncThemeToggleIcon = syncThemeToggleIcon;
 
+// Clase principal de la aplicación que centraliza toda la lógica
 class SubsonicApp {
   constructor() {
     console.log("Constructor de SubsonicApp llamado");
@@ -42,6 +60,7 @@ class SubsonicApp {
     this.init();
   }
 
+  // Inicializa todos los componentes: listeners, datos, autenticación, tema
   async init() {
     this.setupEventListeners();
     await this.loadData();
@@ -54,9 +73,10 @@ class SubsonicApp {
   }
 
   // ============================================================
-  // MÉTODOS PARA CARRITO (API)
+  // GESTIu00d3N DE CARRITO: Carga y manejo de items del carrito
   // ============================================================
 
+  // Carga el carrito desde la API del backend
   async loadCartFromAPI() {
     console.log("loadCartFromAPI llamado");
     try {

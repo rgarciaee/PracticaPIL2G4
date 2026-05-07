@@ -1,17 +1,34 @@
-﻿let currentEvent = null;
+﻿/**
+ * ============================================================================
+ * evento.js - Página de detalle de evento
+ * ============================================================================
+ * Este archivo controla:
+ * - Carga de detalles de un evento específico (nombre, fechas, ubicación)
+ * - Secciones paginadas: artistas, entradas/zonas, horario, stands
+ * - Renderizado de mapa de ubicación
+ * - Gestión de estado de paginación de secciones
+ * - Búsqueda de eventos por parámetro URL (id=...)
+ * ============================================================================
+ */
 
+// Almacena el evento actual que se está visualizando
+let currentEvent = null;
+
+// Número de items por página en cada sección (artistas, entradas, stands)
 const EVENT_SECTION_PAGE_SIZE = {
   artists: 8,
   tickets: 8,
   stands: 4,
 };
 
+// Estado de páginas actuales de cada sección del evento
 const eventSectionState = {
   artists: 1,
   tickets: 1,
   stands: 1,
 };
 
+// Inicializa la página de evento: carga datos y renderiza secciones
 window.initEvento = async function () {
   console.log("Inicializando evento...");
 
@@ -74,6 +91,7 @@ window.initEvento = async function () {
   }
 };
 
+// Reinicia los contadores de página de todas las secciones
 function resetEventSectionState() {
   eventSectionState.artists = 1;
   eventSectionState.tickets = 1;

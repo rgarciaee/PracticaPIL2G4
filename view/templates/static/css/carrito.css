@@ -1,3 +1,17 @@
+/*
+ * ================================================================
+ * carrito.css - Estilos de la página del carrito de compras
+ * ================================================================
+ * Este archivo define estilos para:
+ * - Contenedor del carrito (layout 2 columnas)
+ * - Lista de items del carrito
+ * - Controles de cantidad (botones +/-)
+ * - Panel de resumen y totales
+ * - Botón de checkout
+ * - Mensaje de carrito vacío
+ * ================================================================
+ */
+
 /* Cart Page Styles */
 
 #carrito-content .cart-header {

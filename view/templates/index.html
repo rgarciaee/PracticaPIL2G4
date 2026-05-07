@@ -1,4 +1,13 @@
 <!doctype html>
+<!-- ================================================================
+     index.html - Página principal (layout base de la SPA)
+     ================================================================
+     Esta es la página principal que contiene:
+     - Barra de navegación (header)
+     - Contenedor dinámico de páginas (se actualiza sin recargar)
+     - Pie de página (footer)
+     - Scripts de Firebase y la aplicación
+     ================================================================ -->
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -36,6 +45,8 @@
     />
   </head>
   <body>
+    <!-- ========== BARRA DE NAVEGACIÓN SUPERIOR ========== -->
+    <!-- Menú principal, logo, carrito y opciones de usuario -->
     <header class="main-header">
       <nav class="navbar">
         <div class="nav-container">
@@ -139,10 +150,14 @@
       </div>
     </header>
 
+    <!-- ========== CONTENEDOR PRINCIPAL DE PÁGINAS ========== -->
+    <!-- Aquí se carga dinámicamente el contenido de cada página -->
     <main class="main-content">
       <div id="page-content"></div>
     </main>
 
+    <!-- ========== PIE DE PÁGINA ========== -->
+    <!-- Enlaces, información de copyright y métodos de pago -->
     <footer class="main-footer">
       <div class="footer-content">
         <div class="footer-section">
@@ -174,8 +189,15 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
+    <!-- Almacena la configuración de Firebase como JSON sin procesar -->
+    <script id="firebase-config" type="application/json">
+      {{ firebase_config | tojson }}
+    </script>
+
     <script>
-      window.firebaseConfig = {{ firebase_config | tojson }};
+      // Lee la configuración de Firebase desde el script anterior
+      const configScript = document.getElementById("firebase-config");
+      window.firebaseConfig = configScript ? JSON.parse(configScript.textContent || "{}") : {};
 
       if (
         typeof firebase !== "undefined" &&

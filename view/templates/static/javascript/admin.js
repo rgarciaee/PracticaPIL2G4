@@ -1,4 +1,21 @@
-﻿const adminState = {
+﻿/**
+ * ============================================================================
+ * admin.js - Panel administrativo
+ * ============================================================================
+ * Este archivo proporciona la interfaz de administración para:
+ * - Gestión de usuarios (crear, editar, eliminar)
+ * - Gestión de eventos (crear, editar, eliminar, agregar horario)
+ * - Gestión de artistas
+ * - Gestión de zonas (ticket y stand)
+ * - Gestión de stands
+ * - Vistas tabuladas para cada entidad
+ * - Paginación de listados
+ * - Validación y sincronización de datos
+ * ============================================================================
+ */
+
+// Estado global del panel admin: usuarios, eventos, artistas, zonas, stands
+const adminState = {
   loaded: false,
   sessionUserId: null,
   users: [],
@@ -17,6 +34,7 @@
   },
 };
 
+// Inicializa el panel administrativo: carga datos y configura tabs
 window.initAdmin = async function () {
   const root = document.getElementById('admin-content');
   if (!root) return;
@@ -26,6 +44,7 @@ window.initAdmin = async function () {
   await loadAdminData();
 };
 
+// Configura el sistema de tabs (pestañas) para cambiar entre secciones
 function setupAdminTabs() {
   document.querySelectorAll('[data-admin-tab]').forEach((button) => {
     button.onclick = () => {
@@ -45,6 +64,7 @@ function setupAdminTabs() {
   });
 }
 
+// Configura listeners para formularios y botones del admin
 function setupAdminActions() {
   document.getElementById('admin-refresh-btn')?.addEventListener('click', () => {
     loadAdminData(true);
@@ -70,6 +90,7 @@ function setupAdminActions() {
   document.getElementById('admin-event-end')?.addEventListener('change', syncEventScheduleControls);
 }
 
+// Carga todos los datos para el panel admin desde la API
 async function loadAdminData(showToast = false) {
   try {
     const response = await fetch('/api/admin/bootstrap', {
@@ -122,6 +143,7 @@ function renderAdminError(message) {
   `;
 }
 
+// Renderiza estadísticas de entidades en el panel
 function renderAdminStats() {
   setText('admin-stat-users', adminState.users.length);
   setText('admin-stat-events', adminState.events.length);

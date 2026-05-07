@@ -1,3 +1,17 @@
+/*
+ * ================================================================
+ * login.css - Estilos de la página de autenticación
+ * ================================================================
+ * Este archivo estiliza:
+ * - Contenedor principal (auth-wrapper)
+ * - Paneles de formulario (registro/login)
+ * - Panel deslizable para cambiar entre auth modes
+ * - Formularios e inputs
+ * - Botones primarios y secundarios
+ * - Efectos de transición y animaciones
+ * ================================================================
+ */
+
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 
 :root {

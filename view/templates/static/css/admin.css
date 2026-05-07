@@ -1,3 +1,17 @@
+/*
+ * ================================================================
+ * admin.css - Estilos del panel administrativo
+ * ================================================================
+ * Este archivo define:
+ * - Layout del panel admin (tabs y contenido)
+ * - Tarjetas de estadísticas
+ * - Formularios de gestión
+ * - Tablas con datos (usuarios, eventos, artistas, etc)
+ * - Paginación
+ * - Estilos de botones de acción (editar, eliminar)
+ * ================================================================
+ */
+
 #admin-content {
   display: flex;
   flex-direction: column;

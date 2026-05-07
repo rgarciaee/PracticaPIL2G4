@@ -1,3 +1,19 @@
+/*
+ * ================================================================
+ * componentes.css - Componentes reutilizables de la interfaz
+ * ================================================================
+ * Este archivo proporciona estilos para:
+ * - Botones (primario, secundario, outline)
+ * - Badges (etiquetas de estado)
+ * - Modales y diálogos
+ * - Toasts (notificaciones)
+ * - Tooltips
+ * - Spinners de carga
+ * - Tabs (pestañas)
+ * - Paginación
+ * ================================================================
+ */
+
 /* ===== COMPONENTES REUTILIZABLES ===== */
 
 /* Botones */
